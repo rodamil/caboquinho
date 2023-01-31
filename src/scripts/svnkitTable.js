@@ -16,7 +16,7 @@ const {
   createSvnkit,
 } = require('../scripts/handleSvnkitData');
 
-const response = require('../mock/mock');
+// const response = require('../mock/mock');
 
 // Global data
 let SVNKITS_BASE_URL = 'https://idart.mot.com/browse/';
@@ -72,49 +72,50 @@ window.onload = async () => {
   `;
 
   try {
-    // const [
-    //   tamNamesData,
-    //   languagesData,
-    //   channelIdsData,
-    //   projectNamesData,
-    //   jsvnkitCarriersData,
-    // ] = await Promise.all([
-    //   getTamNames(),
-    //   getLanguages(),
-    //   getChannelIds(),
-    //   getProjectNames(),
-    //   getJsvnkitCarriers(),
-    // ]);
+    const [
+      tamNamesData,
+      languagesData,
+      channelIdsData,
+      projectNamesData,
+      jsvnkitCarriersData,
+    ] = await Promise.all([
+      getTamNames(),
+      getLanguages(),
+      getChannelIds(),
+      getProjectNames(),
+      getJsvnkitCarriers(),
+    ]);
 
-    // tamNames = [...new Set(tamNamesData.map(({ coreId }) => coreId))];
-    // languages = [...new Set(languagesData.map(({ language }) => language))];
-    // channels = [...new Set(channelIdsData.map(({ channelId }) => channelId))];
-    // projectNames = [...new Set(projectNamesData)];
-    // jsvnkitCarriersList = [...new Set(jsvnkitCarriersData)];
+    tamNames = [...new Set(tamNamesData.map(({ coreId }) => coreId))];
+    languages = [...new Set(languagesData.map(({ language }) => language))];
+    channels = [...new Set(channelIdsData.map(({ channelId }) => channelId))];
+    projectNames = [...new Set(projectNamesData)];
+    jsvnkitCarriersList = [...new Set(jsvnkitCarriersData)];
 
-    // const worksheet = await getSheet(wbLink);
-    // const titlePositions = getPositionsForSvnkit(worksheet);
+    const worksheet = await getSheet(wbLink);
+    const titlePositions = getPositionsForSvnkit(worksheet);
 
-    // const rowsData = getRowsData({
-    //   worksheet,
-    //   titlePositions,
-    //   tamNamesData,
-    //   channelIdsData,
-    //   jsvnkitCarriersData,
-    //   productManager,
-    //   languagesData,
-    // });
+    const rowsData = getRowsData({
+      worksheet,
+      titlePositions,
+      tamNamesData,
+      channelIdsData,
+      jsvnkitCarriersData,
+      productManager,
+      languagesData,
+    });
 
-    // const rowsFormated = setDescriptionAndSwVersion(rowsData);
-    // const rowsChecked = setCheck(rowsFormated);
-    projectNames = response.project_list;
+    const rowsFormated = setDescriptionAndSwVersion(rowsData, company);
+    const rowsChecked = setCheck(rowsFormated);
+    // projectNames = response.project_list;
     awaitContainer.innerHTML = '';
     document.querySelector('#page-title').innerText = 'Caboquinho';
     generateActionBtns();
-    createSvnkitTable(response.checkedRows);
+    createSvnkitTable(rowsChecked);
   } catch (error) {
+    console.log(error);
     window.alert(error);
-    // window.window..back();
+    // history.back();
   }
 };
 
@@ -190,13 +191,24 @@ function generateActionBtns() {
 
   const btnsData = [
     {
-      label: 'home',
+      label: 'logout',
+      actionFunc: () => {
+        const response = window.confirm(
+          'You will back to the login page, are you sure?',
+        );
+        if (response) {
+          window.location = 'loginForm.html';
+        }
+      },
+    },
+    {
+      label: 'forms',
       actionFunc: () => {
         const response = window.confirm(
           'You will lose your changes, do you really want to go back?',
         );
         if (response) {
-          window.location = 'loginForm.html';
+          history.back();
         }
       },
     },
@@ -257,7 +269,7 @@ function generateActionBtns() {
   for (const btn of btnsData) {
     const htmlBtn = document.createElement('button');
     htmlBtn.className = 'waves-effect waves-light btn-large';
-    htmlBtn.style = 'margin-right: 1rem';
+    htmlBtn.style = 'margin-right: 1rem; margin-block: 0.5rem';
     htmlBtn.innerHTML = btn.label;
     htmlBtn.onclick = btn.actionFunc;
     btnsContainer.appendChild(htmlBtn);

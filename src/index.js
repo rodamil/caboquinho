@@ -1,11 +1,10 @@
 require('dotenv').config();
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
-const env = process.env.NODE_ENV || 'production';
 
 app.commandLine.appendSwitch('ignore-certificate-errors');
 
-if (env === 'development') {
+if (process.env.NODE_ENV === 'development') {
   try {
     require('electron-reloader')(module);
   } catch (_) {}

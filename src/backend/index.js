@@ -12,9 +12,8 @@ const SVNKIT_ISSUE_TYPE_ID = '108';
 let BASE_IDART_URL = '';
 
 const port = process.env.PORT || 3001;
-const env = process.env.NODE_ENV || 'production';
 
-if (env === 'development') {
+if (process.env.NODE_ENV === 'development') {
   https.globalAgent.options.rejectUnauthorized = false;
   BASE_IDART_URL = 'https://idart-dev.mot.com';
 } else {
@@ -112,6 +111,7 @@ app.use((err, _req, res, _next) => {
 
     return res.status(status).json({ errors, message, status });
   } catch (e) {
+    console.log(e);
     return res
       .status(500)
       .json({ message: e.message, errors: {}, status: 500 });

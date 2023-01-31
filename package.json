@@ -10,8 +10,8 @@
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "lint": "echo \"No linting configured\"",
-    "server:dev": "nodemon ./src/backend/index.js",
-    "start:dev": "npm start && npm run server:dev"
+    "server": "node ./src/backend/index.js",
+    "server:dev": "nodemon ./src/backend/index.js"
   },
   "keywords": [],
   "author": {
