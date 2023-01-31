@@ -1,4 +1,14 @@
 window.onload = () => {
+  const goBackBtn = document.querySelector('#btn-go-back');
+  goBackBtn.addEventListener('click', () => {
+    const response = window.confirm(
+      'You will lose your changes, do you really want to go back?',
+    );
+    if (response) {
+      history.back();
+    }
+  });
+
   const descriptionTypeContainer = document.querySelector(
     '#description-type-container',
   );
@@ -41,6 +51,7 @@ window.onload = () => {
         localStorage.setItem('wbLink', wbLink);
         localStorage.setItem('company', company);
         localStorage.setItem('productManager', productManager);
+        localStorage.setItem('kitsCreated', JSON.stringify([]));
       });
   }
 };

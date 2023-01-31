@@ -115,8 +115,18 @@ window.onload = async () => {
   } catch (error) {
     console.log(error);
     window.alert(error);
-    // history.back();
   }
+
+  const goBackBtn = document.querySelector('#btn-go-back');
+  goBackBtn.classList.remove('hide');
+  goBackBtn.addEventListener('click', () => {
+    const response = window.confirm(
+      'You will lose your changes, do you really want to go back?',
+    );
+    if (response) {
+      history.back();
+    }
+  });
 };
 
 function formatString(string) {
@@ -190,28 +200,6 @@ function generateActionBtns() {
   btnsContainer.style = 'margin-block: 2rem';
 
   const btnsData = [
-    {
-      label: 'logout',
-      actionFunc: () => {
-        const response = window.confirm(
-          'You will back to the login page, are you sure?',
-        );
-        if (response) {
-          window.location = 'loginForm.html';
-        }
-      },
-    },
-    {
-      label: 'forms',
-      actionFunc: () => {
-        const response = window.confirm(
-          'You will lose your changes, do you really want to go back?',
-        );
-        if (response) {
-          history.back();
-        }
-      },
-    },
     {
       label: 'create kits',
       actionFunc: async () => {
