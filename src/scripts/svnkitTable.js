@@ -16,7 +16,12 @@ const {
   createSvnkit,
 } = require('../scripts/handleSvnkitData');
 
-// const response = require('../mock/mock');
+const response = require('../mock/mock');
+const tamNames = response.tam_list;
+const languages = response.languages_list;
+const channels = response.channels_list;
+const projectNames = response.project_list;
+const jsvnkitCarriersList = response.jsvnkit_carriers_list;
 
 // Global data
 let SVNKITS_BASE_URL = 'https://idart.mot.com/browse/';
@@ -29,13 +34,16 @@ const selectedCellColor = '#FF9800';
 const defaultCheckedRowColor = '#FFFFFF';
 const defaultUncheckRowColor = '#BABFC4';
 const userUncheckRowColor = '#BAFFFF';
+const kitCreatedRowColor = '#00FF00';
+const kitNotCreatedRowColor = '#EA7174';
 let lastActiveBackground = '';
 const esimOptions = ['TRUE', 'FALSE'];
-let tamNames = [];
-let languages = [];
-let channels = [];
-let projectNames = [];
-let jsvnkitCarriersList = [];
+
+// let tamNames = [];
+// let languages = [];
+// let channels = [];
+// let projectNames = [];
+// let jsvnkitCarriersList = [];
 let jiraToken = '';
 
 window.onload = async () => {
@@ -72,46 +80,46 @@ window.onload = async () => {
   `;
 
   try {
-    const [
-      tamNamesData,
-      languagesData,
-      channelIdsData,
-      projectNamesData,
-      jsvnkitCarriersData,
-    ] = await Promise.all([
-      getTamNames(),
-      getLanguages(),
-      getChannelIds(),
-      getProjectNames(),
-      getJsvnkitCarriers(),
-    ]);
+    // const [
+    //   tamNamesData,
+    //   languagesData,
+    //   channelIdsData,
+    //   projectNamesData,
+    //   jsvnkitCarriersData,
+    // ] = await Promise.all([
+    //   getTamNames(),
+    //   getLanguages(),
+    //   getChannelIds(),
+    //   getProjectNames(),
+    //   getJsvnkitCarriers(),
+    // ]);
 
-    tamNames = [...new Set(tamNamesData.map(({ coreId }) => coreId))];
-    languages = [...new Set(languagesData.map(({ language }) => language))];
-    channels = [...new Set(channelIdsData.map(({ channelId }) => channelId))];
-    projectNames = [...new Set(projectNamesData)];
-    jsvnkitCarriersList = [...new Set(jsvnkitCarriersData)];
+    // tamNames = [...new Set(tamNamesData.map(({ coreId }) => coreId))];
+    // languages = [...new Set(languagesData.map(({ language }) => language))];
+    // channels = [...new Set(channelIdsData.map(({ channelId }) => channelId))];
+    // projectNames = [...new Set(projectNamesData)];
+    // jsvnkitCarriersList = [...new Set(jsvnkitCarriersData)];
 
-    const worksheet = await getSheet(wbLink);
-    const titlePositions = getPositionsForSvnkit(worksheet);
+    // const worksheet = await getSheet(wbLink);
+    // const titlePositions = getPositionsForSvnkit(worksheet);
 
-    const rowsData = getRowsData({
-      worksheet,
-      titlePositions,
-      tamNamesData,
-      channelIdsData,
-      jsvnkitCarriersData,
-      productManager,
-      languagesData,
-    });
+    // const rowsData = getRowsData({
+    //   worksheet,
+    //   titlePositions,
+    //   tamNamesData,
+    //   channelIdsData,
+    //   jsvnkitCarriersData,
+    //   productManager,
+    //   languagesData,
+    // });
 
-    const rowsFormated = setDescriptionAndSwVersion(rowsData, company);
-    const rowsChecked = setCheck(rowsFormated);
-    // projectNames = response.project_list;
+    // const rowsFormated = setDescriptionAndSwVersion(rowsData, company);
+    // const rowsChecked = setCheck(rowsFormated);
+
     awaitContainer.innerHTML = '';
     document.querySelector('#page-title').innerText = 'Caboquinho';
     generateActionBtns();
-    createSvnkitTable(rowsChecked);
+    createSvnkitTable(response.checkedRows);
   } catch (error) {
     console.log(error);
     window.alert(error);
@@ -195,6 +203,20 @@ function handleEnableStatusBtns(status) {
   }
 }
 
+function checkKitAlreadyCreated(rowData) {
+  const kitsAlreadyCreated = JSON.parse(localStorage.getItem('kitsCreated'));
+  const findedKit = kitsAlreadyCreated.find(
+    ({ elabel, model, rocarrier, subsidy, target }) =>
+      rowData['SOFTWARE TA'] === target &&
+      rowData['LABEL FILE'] === elabel &&
+      rowData['RO.CARRIER'] === rocarrier &&
+      rowData['SUBSIDY LOCK'] === subsidy &&
+      rowData['MODEL'] === model,
+  );
+
+  return findedKit;
+}
+
 function generateActionBtns() {
   const btnsContainer = document.querySelector('#buttons-container');
   btnsContainer.style = 'margin-block: 2rem';
@@ -210,21 +232,47 @@ function generateActionBtns() {
           (th) => th.innerText === 'SVNKIT',
         );
         svnkitHeader.style.display = 'table-cell';
+        const currentKitsCreated = JSON.parse(
+          localStorage.getItem('kitsCreated'),
+        );
 
         await Promise.all(
           rowsData.map(async (rowData, i) => {
             const svnkitInput = document.querySelector(`#SVNKIT-${i}`);
+            const svnkitCell = svnkitInput.closest('td');
+            const svnkitRow = svnkitCell.closest('tr');
+            svnkitCell.style.display = 'table-cell';
 
-            svnkitInput.closest('td').style.display = 'table-cell';
             if (rowData['CHECK'] === true) {
-              const kitCreated = await createSvnkit(rowData, jiraToken);
-              if (kitCreated.key) {
-                svnkitInput.value = `${SVNKITS_BASE_URL}${kitCreated.key}`;
+              const findedKit = checkKitAlreadyCreated(rowData);
+
+              if (!findedKit) {
+                const kitCreated = await createSvnkit(rowData, jiraToken);
+
+                if (kitCreated.key) {
+                  currentKitsCreated.push({
+                    target: rowData['SOFTWARE TA'],
+                    elabel: rowData['LABEL FILE'],
+                    rocarrier: rowData['RO.CARRIER'],
+                    subsidy: rowData['SUBSIDY LOCK'],
+                    model: rowData['MODEL'],
+                    svnkit: kitCreated.key,
+                  });
+                  localStorage.setItem(
+                    'kitsCreated',
+                    JSON.stringify(currentKitsCreated),
+                  );
+                  document.querySelector(`#CHECK-${i}`).checked = false;
+                  svnkitRow.style.backgroundColor = kitCreatedRowColor;
+                  svnkitInput.value = kitCreated.key;
+                } else {
+                  svnkitRow.style.backgroundColor = kitNotCreatedRowColor;
+                  svnkitInput.value = 'ERROR';
+                }
               } else {
-                svnkitInput.value = 'ERROR';
+                document.querySelector(`#CHECK-${i}`).checked = false;
+                svnkitRow.style.backgroundColor = kitCreatedRowColor;
               }
-            } else {
-              svnkitInput.value = 'N/A';
             }
           }),
         );
@@ -344,6 +392,13 @@ function createSvnkitTable(rowsWithData) {
   const tBody = document.createElement('tbody');
 
   for (const [index, rowData] of rowsWithData.entries()) {
+    const findedKit = checkKitAlreadyCreated(rowData);
+
+    if (findedKit) {
+      rowData['CHECK'] = '0';
+      rowData['SVNKIT'] = findedKit.svnkit;
+    }
+
     const tBodyRow = document.createElement('tr');
 
     for (const tableTitle of tableTitles) {
@@ -359,7 +414,7 @@ function createSvnkitTable(rowsWithData) {
       const lineChecked = rowData['CHECK'] === '1';
       const input = document.createElement('input');
 
-      if (tableTitle == 'CHECK') {
+      if (tableTitle === 'CHECK') {
         const label = document.createElement('label');
         label.style = 'display: block';
 
@@ -406,11 +461,23 @@ function createSvnkitTable(rowsWithData) {
         input.onblur = ({ target }) =>
           (target.style.backgroundColor = lastActiveBackground);
 
+        if (tableTitle === 'SVNKIT') {
+          input.onclick = async ({ target }) => {
+            if (target.value.toLowerCase().includes('jsvnkit')) {
+              const svnkitLink = `${SVNKITS_BASE_URL}${target.value}`;
+              await navigator.clipboard.writeText(svnkitLink);
+            }
+          };
+        }
         tBodyCell.appendChild(input);
       }
 
       if (!lineChecked) {
-        tBodyRow.style.backgroundColor = defaultUncheckRowColor;
+        if (rowData['SVNKIT']) {
+          tBodyRow.style.backgroundColor = kitCreatedRowColor;
+        } else {
+          tBodyRow.style.backgroundColor = defaultUncheckRowColor;
+        }
       } else {
         tBody.style.backgroundColor = defaultCheckedRowColor;
       }

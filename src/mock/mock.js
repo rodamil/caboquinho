@@ -114,8 +114,8 @@ module.exports = {
     },
     {
       'PRODUCT MANAGER': 'rodlima',
-      ESIM: '',
-      'PROJECT NAME': '',
+      ESIM: 'FALSE',
+      'PROJECT NAME': 'HawaiiPlus22 Latam',
       TAM: 'thallesd',
       LANGUAGE: 'pt-BR',
       'CHANNEL ID': '0x19',
@@ -450,8 +450,8 @@ module.exports = {
     },
     {
       'PRODUCT MANAGER': 'rodlima',
-      ESIM: '',
-      'PROJECT NAME': '',
+      ESIM: 'FALSE',
+      'PROJECT NAME': 'HawaiiPlus22 Latam',
       TAM: 'aap015',
       LANGUAGE: 'es-US',
       'CHANNEL ID': '0x1A',
@@ -478,8 +478,8 @@ module.exports = {
     },
     {
       'PRODUCT MANAGER': 'rodlima',
-      ESIM: '',
-      'PROJECT NAME': '',
+      ESIM: 'FALSE',
+      'PROJECT NAME': 'HawaiiPlus22 Latam',
       TAM: 'jcontrer',
       LANGUAGE: 'es-US',
       'CHANNEL ID': '0x28',
