@@ -1,10 +1,11 @@
 const axios = require('axios');
-const { BASE_SERVER_URL, PORT } = process.env;
+const serverUrl = process.env.BASE_SERVER_URL || 'http://localhost:';
+const serverPort = process.env.PORT || 3001;
 
 async function createSvnkit(rowData, token) {
   try {
     const { data } = await axios.post(
-      `${BASE_SERVER_URL}${PORT}/create-svnkit`,
+      `${serverUrl}${serverPort}/create-svnkit`,
       { svnkitData: rowData },
       { headers: { Authorization: token } },
     );
