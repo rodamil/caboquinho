@@ -1,5 +1,6 @@
 const axios = require('axios');
-const { BASE_SERVER_URL, PORT } = process.env;
+const serverUrl = process.env.BASE_SERVER_URL || 'http://localhost:';
+const serverPort = process.env.PORT || 3001;
 
 window.onload = () => {
   localStorage.clear();
@@ -11,7 +12,7 @@ window.onload = () => {
     const userPassword = document.querySelector('#user-password').value;
 
     try {
-      const res = await axios.post(`${BASE_SERVER_URL}${PORT}/login`, {
+      const res = await axios.post(`${serverUrl}${serverPort}/login`, {
         username: userCoreid,
         password: userPassword,
       });
