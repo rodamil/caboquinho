@@ -1,5 +1,3 @@
-require('dotenv').config;
-
 const {
   getTamNames,
   getLanguages,
@@ -16,12 +14,12 @@ const {
   createSvnkit,
 } = require('../scripts/handleSvnkitData');
 
-const response = require('../mock/mock');
-const tamNames = response.tam_list;
-const languages = response.languages_list;
-const channels = response.channels_list;
-const projectNames = response.project_list;
-const jsvnkitCarriersList = response.jsvnkit_carriers_list;
+// const response = require('../mock/mock');
+// const tamNames = response.tam_list;
+// const languages = response.languages_list;
+// const channels = response.channels_list;
+// const projectNames = response.project_list;
+// const jsvnkitCarriersList = response.jsvnkit_carriers_list;
 
 // Global data
 let SVNKITS_BASE_URL = 'https://idart.mot.com/browse/';
@@ -39,23 +37,20 @@ const kitNotCreatedRowColor = '#EA7174';
 let lastActiveBackground = '';
 const esimOptions = ['TRUE', 'FALSE'];
 
-// let tamNames = [];
-// let languages = [];
-// let channels = [];
-// let projectNames = [];
-// let jsvnkitCarriersList = [];
-let jiraToken = '';
+let tamNames = [];
+let languages = [];
+let channels = [];
+let projectNames = [];
+let jsvnkitCarriersList = [];
 
 window.onload = async () => {
   const wbLink = localStorage.getItem('wbLink');
   const productManager = localStorage.getItem('productManager');
   const company = localStorage.getItem('company');
-  jiraToken = localStorage.getItem('jiraToken');
 
   const checkIsEmpty = [
     [wbLink, "Workbook link can't be empty"],
     [productManager, "Product Managar can't be empty"],
-    [jiraToken, "Jira token can't be empty"],
   ];
 
   for (const item of checkIsEmpty) {
@@ -80,46 +75,46 @@ window.onload = async () => {
   `;
 
   try {
-    // const [
-    //   tamNamesData,
-    //   languagesData,
-    //   channelIdsData,
-    //   projectNamesData,
-    //   jsvnkitCarriersData,
-    // ] = await Promise.all([
-    //   getTamNames(),
-    //   getLanguages(),
-    //   getChannelIds(),
-    //   getProjectNames(),
-    //   getJsvnkitCarriers(),
-    // ]);
+    const [
+      tamNamesData,
+      languagesData,
+      channelIdsData,
+      projectNamesData,
+      jsvnkitCarriersData,
+    ] = await Promise.all([
+      getTamNames(),
+      getLanguages(),
+      getChannelIds(),
+      getProjectNames(),
+      getJsvnkitCarriers(),
+    ]);
 
-    // tamNames = [...new Set(tamNamesData.map(({ coreId }) => coreId))];
-    // languages = [...new Set(languagesData.map(({ language }) => language))];
-    // channels = [...new Set(channelIdsData.map(({ channelId }) => channelId))];
-    // projectNames = [...new Set(projectNamesData)];
-    // jsvnkitCarriersList = [...new Set(jsvnkitCarriersData)];
+    tamNames = [...new Set(tamNamesData.map(({ coreId }) => coreId))];
+    languages = [...new Set(languagesData.map(({ language }) => language))];
+    channels = [...new Set(channelIdsData.map(({ channelId }) => channelId))];
+    projectNames = [...new Set(projectNamesData)];
+    jsvnkitCarriersList = [...new Set(jsvnkitCarriersData)];
 
-    // const worksheet = await getSheet(wbLink);
-    // const titlePositions = getPositionsForSvnkit(worksheet);
+    const worksheet = await getSheet(wbLink);
+    const titlePositions = getPositionsForSvnkit(worksheet);
 
-    // const rowsData = getRowsData({
-    //   worksheet,
-    //   titlePositions,
-    //   tamNamesData,
-    //   channelIdsData,
-    //   jsvnkitCarriersData,
-    //   productManager,
-    //   languagesData,
-    // });
+    const rowsData = getRowsData({
+      worksheet,
+      titlePositions,
+      tamNamesData,
+      channelIdsData,
+      jsvnkitCarriersData,
+      productManager,
+      languagesData,
+    });
 
-    // const rowsFormated = setDescriptionAndSwVersion(rowsData, company);
-    // const rowsChecked = setCheck(rowsFormated);
+    const rowsFormated = setDescriptionAndSwVersion(rowsData, company);
+    const rowsChecked = setCheck(rowsFormated);
 
     awaitContainer.innerHTML = '';
     document.querySelector('#page-title').innerText = 'Caboquinho';
     generateActionBtns();
-    createSvnkitTable(response.checkedRows);
+    createSvnkitTable(rowsChecked);
   } catch (error) {
     console.log(error);
     window.alert(error);
@@ -247,16 +242,20 @@ function generateActionBtns() {
               const findedKit = checkKitAlreadyCreated(rowData);
 
               if (!findedKit) {
-                const kitCreated = await createSvnkit(rowData, jiraToken);
+                const kitCreated = await createSvnkit(
+                  rowData,
+                  localStorage.getItem('jiraToken'),
+                );
 
                 if (kitCreated.key) {
+                  const kitCreatedLink = `${SVNKITS_BASE_URL}${kitCreated.key}`;
                   currentKitsCreated.push({
                     target: rowData['SOFTWARE TA'],
                     elabel: rowData['LABEL FILE'],
                     rocarrier: rowData['RO.CARRIER'],
                     subsidy: rowData['SUBSIDY LOCK'],
                     model: rowData['MODEL'],
-                    svnkit: kitCreated.key,
+                    svnkit: kitCreatedLink,
                   });
                   localStorage.setItem(
                     'kitsCreated',
@@ -264,7 +263,7 @@ function generateActionBtns() {
                   );
                   document.querySelector(`#CHECK-${i}`).checked = false;
                   svnkitRow.style.backgroundColor = kitCreatedRowColor;
-                  svnkitInput.value = kitCreated.key;
+                  svnkitInput.value = kitCreatedLink;
                 } else {
                   svnkitRow.style.backgroundColor = kitNotCreatedRowColor;
                   svnkitInput.value = 'ERROR';
@@ -464,8 +463,7 @@ function createSvnkitTable(rowsWithData) {
         if (tableTitle === 'SVNKIT') {
           input.onclick = async ({ target }) => {
             if (target.value.toLowerCase().includes('jsvnkit')) {
-              const svnkitLink = `${SVNKITS_BASE_URL}${target.value}`;
-              await navigator.clipboard.writeText(svnkitLink);
+              await navigator.clipboard.writeText(target.value);
             }
           };
         }
