@@ -13,6 +13,16 @@ if (process.env.NODE_ENV === 'development') {
   } catch (_) {}
 } else {
   autoUpdater.checkForUpdates();
+  autoUpdater.on('update-not-available', () => {
+    const dialogOpts = {
+      type: 'info',
+      buttons: ['Ok'],
+      title: 'Application Not finded to Update',
+      message: process.platform === 'win32' ? releaseNotes : releaseName,
+      detail: 'A new version is being downloaded.',
+    };
+    dialog.showMessageBox(dialogOpts, (response) => {});
+  });
 }
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
