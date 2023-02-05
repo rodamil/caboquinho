@@ -1,12 +1,12 @@
 {
   "name": "caboquinho",
   "productName": "caboquinho",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "My Electron application description",
   "main": "src/index.js",
   "repository": {
     "type": "git",
-    "url": "git@github.com:rodamil/caboquinho.git"
+    "url": "https://github.com/rodamil/caboquinho"
   },
   "scripts": {
     "start": "electron-forge start",
@@ -26,7 +26,6 @@
   "dependencies": {
     "axios": "^1.2.6",
     "dotenv": "^16.0.3",
-    "electron-builder": "^23.6.0",
     "electron-squirrel-startup": "^1.0.0",
     "electron-updater": "^5.3.0",
     "express": "^4.18.2",
