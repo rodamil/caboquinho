@@ -1,7 +1,7 @@
 require('dotenv').config();
 require('./backend/index');
-const { autoUpdater } = require('electron-updater');
-
+// const { autoUpdater } = require('electron-updater');
+require('update-electron-app')();
 const { app, BrowserWindow, dialog } = require('electron');
 const path = require('path');
 
@@ -12,17 +12,17 @@ if (process.env.NODE_ENV === 'development') {
     require('electron-reloader')(module);
   } catch (_) {}
 } else {
-  autoUpdater.checkForUpdates();
-  autoUpdater.on('update-not-available', () => {
-    const dialogOpts = {
-      type: 'info',
-      buttons: ['Ok'],
-      title: 'Application Not finded to Update',
-      message: process.platform === 'win32' ? releaseNotes : releaseName,
-      detail: 'A new version is being downloaded.',
-    };
-    dialog.showMessageBox(dialogOpts, (response) => {});
-  });
+  // autoUpdater.checkForUpdates();
+  // autoUpdater.on('update-not-available', () => {
+  //   const dialogOpts = {
+  //     type: 'info',
+  //     buttons: ['Ok'],
+  //     title: 'Application Not finded to Update',
+  //     message: process.platform === 'win32' ? releaseNotes : releaseName,
+  //     detail: 'A new version is being downloaded.',
+  //   };
+  //   dialog.showMessageBox(dialogOpts, (response) => {});
+  // });
 }
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -75,30 +75,30 @@ app.on('activate', () => {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
 
-autoUpdater.on('update-available', (_event, releaseNotes, releaseName) => {
-  const dialogOpts = {
-    type: 'info',
-    buttons: ['Ok'],
-    title: 'Application Update',
-    message: process.platform === 'win32' ? releaseNotes : releaseName,
-    detail: 'A new version is being downloaded.',
-  };
-  dialog.showMessageBox(dialogOpts, (response) => {});
-});
+// autoUpdater.on('update-available', (_event, releaseNotes, releaseName) => {
+//   const dialogOpts = {
+//     type: 'info',
+//     buttons: ['Ok'],
+//     title: 'Application Update',
+//     message: process.platform === 'win32' ? releaseNotes : releaseName,
+//     detail: 'A new version is being downloaded.',
+//   };
+//   dialog.showMessageBox(dialogOpts, (response) => {});
+// });
 
-autoUpdater.on('update-downloaded', (_event, releaseNotes, releaseName) => {
-  const dialogOpts = {
-    type: 'info',
-    buttons: ['Restart', 'Later'],
-    title: 'Application Update',
-    message: process.platform === 'win32' ? releaseNotes : releaseName,
-    detail:
-      'A new version has been downloaded. Restart the application to apply the updates.',
-  };
+// autoUpdater.on('update-downloaded', (_event, releaseNotes, releaseName) => {
+//   const dialogOpts = {
+//     type: 'info',
+//     buttons: ['Restart', 'Later'],
+//     title: 'Application Update',
+//     message: process.platform === 'win32' ? releaseNotes : releaseName,
+//     detail:
+//       'A new version has been downloaded. Restart the application to apply the updates.',
+//   };
 
-  dialog.showMessageBox(dialogOpts).then((returnValue) => {
-    if (returnValue.response === 0) {
-      autoUpdater.quitAndInstall();
-    }
-  });
-});
+//   dialog.showMessageBox(dialogOpts).then((returnValue) => {
+//     if (returnValue.response === 0) {
+//       autoUpdater.quitAndInstall();
+//     }
+//   });
+// });
