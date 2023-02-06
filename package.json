@@ -1,7 +1,7 @@
 {
   "name": "caboquinho",
   "productName": "caboquinho",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "My Electron application description",
   "main": "src/index.js",
   "repository": {
@@ -27,7 +27,6 @@
     "axios": "^1.2.6",
     "dotenv": "^16.0.3",
     "electron-squirrel-startup": "^1.0.0",
-    "electron-updater": "^5.3.0",
     "express": "^4.18.2",
     "express-rescue": "^1.2.0",
     "googleapis": "^110.0.0",
