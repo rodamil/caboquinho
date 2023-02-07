@@ -17,7 +17,10 @@ module.exports = {
   makers: [
     {
       name: '@electron-forge/maker-squirrel',
-      config: {},
+      config: {
+        authors: 'Rodrigo Lima',
+        description: 'My Electron application description',
+      },
     },
     {
       name: '@electron-forge/maker-zip',
