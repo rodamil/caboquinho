@@ -254,7 +254,7 @@ function generateActionBtns() {
                     rocarrier: rowData['RO.CARRIER'],
                     subsidy: rowData['SUBSIDY LOCK'],
                     model: rowData['MODEL'],
-                    svnkit: kitCreatedLink,
+                    svnkit: kitCreated.key,
                   });
                   localStorage.setItem(
                     'kitsCreated',
