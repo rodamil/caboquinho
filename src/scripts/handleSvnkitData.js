@@ -167,7 +167,7 @@ function setDescriptionAndSwVersion(rowsWithData, company) {
     description += `Build Id: ${target}\\`;
     description += `e-Label: ${elabel}\\`;
 
-    if (company !== 'odm') {
+    if (company !== 'huaqin') {
       description += `Carrier: ${rocarrier}\\`;
     }
 
@@ -175,7 +175,7 @@ function setDescriptionAndSwVersion(rowsWithData, company) {
     description += `DDS/SS: ${ssDS}\\`;
     description += `SW Version: ${swVersion}\\`;
 
-    if (company != 'odm') {
+    if (company != 'huaqin') {
       description += `||Carrier (Customer + Country)||ro.carrier.${company.toLowerCase()}||\\`;
 
       for (const compareData of rowsWithData) {

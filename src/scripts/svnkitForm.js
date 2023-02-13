@@ -12,7 +12,7 @@ window.onload = () => {
   const descriptionTypeContainer = document.querySelector(
     '#description-type-container',
   );
-  const descriptionOptions = ['ontim', 'tinno', 'odm'];
+  const descriptionOptions = ['ontim', 'tinno', 'huaqin'];
 
   for (const [index, option] of descriptionOptions.entries()) {
     const p = document.createElement('p');
