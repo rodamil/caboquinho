@@ -45,6 +45,7 @@ app.post(
   '/create-svnkit',
   rescue(async (req, res) => {
     const { svnkitData } = req.body;
+    const { authorization } = req.headers;
 
     const isDualSim = svnkitData['SS / DS'] === 'DS';
     const hasESIM = svnkitData['ESIM'] === 'TRUE';
@@ -94,7 +95,7 @@ app.post(
       myRequestBody,
       {
         headers: {
-          Authorization: `Basic cm9kbGltYTpFbGRAMjMwMQ==`,
+          Authorization: `Basic ${authorization}`,
         },
       },
     );
@@ -112,9 +113,11 @@ app.use((err, _req, res, _next) => {
     return res.status(status).json({ errors, message, status });
   } catch (e) {
     console.log(e);
-    return res
-      .status(500)
-      .json({ message: e.message, errors: {}, status: 500 });
+    return res.status(500).json({
+      message: e.message,
+      errors: { message: e.message },
+      status: 500,
+    });
   }
 });
 
