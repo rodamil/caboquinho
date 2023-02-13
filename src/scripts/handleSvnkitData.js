@@ -97,7 +97,7 @@ function getRowsData({
     }
 
     const isCarrierCountryInList = jsvnkitCarriersData.find(
-      (current) => current.toUpperCase() === carrierCountry.toUpperCase(),
+      (current) => current === carrierCountry,
     );
 
     if (isCarrierCountryInList) {
@@ -202,8 +202,8 @@ function setDescriptionAndSwVersion(rowsWithData, company) {
           subsidy == compareData['SUBSIDY LOCK'] &&
           model == compareData['MODEL']
         ) {
-          const targetProduct = data_compare['TARGET PRODUCT'];
-          const memoryConfig = data_compare['MEMORY'];
+          const targetProduct = compareData['TARGET PRODUCT'];
+          const memoryConfig = compareData['MEMORY'];
 
           description += `| ${rocarrier} | ${targetProduct} | ${memoryConfig} |\\`;
         }
