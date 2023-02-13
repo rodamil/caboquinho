@@ -248,7 +248,6 @@ function generateActionBtns() {
                 );
 
                 if (kitCreated.key) {
-                  const kitCreatedLink = `${SVNKITS_BASE_URL}${kitCreated.key}`;
                   currentKitsCreated.push({
                     target: rowData['SOFTWARE TA'],
                     elabel: rowData['LABEL FILE'],
@@ -263,7 +262,7 @@ function generateActionBtns() {
                   );
                   document.querySelector(`#CHECK-${i}`).checked = false;
                   svnkitRow.style.backgroundColor = kitCreatedRowColor;
-                  svnkitInput.value = kitCreatedLink;
+                  svnkitInput.value = kitCreated.key;
                 } else {
                   svnkitRow.style.backgroundColor = kitNotCreatedRowColor;
                   svnkitInput.value = 'ERROR';
@@ -463,7 +462,9 @@ function createSvnkitTable(rowsWithData) {
         if (tableTitle === 'SVNKIT') {
           input.onclick = async ({ target }) => {
             if (target.value.toLowerCase().includes('jsvnkit')) {
-              await navigator.clipboard.writeText(target.value);
+              await navigator.clipboard.writeText(
+                `${SVNKITS_BASE_URL}${target.value}`,
+              );
             }
           };
         }
