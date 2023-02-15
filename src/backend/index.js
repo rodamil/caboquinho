@@ -52,6 +52,9 @@ app.post(
 
     let dualSimField = '47545'; // false
     let simCardSlotsField = 'psim';
+    let updateInfo = {
+      customfield_16113: [{ set: svnkitData['RO.CARRIER'] }], // Channel Model Name
+    };
 
     if (isDualSim) {
       dualSimField = '47544'; //true
@@ -63,7 +66,13 @@ app.post(
       }
     }
 
+    if (svnkitData['CHANNEL ID'] === '0x00') {
+      updateInfo['customfield_22610'] = [{ set: svnkitData['RO.CARRIER'] }]; // Carrier UTAG
+      delete updateInfo['customfield_16113'];
+    }
+
     const myRequestBody = {
+      update: updateInfo,
       fields: {
         project: { id: SVNKIT_PROJECT_ID },
         issuetype: { id: SVNKIT_ISSUE_TYPE_ID },
@@ -74,7 +83,6 @@ app.post(
         customfield_10407: { value: svnkitData['CARRIER COUNTRY'] },
         customfield_14813: `${svnkitData['PROJECT NAME']} ${svnkitData['SS / DS']} ${svnkitData['MODEL']}`,
         customfield_16112: svnkitData['CHANNEL ID'],
-        customfield_16113: svnkitData['RO.CARRIER'],
         customfield_14825: svnkitData['SOFTWARE TA'],
         customfield_22021: svnkitData['SOFTWARE TA'],
         customfield_24713: { id: dualSimField },
