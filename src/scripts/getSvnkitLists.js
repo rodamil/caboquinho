@@ -10,6 +10,8 @@ const PROJECT_NAMES_URL =
   'https://docs.google.com/spreadsheets/d/1scVsPtpoFtVrk8kbOTFzXb1qiFqAr-RG-F5W_YT1R7Q/edit#gid=72983640';
 const JSVNKIT_CARRIERS_URL =
   'https://docs.google.com/spreadsheets/d/1scVsPtpoFtVrk8kbOTFzXb1qiFqAr-RG-F5W_YT1R7Q/edit#gid=345728287';
+const EUROPE_ROCARRIERS_URL =
+  'https://docs.google.com/spreadsheets/d/1scVsPtpoFtVrk8kbOTFzXb1qiFqAr-RG-F5W_YT1R7Q/edit#gid=1986360011';
 
 async function getTamNames() {
   const COUNTRY_POSITION = 1;
@@ -49,27 +51,22 @@ async function getLanguages() {
   return languagesAndRocarrier;
 }
 
+async function getEuropeRocarriers() {
+  const europeRocarriersSheet = await getSheet(EUROPE_ROCARRIERS_URL);
+  const rowsData = europeRocarriersSheet.data.values;
+  const europeRocarriers = [];
+
+  for (const row of rowsData) {
+    europeRocarriers.push(row[0].trim());
+  }
+
+  return europeRocarriers;
+}
+
 async function getChannelIds() {
   const CHANNELID_POSITION = 0;
   const ROCARRIER_POSITION = 1;
-  const rocarrierExceptions = [
-    'windit',
-    'retru',
-    'reteu',
-    'timit',
-    'retgb',
-    'tescogb',
-    'o2gb',
-    'retapac',
-    'vfeu',
-    'windit',
-    'playpl',
-    'oraeu',
-    'teleu',
-    'tmo',
-    'eegb',
-    'pluspl',
-  ];
+  const rocarrierExceptions = await getEuropeRocarriers();
 
   const channelsSheet = await getSheet(CHANNEL_IDS_URL);
   const [_titles, ...rowsData] = channelsSheet.data.values;
