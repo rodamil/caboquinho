@@ -12,32 +12,17 @@ window.onload = () => {
     const userPassword = document.querySelector('#user-password').value;
 
     try {
-      const res = await axios.post(`${serverUrl}${serverPort}/login`, {
+      const { data } = await axios.post(`${serverUrl}${serverPort}/login`, {
         username: userCoreid,
         password: userPassword,
       });
 
-      if (res.status == 200) {
-        localStorage.setItem(
-          'jiraToken',
-          Buffer.from(`${userCoreid}:${userPassword}`).toString('base64'),
-        );
-        window.location = 'svnkitForm.html';
-      }
+      localStorage.setItem('jiraToken', data.token);
+      window.location = 'svnkitForm.html';
     } catch (e) {
-      if (e.response) {
-        const status = e.response.data.status;
-        const errorContainer = document.querySelector('#login-error-container');
-
-        if (status === 401) {
-          errorContainer.innerHTML = 'Your coreid or password is invalid.';
-        } else if (status === 403) {
-          errorContainer.innerHTML =
-            'Your login has failed more than two times, you need to make login in Jira Website and pass manually of the security CAPTCHA.';
-        }
-      } else {
-        console.log(e.message);
-      }
+      const errorContainer = document.querySelector('#login-error-container');
+      errorContainer.innerHTML = e.response.data.message;
+      console.log(e);
     }
     e.target.disabled = false;
   });
