@@ -244,7 +244,7 @@ function generateActionBtns() {
               if (!findedKit) {
                 const kitCreated = await createSvnkit(
                   rowData,
-                  localStorage.getItem('jiraToken'),
+                  localStorage.getItem('token'),
                 );
 
                 if (kitCreated.key) {

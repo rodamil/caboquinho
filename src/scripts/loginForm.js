@@ -17,7 +17,7 @@ window.onload = () => {
         password: userPassword,
       });
 
-      localStorage.setItem('jiraToken', data.token);
+      localStorage.setItem('token', data.token);
       window.location = 'svnkitForm.html';
     } catch (e) {
       const errorContainer = document.querySelector('#login-error-container');

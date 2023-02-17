@@ -6,4 +6,9 @@ const svnkitRouter = express.Router();
 
 svnkitRouter.post('/create-svnkit', rescue(svnkitController.create));
 
+svnkitRouter.get(
+  '/npi-project-names',
+  rescue(svnkitController.getNpiProjectNames),
+);
+
 module.exports = svnkitRouter;

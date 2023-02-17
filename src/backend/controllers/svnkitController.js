@@ -23,4 +23,12 @@ async function create(req, res) {
   return res.status(201).json(kitCreated);
 }
 
-module.exports = { create };
+async function getNpiProjectNames(req, res) {
+  const { authorization } = req.headers;
+
+  const npiProjectNames = await svnkitService.getNpiProjectNames(authorization);
+
+  return res.status(200).json(npiProjectNames);
+}
+
+module.exports = { create, getNpiProjectNames };

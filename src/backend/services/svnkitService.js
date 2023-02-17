@@ -72,4 +72,10 @@ async function create(svnkitData, authorization, url) {
   }
 }
 
-module.exports = { create };
+async function getNpiProjectNames(authorization) {
+  const response = await svnkitModel.getNpiProjectNames(authorization);
+
+  return response.map((project) => project.NPIProjectName[0]);
+}
+
+module.exports = { create, getNpiProjectNames };

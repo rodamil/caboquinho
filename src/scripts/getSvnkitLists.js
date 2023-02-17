@@ -1,4 +1,8 @@
+const axios = require('axios');
 const { getSheet } = require('./handleSheet');
+
+const serverUrl = process.env.BASE_SERVER_URL || 'http://localhost:';
+const serverPort = process.env.PORT || 3001;
 
 const TAM_NAMES_URL =
   'https://docs.google.com/spreadsheets/d/1scVsPtpoFtVrk8kbOTFzXb1qiFqAr-RG-F5W_YT1R7Q/edit#gid=1580787348';
@@ -6,8 +10,6 @@ const LANGUAGES_URL =
   'https://docs.google.com/spreadsheets/d/1scVsPtpoFtVrk8kbOTFzXb1qiFqAr-RG-F5W_YT1R7Q/edit#gid=1141640823';
 const CHANNEL_IDS_URL =
   'https://docs.google.com/spreadsheets/d/1scVsPtpoFtVrk8kbOTFzXb1qiFqAr-RG-F5W_YT1R7Q/edit#gid=1936494592';
-const PROJECT_NAMES_URL =
-  'https://docs.google.com/spreadsheets/d/1scVsPtpoFtVrk8kbOTFzXb1qiFqAr-RG-F5W_YT1R7Q/edit#gid=72983640';
 const JSVNKIT_CARRIERS_URL =
   'https://docs.google.com/spreadsheets/d/1scVsPtpoFtVrk8kbOTFzXb1qiFqAr-RG-F5W_YT1R7Q/edit#gid=345728287';
 const EUROPE_ROCARRIERS_URL =
@@ -97,15 +99,19 @@ async function getChannelIds() {
 }
 
 async function getProjectNames() {
-  const projectNamesSheet = await getSheet(PROJECT_NAMES_URL);
-  const rowsData = projectNamesSheet.data.values;
-  const projectNames = [];
+  try {
+    const token = localStorage.getItem('token');
 
-  for (const row of rowsData) {
-    projectNames.push(row[0].trim());
+    const { data } = await axios.get(
+      `${serverUrl}${serverPort}/npi-project-names`,
+      { headers: { Authorization: token } },
+    );
+
+    return data;
+  } catch (err) {
+    console.log(err);
+    return [];
   }
-
-  return projectNames;
 }
 
 async function getJsvnkitCarriers() {
