@@ -12,14 +12,7 @@ async function createSvnkit(rowData, token) {
 
     return data;
   } catch (e) {
-    if (e.response) {
-      console.table([
-        ...Object.values(e.response.data.errors),
-        e.response.data.message,
-      ]);
-    } else {
-      console.log(e.message);
-    }
+    console.table(rowData);
 
     return '';
   }
