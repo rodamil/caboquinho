@@ -1,3 +1,4 @@
 const svnkitModel = require('./svnkitModel');
+const userModel = require('./userModel');
 
-module.exports = { svnkitModel };
+module.exports = { svnkitModel, userModel };

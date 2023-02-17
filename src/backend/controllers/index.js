@@ -1,3 +1,4 @@
 const svnkitController = require('./svnkitController');
+const userController = require('./userController');
 
-module.exports = { svnkitController };
+module.exports = { svnkitController, userController };
