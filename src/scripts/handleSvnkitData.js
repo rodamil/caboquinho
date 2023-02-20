@@ -127,6 +127,20 @@ function getRowsData({
   return dataForTable;
 }
 
+const compareToCheck = ({
+  compareData,
+  rocarrier,
+  target,
+  elabel,
+  subsidy,
+  model,
+}) =>
+  rocarrier == compareData['RO.CARRIER'] &&
+  target == compareData['SOFTWARE TA'] &&
+  elabel == compareData['LABEL FILE'] &&
+  subsidy == compareData['SUBSIDY LOCK'] &&
+  model == compareData['MODEL'];
+
 function setDescriptionAndSwVersion(rowsWithData, company) {
   for (const rowData of rowsWithData) {
     // SW Version
@@ -173,11 +187,14 @@ function setDescriptionAndSwVersion(rowsWithData, company) {
 
       for (const compareData of rowsWithData) {
         if (
-          rocarrier == compareData['RO.CARRIER'] &&
-          target == compareData['SOFTWARE TA'] &&
-          elabel == compareData['LABEL FILE'] &&
-          subsidy == compareData['SUBSIDY LOCK'] &&
-          model == compareData['MODEL']
+          compareToCheck({
+            compareData,
+            rocarrier,
+            target,
+            elabel,
+            subsidy,
+            model,
+          })
         ) {
           const carrierCountry = `${compareData['CARRIER']} ${compareData['COUNTRY']}`;
           const odmRocarrier = compareData['ODM ROCARRIER'];
@@ -189,11 +206,14 @@ function setDescriptionAndSwVersion(rowsWithData, company) {
       description += '||ro.carrier||Target Product||Memory Config||\\';
       for (const compareData of rowsWithData) {
         if (
-          rocarrier == compareData['RO.CARRIER'] &&
-          target == compareData['SOFTWARE TA'] &&
-          elabel == compareData['LABEL FILE'] &&
-          subsidy == compareData['SUBSIDY LOCK'] &&
-          model == compareData['MODEL']
+          compareToCheck({
+            compareData,
+            rocarrier,
+            target,
+            elabel,
+            subsidy,
+            model,
+          })
         ) {
           const targetProduct = compareData['TARGET PRODUCT'];
           const memoryConfig = compareData['MEMORY'];
@@ -225,11 +245,14 @@ function setCheck(rowsWithData) {
       const row2 = rowsWithData[index2];
 
       if (
-        target == row2['SOFTWARE TA'] &&
-        elabel == row2['LABEL FILE'] &&
-        rocarrier == row2['RO.CARRIER'] &&
-        subsidy == row2['SUBSIDY LOCK'] &&
-        model == row2['MODEL']
+        compareToCheck({
+          compareData: row2,
+          rocarrier,
+          target,
+          elabel,
+          subsidy,
+          model,
+        })
       ) {
         row2['CHECK'] = '0';
       }
