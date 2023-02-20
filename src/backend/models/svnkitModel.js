@@ -1,9 +1,12 @@
 const axios = require('axios');
 
 const PROJECT_NAMES_URL =
-  'https://idart.mot.com/rest/motojirarest/1.0/dbRestAPI/GetNPIprojectNames?_=1676614093269';
+  'https://idart.mot.com/rest/motojirarest/1.0/dbRestAPI/GetNPIprojectNames';
 
-async function create(requestBody, authorization, url) {
+const DESIGN_RESPONSIBILITY_URL =
+  'https://idart.mot.com/rest/mot-api/jsvnkit/1.0/api/get-design-responsibility-list?NPIProjectName=';
+
+async function create(authorization, requestBody, url) {
   const { data } = await axios.post(`${url}/rest/api/2/issue`, requestBody, {
     headers: { Authorization: `${authorization}` },
   });
@@ -19,4 +22,15 @@ async function getNpiProjectNames(authorization) {
   return data;
 }
 
-module.exports = { create, getNpiProjectNames };
+async function getDesignResponsibilityList(authorization, projectName) {
+  const { data } = await axios.get(
+    `${DESIGN_RESPONSIBILITY_URL}${projectName}`,
+    {
+      headers: { Authorization: authorization },
+    },
+  );
+
+  return data;
+}
+
+module.exports = { create, getNpiProjectNames, getDesignResponsibilityList };
