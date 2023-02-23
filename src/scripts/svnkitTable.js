@@ -321,24 +321,8 @@ function createSvnkitTable(rowsWithData) {
     'TAM',
     'PROJECT NAME',
     'MODEL',
-  ];
-  const columnsDisplayNone = [
-    'SVNKIT',
-    'PRODUCT MANAGER',
-    'LANGUAGE',
-    'CHANNEL ID',
-    'SS / DS',
-    'SOFTWARE TA',
-    'SUBSIDY LOCK',
-    'LABEL FILE',
-    'SIGNED',
-    'MEMORY',
-    'FINGERPRINT',
-    'BOOTLOADER',
-    'TARGET PRODUCT',
-    'ODM ROCARRIER',
-    'SW VERSION',
-    'DESCRIPTION',
+    'ESIM',
+    'RO.CARRIER',
   ];
 
   let tableTitles = Object.keys(rowsWithData[0]);
@@ -361,7 +345,7 @@ function createSvnkitTable(rowsWithData) {
       'min-width: 15rem; border: 1px solid black; background-color: inherit';
     tHeadCell.classList.add('center-align');
 
-    if (columnsDisplayNone.includes(tableTitle)) {
+    if (!firstColumns.includes(tableTitle)) {
       tHeadCell.style.display = 'none';
     }
 
@@ -406,7 +390,7 @@ function createSvnkitTable(rowsWithData) {
       tBodyCell.style =
         'max-width: 15rem; font-size: 0.9rem; border: 1px solid black; padding: 0; text-align: center';
 
-      if (columnsDisplayNone.includes(tableTitle)) {
+      if (!firstColumns.includes(tableTitle)) {
         tBodyCell.style.display = 'none';
       }
 
