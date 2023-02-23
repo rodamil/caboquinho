@@ -222,59 +222,69 @@ function generateActionBtns() {
       label: 'create kits',
       actionFunc: async () => {
         handleEnableStatusBtns(true);
-        const rowsData = getTableRowsData(false);
-        const tableHeaders = document.querySelectorAll('th');
-        const svnkitHeader = [...tableHeaders].find(
-          (th) => th.innerText === 'SVNKIT',
-        );
-        svnkitHeader.style.display = 'table-cell';
-        const currentKitsCreated = JSON.parse(
-          localStorage.getItem('kitsCreated'),
+        const allChecks = document.querySelectorAll(
+          'input[type=checkbox]:checked',
         );
 
-        await Promise.all(
-          rowsData.map(async (rowData, i) => {
-            const svnkitInput = document.querySelector(`#SVNKIT-${i}`);
-            const svnkitCell = svnkitInput.closest('td');
-            const svnkitRow = svnkitCell.closest('tr');
-            svnkitCell.style.display = 'table-cell';
+        const confirmCreation = window.confirm(
+          `You are about to create ${allChecks.length} Kits, are you sure?`,
+        );
 
-            if (rowData['CHECK'] === true) {
-              const findedKit = checkKitAlreadyCreated(rowData);
+        if (confirmCreation) {
+          const rowsData = getTableRowsData(false);
+          const tableHeaders = document.querySelectorAll('th');
+          const svnkitHeader = [...tableHeaders].find(
+            (th) => th.innerText === 'SVNKIT',
+          );
+          svnkitHeader.style.display = 'table-cell';
+          const currentKitsCreated = JSON.parse(
+            localStorage.getItem('kitsCreated'),
+          );
 
-              if (!findedKit) {
-                const kitCreated = await createSvnkit(
-                  rowData,
-                  localStorage.getItem('token'),
-                );
+          await Promise.all(
+            rowsData.map(async (rowData, i) => {
+              const svnkitInput = document.querySelector(`#SVNKIT-${i}`);
+              const svnkitCell = svnkitInput.closest('td');
+              const svnkitRow = svnkitCell.closest('tr');
+              svnkitCell.style.display = 'table-cell';
 
-                if (kitCreated.key) {
-                  currentKitsCreated.push({
-                    target: rowData['SOFTWARE TA'],
-                    elabel: rowData['LABEL FILE'],
-                    rocarrier: rowData['RO.CARRIER'],
-                    subsidy: rowData['SUBSIDY LOCK'],
-                    model: rowData['MODEL'],
-                    svnkit: kitCreated.key,
-                  });
-                  localStorage.setItem(
-                    'kitsCreated',
-                    JSON.stringify(currentKitsCreated),
+              if (rowData['CHECK'] === true) {
+                const findedKit = checkKitAlreadyCreated(rowData);
+
+                if (!findedKit) {
+                  const kitCreated = await createSvnkit(
+                    rowData,
+                    localStorage.getItem('token'),
                   );
+
+                  if (kitCreated.key) {
+                    currentKitsCreated.push({
+                      target: rowData['SOFTWARE TA'],
+                      elabel: rowData['LABEL FILE'],
+                      rocarrier: rowData['RO.CARRIER'],
+                      subsidy: rowData['SUBSIDY LOCK'],
+                      model: rowData['MODEL'],
+                      svnkit: kitCreated.key,
+                    });
+                    localStorage.setItem(
+                      'kitsCreated',
+                      JSON.stringify(currentKitsCreated),
+                    );
+                    document.querySelector(`#CHECK-${i}`).checked = false;
+                    svnkitRow.style.backgroundColor = kitCreatedRowColor;
+                    svnkitInput.value = kitCreated.key;
+                  } else {
+                    svnkitRow.style.backgroundColor = kitNotCreatedRowColor;
+                    svnkitInput.value = 'ERROR';
+                  }
+                } else {
                   document.querySelector(`#CHECK-${i}`).checked = false;
                   svnkitRow.style.backgroundColor = kitCreatedRowColor;
-                  svnkitInput.value = kitCreated.key;
-                } else {
-                  svnkitRow.style.backgroundColor = kitNotCreatedRowColor;
-                  svnkitInput.value = 'ERROR';
                 }
-              } else {
-                document.querySelector(`#CHECK-${i}`).checked = false;
-                svnkitRow.style.backgroundColor = kitCreatedRowColor;
               }
-            }
-          }),
-        );
+            }),
+          );
+        }
 
         handleEnableStatusBtns(false);
       },
