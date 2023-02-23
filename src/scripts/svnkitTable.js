@@ -81,12 +81,14 @@ window.onload = async () => {
       channelIdsData,
       projectNamesData,
       jsvnkitCarriersData,
+      worksheet,
     ] = await Promise.all([
       getTamNames(),
       getLanguages(),
       getChannelIds(),
       getProjectNames(),
       getJsvnkitCarriers(),
+      getSheet(wbLink),
     ]);
 
     tamNames = [...new Set(tamNamesData.map(({ coreId }) => coreId))];
@@ -95,7 +97,6 @@ window.onload = async () => {
     projectNames = [...new Set(projectNamesData)];
     jsvnkitCarriersList = [...new Set(jsvnkitCarriersData)];
 
-    const worksheet = await getSheet(wbLink);
     const titlePositions = getPositionsForSvnkit(worksheet);
 
     const rowsData = getRowsData({
