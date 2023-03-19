@@ -5,15 +5,16 @@ function getPositionsForSvnkit(submissionControlSheet) {
     COUNTRY: -1,
     'RO.CARRIER': -1,
     MODEL: -1,
+    MEMORY: -1,
     'SS / DS': -1,
     'SOFTWARE TA': -1,
-    'SUBSIDY LOCK': -1,
-    'LABEL FILE': -1,
-    SIGNED: -1,
-    MEMORY: -1,
+    SVNKIT: -1,
+    'TARGET PRODUCT': -1,
     FINGERPRINT: -1,
     BOOTLOADER: -1,
-    'TARGET PRODUCT': -1,
+    SIGNED: -1,
+    'SUBSIDY LOCK': -1,
+    'E-LABEL FILE': -1,
   };
 
   const titlesToCheck = Object.keys(submissionTitlePositions);
@@ -32,11 +33,12 @@ function getPositionsForSvnkit(submissionControlSheet) {
 
     for (const cell of row) {
       for (const title in submissionTitlePositions) {
-        if (
-          cell.toUpperCase().includes(title) &&
-          submissionTitlePositions[title] === -1
-        ) {
+        if (cell.toUpperCase() === title) {
           submissionTitlePositions[title] = row.indexOf(cell);
+        }
+
+        if (cell.toUpperCase().includes('MEMORY')) {
+          submissionTitlePositions['MEMORY'] = row.indexOf(cell);
         }
       }
 
@@ -62,6 +64,11 @@ function getPositionsForSvnkit(submissionControlSheet) {
   if (columnsNotFound.length > 0) {
     throw new Error(`These columns were not found: ${columnsNotFound}`);
   }
+
+  submissionTitlePositions['LABEL FILE'] =
+    submissionTitlePositions['E-LABEL FILE'];
+
+  delete submissionTitlePositions['E-LABEL FILE'];
 
   return submissionTitlePositions;
 }

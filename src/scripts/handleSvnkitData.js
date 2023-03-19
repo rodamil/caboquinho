@@ -1,6 +1,19 @@
 const axios = require('axios');
+const https = require('https');
+const { updateSheet } = require('./handleSheet');
+
+let BASE_IDART_URL = '';
+
+if (process.env.NODE_ENV === 'development') {
+  https.globalAgent.options.rejectUnauthorized = false;
+  BASE_IDART_URL = 'https://idart-dev.mot.com/browse';
+} else {
+  BASE_IDART_URL = 'https://idart.mot.com/browse';
+}
+
 const serverUrl = process.env.BASE_SERVER_URL || 'http://localhost:';
 const serverPort = process.env.PORT || 3001;
+const subsidyOffTypes = ['NO', '', 'Off'];
 
 async function createSvnkit(rowData, token) {
   try {
@@ -15,6 +28,55 @@ async function createSvnkit(rowData, token) {
     console.table(rowData);
 
     return '';
+  }
+}
+
+async function updateSvnkitFieldInWB({
+  titlePositions,
+  kitCreatedData,
+  wbLink,
+  worksheet,
+}) {
+  const rowsData = worksheet.data.values;
+
+  const columnIndexToLetter = (index) =>
+    (a = Math.floor(index / 26)) >= 0
+      ? columnIndexToLetter(a - 1) + String.fromCharCode(65 + (index % 26))
+      : ''; // Ref: https://stackoverflow.com/a/53678158
+
+  const svnkitKey = kitCreatedData.svnkit;
+  const columnIndex = columnIndexToLetter(titlePositions['SVNKIT']);
+  for (const [rowNumber, rowData] of rowsData.entries()) {
+    const target = rowData[titlePositions['SOFTWARE TA']];
+    const elabel = rowData[titlePositions['LABEL FILE']];
+    const rocarrier = rowData[titlePositions['RO.CARRIER']];
+    const model = rowData[titlePositions['MODEL']];
+    let subsidy = rowData[titlePositions['SUBSIDY LOCK']] || '';
+
+    const checkTarget = kitCreatedData['SOFTWARE TA'] === target;
+    const checkElabel = kitCreatedData['LABEL FILE'] === elabel;
+    const checkRocarrier = kitCreatedData['RO.CARRIER'] === rocarrier;
+    const checkModel = kitCreatedData['MODEL'] === model;
+
+    if (subsidyOffTypes.includes(subsidy.toUpperCase())) {
+      subsidy = 'Off';
+    }
+
+    const checkSubsidy = kitCreatedData['SUBSIDY LOCK'] === subsidy;
+    if (
+      checkTarget &&
+      checkElabel &&
+      checkRocarrier &&
+      checkModel &&
+      checkSubsidy
+    ) {
+      updateSheet({
+        url: wbLink,
+        svnkitKey,
+        svnkitLink: `${BASE_IDART_URL}/${svnkitKey}`,
+        range: `${columnIndex}${rowNumber + 1}`,
+      });
+    }
   }
 }
 
@@ -54,7 +116,6 @@ function getRowsData({
     }
 
     let subsidy = formatString(row[titlePositions['SUBSIDY LOCK']]);
-    const subsidyOffTypes = ['NO', ''];
 
     if (subsidyOffTypes.includes(subsidy.toUpperCase())) {
       subsidy = 'Off';
@@ -63,6 +124,7 @@ function getRowsData({
     currentContent['PRODUCT MANAGER'] = productManager;
     currentContent['ESIM'] = '';
     currentContent['PROJECT NAME'] = '';
+    currentContent['SVNKIT'] = '';
 
     currentContent['TAM'] = '';
     currentContent['LANGUAGE'] = '';
@@ -115,6 +177,8 @@ function getRowsData({
           currentContent[title] = currentCell;
         }
 
+        countTitles += 1;
+      } else if (title === 'SVNKIT') {
         countTitles += 1;
       }
     }
@@ -266,4 +330,6 @@ module.exports = {
   setDescriptionAndSwVersion,
   setCheck,
   createSvnkit,
+  compareToCheck,
+  updateSvnkitFieldInWB,
 };

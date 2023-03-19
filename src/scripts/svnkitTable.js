@@ -5,13 +5,15 @@ const {
   getProjectNames,
   getJsvnkitCarriers,
 } = require('../scripts/getSvnkitLists');
-const { getSheet } = require('../scripts/handleSheet');
+const { getSheet, updateSheet } = require('../scripts/handleSheet');
 const { getPositionsForSvnkit } = require('../scripts/handleDataInSubmission');
 const {
   getRowsData,
   setDescriptionAndSwVersion,
   setCheck,
   createSvnkit,
+  compareToCheck,
+  updateSvnkitFieldInWB,
 } = require('../scripts/handleSvnkitData');
 
 // const response = require('../mock/mock');
@@ -42,9 +44,12 @@ let languages = [];
 let channels = [];
 let projectNames = [];
 let jsvnkitCarriersList = [];
+let worksheet;
+let titlePositions;
+let wbLink = '';
 
 window.onload = async () => {
-  const wbLink = localStorage.getItem('wbLink');
+  wbLink = localStorage.getItem('wbLink');
   const productManager = localStorage.getItem('productManager');
   const company = localStorage.getItem('company');
 
@@ -95,8 +100,9 @@ window.onload = async () => {
     projectNames = [...new Set(projectNamesData)];
     jsvnkitCarriersList = [...new Set(jsvnkitCarriersData)];
 
-    const worksheet = await getSheet(wbLink);
-    const titlePositions = getPositionsForSvnkit(worksheet);
+    worksheet = await getSheet(wbLink);
+
+    titlePositions = getPositionsForSvnkit(worksheet);
 
     const rowsData = getRowsData({
       worksheet,
@@ -200,13 +206,15 @@ function handleEnableStatusBtns(status) {
 
 function checkKitAlreadyCreated(rowData) {
   const kitsAlreadyCreated = JSON.parse(localStorage.getItem('kitsCreated'));
-  const findedKit = kitsAlreadyCreated.find(
-    ({ elabel, model, rocarrier, subsidy, target }) =>
-      rowData['SOFTWARE TA'] === target &&
-      rowData['LABEL FILE'] === elabel &&
-      rowData['RO.CARRIER'] === rocarrier &&
-      rowData['SUBSIDY LOCK'] === subsidy &&
-      rowData['MODEL'] === model,
+  const findedKit = kitsAlreadyCreated.find((kitCreated) =>
+    compareToCheck({
+      compareData: rowData,
+      target: kitCreated['SOFTWARE TA'],
+      elabel: kitCreated['LABEL FILE'],
+      rocarrier: kitCreated['RO.CARRIER'],
+      subsidy: kitCreated['SUBSIDY LOCK'],
+      model: kitCreated['MODEL'],
+    }),
   );
 
   return findedKit;
@@ -224,7 +232,7 @@ function generateActionBtns() {
         const rowsData = getTableRowsData(false);
         const tableHeaders = document.querySelectorAll('th');
         const svnkitHeader = [...tableHeaders].find(
-          (th) => th.innerText === 'SVNKIT',
+          (th) => th.innerText === 'JIRA SVNKIT',
         );
         svnkitHeader.style.display = 'table-cell';
         const currentKitsCreated = JSON.parse(
@@ -233,7 +241,7 @@ function generateActionBtns() {
 
         await Promise.all(
           rowsData.map(async (rowData, i) => {
-            const svnkitInput = document.querySelector(`#SVNKIT-${i}`);
+            const svnkitInput = document.querySelector(`#JIRA-SVNKIT-${i}`);
             const svnkitCell = svnkitInput.closest('td');
             const svnkitRow = svnkitCell.closest('tr');
             svnkitCell.style.display = 'table-cell';
@@ -248,18 +256,27 @@ function generateActionBtns() {
                 );
 
                 if (kitCreated.key) {
-                  currentKitsCreated.push({
-                    target: rowData['SOFTWARE TA'],
-                    elabel: rowData['LABEL FILE'],
-                    rocarrier: rowData['RO.CARRIER'],
-                    subsidy: rowData['SUBSIDY LOCK'],
-                    model: rowData['MODEL'],
+                  const kitCreatedData = {
+                    'SOFTWARE TA': rowData['SOFTWARE TA'],
+                    'LABEL FILE': rowData['LABEL FILE'],
+                    'RO.CARRIER': rowData['RO.CARRIER'],
+                    'SUBSIDY LOCK': rowData['SUBSIDY LOCK'],
+                    MODEL: rowData['MODEL'],
                     svnkit: kitCreated.key,
-                  });
+                  };
+
+                  currentKitsCreated.push(kitCreatedData);
                   localStorage.setItem(
                     'kitsCreated',
                     JSON.stringify(currentKitsCreated),
                   );
+                  await updateSvnkitFieldInWB({
+                    titlePositions,
+                    worksheet,
+                    kitCreatedData,
+                    wbLink,
+                  });
+
                   document.querySelector(`#CHECK-${i}`).checked = false;
                   svnkitRow.style.backgroundColor = kitCreatedRowColor;
                   svnkitInput.value = kitCreated.key;
@@ -312,7 +329,7 @@ function generateActionBtns() {
 
 function createSvnkitTable(rowsWithData) {
   const firstColumns = [
-    'SVNKIT',
+    'JIRA SVNKIT',
     'CHECK',
     'CARRIER',
     'COUNTRY',
@@ -322,6 +339,7 @@ function createSvnkitTable(rowsWithData) {
     'MODEL',
   ];
   const columnsDisplayNone = [
+    'JIRA SVNKIT',
     'SVNKIT',
     'PRODUCT MANAGER',
     'LANGUAGE',
@@ -394,7 +412,7 @@ function createSvnkitTable(rowsWithData) {
 
     if (findedKit) {
       rowData['CHECK'] = '0';
-      rowData['SVNKIT'] = findedKit.svnkit;
+      rowData['JIRA SVNKIT'] = findedKit.svnkit;
     }
 
     const tBodyRow = document.createElement('tr');
@@ -459,7 +477,7 @@ function createSvnkitTable(rowsWithData) {
         input.onblur = ({ target }) =>
           (target.style.backgroundColor = lastActiveBackground);
 
-        if (tableTitle === 'SVNKIT') {
+        if (tableTitle === 'JIRA SVNKIT') {
           input.onclick = async ({ target }) => {
             if (target.value.toLowerCase().includes('jsvnkit')) {
               await navigator.clipboard.writeText(
@@ -472,7 +490,7 @@ function createSvnkitTable(rowsWithData) {
       }
 
       if (!lineChecked) {
-        if (rowData['SVNKIT']) {
+        if (rowData['JIRA SVNKIT']) {
           tBodyRow.style.backgroundColor = kitCreatedRowColor;
         } else {
           tBodyRow.style.backgroundColor = defaultUncheckRowColor;
