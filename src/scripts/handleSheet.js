@@ -50,20 +50,36 @@ const getSheet = async (url) => {
   return currentSheet;
 };
 
-// sheets.spreadsheets.values.update({
-//   auth,
-//   spreadsheetId,
-//   range: `Submission Control [MR8]!A2`,
-//   valueInputOption: 'RAW',
-//   resource: { values: [['Build Name']] },
-// });
-// getSheet(
-//   'https://docs.google.com/spreadsheets/d/1jR8wp40UGFRSebgMoYk6KhhI6lEGAM2H9QpEsKoTCHI/edit#gid=1301952764',
-// );
+const updateSheet = async ({ url, svnkitLink, svnkitKey, range }) => {
+  const spreadsheetId = url.split('/d/')[1].split('/')[0];
+  const spreadsheetGid = url.split('gid=')[1];
+
+  const auth = await getAuthToken();
+  const spreadsheet = await getSpreadSheet({ auth, spreadsheetId });
+
+  const currentSheets = spreadsheet.data.sheets;
+
+  let sheetName;
+
+  for (const sheet of currentSheets) {
+    if (sheet.properties.sheetId === Number(spreadsheetGid)) {
+      sheetName = sheet.properties.title;
+    }
+  }
+
+  SHEETS.spreadsheets.values.update({
+    auth,
+    spreadsheetId,
+    range: `${sheetName}!${range}`,
+    valueInputOption: 'USER_ENTERED',
+    resource: { values: [[`=HYPERLINK("${svnkitLink}", "${svnkitKey}")`]] },
+  });
+};
 
 module.exports = {
   getAuthToken,
   getSpreadSheet,
   getSpreadSheetValues,
   getSheet,
+  updateSheet,
 };
