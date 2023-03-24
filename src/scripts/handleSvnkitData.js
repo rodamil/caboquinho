@@ -101,7 +101,12 @@ function getRowsData({
     }
   };
 
-  for (const row of rows) {
+  for (const [index, row] of rows.entries()) {
+    console.log(
+      `
+      ############### Informations about row: ${index + 1} ###############
+      `,
+    );
     const currentContent = {};
 
     const carrier = formatString(row[titlePositions['CARRIER']]);
@@ -180,6 +185,10 @@ function getRowsData({
         countTitles += 1;
       } else if (title === 'SVNKIT') {
         countTitles += 1;
+      } else if (title !== currentCell.toUpperCase()) {
+        console.log(
+          `Please, check the column ${title}, if is a data row, maybe it is empty.`,
+        );
       }
     }
 
