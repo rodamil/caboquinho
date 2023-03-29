@@ -6,7 +6,9 @@ const {
   getJsvnkitCarriers,
 } = require('../scripts/getSvnkitLists');
 const { getSheet } = require('../scripts/handleSheet');
-const { getPositionsForSvnkit } = require('../scripts/handleDataInSubmission');
+const {
+  getPositionsInSubmission,
+} = require('../scripts/handleDataInSubmission');
 const {
   getRowsData,
   setDescriptionAndSwVersion,
@@ -102,7 +104,7 @@ window.onload = async () => {
 
     worksheet = await getSheet(wbLink);
 
-    titlePositions = getPositionsForSvnkit(worksheet);
+    titlePositions = getPositionsInSubmission(worksheet, 'svnkit');
 
     const rowsData = getRowsData({
       worksheet,
