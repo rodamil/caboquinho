@@ -18,13 +18,6 @@ const {
   updateSvnkitFieldInWB,
 } = require('../scripts/handleSvnkitData');
 
-// const response = require('../mock/mock');
-// const tamNames = response.tam_list;
-// const languages = response.languages_list;
-// const channels = response.channels_list;
-// const projectNames = response.project_list;
-// const jsvnkitCarriersList = response.jsvnkit_carriers_list;
-
 // Global data
 let SVNKITS_BASE_URL = 'https://idart.mot.com/browse/';
 
