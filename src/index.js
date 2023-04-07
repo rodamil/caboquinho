@@ -29,6 +29,7 @@ const createWindow = () => {
       nodeIntegration: true,
       contextIsolation: false,
     },
+    icon: __dirname + '/images/caboquinho-icon.ico',
   });
 
   // and load the index.html of the app.
