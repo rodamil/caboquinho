@@ -12,6 +12,7 @@ function getPositionsInSubmission(submissionControlSheet, projectType) {
 
   if (projectType === 'svnkit') {
     submissionTitlePositions = {
+      'BUILD NAME': -1,
       CARRIER: -1,
       COUNTRY: -1,
       'RO.CARRIER': -1,
@@ -20,7 +21,6 @@ function getPositionsInSubmission(submissionControlSheet, projectType) {
       'SS / DS': -1,
       'SOFTWARE TA': -1,
       SVNKIT: -1,
-      'TARGET PRODUCT': -1,
       FINGERPRINT: -1,
       BOOTLOADER: -1,
       SIGNED: -1,
@@ -29,6 +29,7 @@ function getPositionsInSubmission(submissionControlSheet, projectType) {
     };
   } else if (projectType === 'dpm') {
     submissionTitlePositions = {
+      'BUILD NAME': -1,
       CARRIER: -1,
       COUNTRY: -1,
       'RO.CARRIER': -1,

@@ -288,7 +288,7 @@ function setDescriptionAndSwVersion(rowsWithData, company) {
             model,
           })
         ) {
-          const targetProduct = compareData['TARGET PRODUCT'];
+          const targetProduct = compareData['BUILD NAME'];
           const memoryConfig = compareData['MEMORY'];
 
           description += `| ${rocarrier} | ${targetProduct} | ${memoryConfig} |\\`;
