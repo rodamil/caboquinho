@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Caboquinho</title>
+    <link href="styles.css" type="style" />
+    <!--Import Google Icon Font-->
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <!-- Compiled and minified CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+    />
+
+    <style>
+      input:-webkit-autofill {
+        -webkit-background-clip: text;
+      }
+    </style>
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+    <script src="../scripts/checkEnv.js"></script>
+    <script src="../scripts/forPages/issueForm.js" defer></script>
+  </head>
+
+  <body style="margin: 2rem">
+    <header style="margin-bottom: 2.5rem; display: flex; justify-content: space-between">
+      <button
+        id="btn-go-back"
+        class="waves-effect waves-light btn-floating btn-large orange"
+      >
+        <i class="material-icons prefix">arrow_back</i>
+      </button>
+      <h1
+        id="page-title"
+        class="orange-text center-align"
+        style="font-weight: bold; margin: 0"
+      >
+        Caboquinho
+      </h1>
+      <div></div>
+    </header>
+
+    <div id="issue-form-container">
+      <div
+        style="
+          border-radius: 1rem;
+          padding: 2rem;
+          height: fit-content;
+          width: 30rem;
+          margin: auto;
+        "
+        class="z-depth-5"
+      >
+        <div class="input-field">
+          <i class="material-icons prefix">insert_link</i>
+          <input
+            id="workbook-link"
+            type="text"
+            class="validate"
+            autocomplete="off"
+            autofocus
+          />
+          <label for="workbook-link" style="font-size: 0.9rem"
+            >Submission Control Link</label
+          >
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center">
+          <div class="input-field">
+            <i class="material-icons prefix">window</i>
+            <input
+              id="submission-range"
+              type="text"
+              class="validate"
+              autocomplete="off"
+              disabled
+            />
+            <label for="submission-range" style="font-size: 0.9rem"
+              >Range (Ex: 1-5;10;15-16)</label
+            >
+          </div>
+
+          <p>
+            <label>
+              <input
+                id="enable-submission-range"
+                type="checkbox"
+                class="filled-in"
+                checked="checked"
+              />
+              <span>(N/A)</span>
+            </label>
+          </p>
+        </div>
+
+        <div class="input-field">
+          <i class="material-icons prefix">supervisor_account</i>
+          <input id="product-manager" type="text" class="validate" autocomplete="off" />
+          <label for="product-manager" style="font-size: 0.9rem"
+            >Product Manager (PM)</label
+          >
+        </div>
+
+        <div class="input-field">
+          <i class="material-icons prefix">supervisor_account</i>
+          <input id="thecnical-lead" type="text" class="validate" autocomplete="off" />
+          <label for="thecnical-lead" style="font-size: 0.9rem"
+            >Thecnical Lead (TL)</label
+          >
+        </div>
+
+        <div id="project-type-container">
+          <span class="">Project Type</span>
+          <p>
+            <label>
+              <input name="project-type-radio" type="radio" value="svnkit" />
+              <span>SVNKIT</span>
+            </label>
+          </p>
+        </div>
+
+        <div id="project-options-container" class="hide">
+          <span style="font-weight: bold; font-size: 1.5rem">Project Options</span>
+          <div id="svnkit-options-container" class="hide"></div>
+
+          <div id="dpm-options-container" class="hide">
+            <div
+              style="display: flex; justify-content: space-between; align-items: center"
+            >
+              <div class="input-field">
+                <i class="material-icons prefix">link</i>
+                <input
+                  id="multi-config-link"
+                  type="text"
+                  class="validate"
+                  autocomplete="off"
+                  disabled
+                />
+                <label for="multi-config-link" style="font-size: 0.9rem"
+                  >Multi Config Rules Link</label
+                >
+              </div>
+
+              <p>
+                <label>
+                  <input id="enable-multi-config" type="checkbox" class="filled-in" />
+                  <span>Multi config</span>
+                </label>
+              </p>
+            </div>
+
+            <label>
+              <input id="enable-odm" type="checkbox" class="filled-in" />
+              <span>ODM</span>
+            </label>
+          </div>
+        </div>
+
+        <a
+          id="btn-create-table"
+          class="waves-effect waves-light btn hide"
+          style="margin-block: 2em"
+        >
+          Create Table
+        </a>
+      </div>
+    </div>
+  </body>
+</html>

@@ -6,7 +6,7 @@ let BASE_IDART_URL = '';
 
 if (process.env.NODE_ENV === 'development') {
   https.globalAgent.options.rejectUnauthorized = false;
-  BASE_IDART_URL = 'https://idart-dev.mot.com/browse';
+  BASE_IDART_URL = 'https://idart-test.mot.com/browse';
 } else {
   BASE_IDART_URL = 'https://idart.mot.com/browse';
 }
@@ -63,13 +63,7 @@ async function updateSvnkitFieldInWB({
     }
 
     const checkSubsidy = kitCreatedData['SUBSIDY LOCK'] === subsidy;
-    if (
-      checkTarget &&
-      checkElabel &&
-      checkRocarrier &&
-      checkModel &&
-      checkSubsidy
-    ) {
+    if (checkTarget && checkElabel && checkRocarrier && checkModel && checkSubsidy) {
       updateSheet({
         url: wbLink,
         svnkitKey,
@@ -200,14 +194,7 @@ function getRowsData({
   return dataForTable;
 }
 
-const compareToCheck = ({
-  compareData,
-  rocarrier,
-  target,
-  elabel,
-  subsidy,
-  model,
-}) =>
+const compareToCheck = ({ compareData, rocarrier, target, elabel, subsidy, model }) =>
   rocarrier == compareData['RO.CARRIER'] &&
   target == compareData['SOFTWARE TA'] &&
   elabel == compareData['LABEL FILE'] &&

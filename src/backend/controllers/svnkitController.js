@@ -5,7 +5,7 @@ let BASE_IDART_URL = '';
 
 if (process.env.NODE_ENV === 'development') {
   https.globalAgent.options.rejectUnauthorized = false;
-  BASE_IDART_URL = 'https://idart-dev.mot.com';
+  BASE_IDART_URL = 'https://idart-test.mot.com';
 } else {
   BASE_IDART_URL = 'https://idart.mot.com';
 }

@@ -6,9 +6,7 @@ const {
   getJsvnkitCarriers,
 } = require('../scripts/getSvnkitLists');
 const { getSheet } = require('../scripts/handleSheet');
-const {
-  getPositionsInSubmission,
-} = require('../scripts/handleDataInSubmission');
+const { getPositionsInSubmission } = require('../scripts/handleDataInSubmission');
 const {
   getRowsData,
   setDescriptionAndSwVersion,
@@ -22,7 +20,7 @@ const {
 let SVNKITS_BASE_URL = 'https://idart.mot.com/browse/';
 
 if (process.env.NODE_ENV === 'development') {
-  SVNKITS_BASE_URL = 'https://idart-dev.mot.com/browse/';
+  SVNKITS_BASE_URL = 'https://idart-test.mot.com/browse/';
 }
 
 const selectedCellColor = '#FF9800';
@@ -121,9 +119,9 @@ window.onload = async () => {
     window.alert(error);
   }
 
-  const goBackBtn = document.querySelector('#btn-go-back');
-  goBackBtn.classList.remove('hide');
-  goBackBtn.addEventListener('click', () => {
+  document.querySelector('header').classList.remove('hide');
+
+  document.querySelector('#btn-go-back').addEventListener('click', () => {
     const response = window.confirm(
       'You will lose your changes, do you really want to go back?',
     );
@@ -224,9 +222,7 @@ function generateActionBtns() {
       label: 'create kits',
       actionFunc: async () => {
         handleEnableStatusBtns(true);
-        const allChecks = document.querySelectorAll(
-          'input[type=checkbox]:checked',
-        );
+        const allChecks = document.querySelectorAll('input[type=checkbox]:checked');
 
         const confirmCreation = window.confirm(
           `You are about to create ${allChecks.length} Kits, are you sure?`,
@@ -239,9 +235,7 @@ function generateActionBtns() {
             (th) => th.innerText === 'JIRA SVNKIT',
           );
           svnkitHeader.style.display = 'table-cell';
-          const currentKitsCreated = JSON.parse(
-            localStorage.getItem('kitsCreated'),
-          );
+          const currentKitsCreated = JSON.parse(localStorage.getItem('kitsCreated'));
 
           await Promise.all(
             rowsData.map(async (rowData, i) => {
@@ -449,8 +443,7 @@ function createSvnkitTable(rowsWithData) {
         }
 
         input.type = 'text';
-        input.style =
-          'width: 100%; border: none; outline: none; padding: 15px 5px';
+        input.style = 'width: 100%; border: none; outline: none; padding: 15px 5px';
         input.value = rowData[tableTitle] || '';
 
         input.onfocus = ({ target }) => {
@@ -464,9 +457,7 @@ function createSvnkitTable(rowsWithData) {
         if (tableTitle === 'JIRA SVNKIT') {
           input.onclick = async ({ target }) => {
             if (target.value.toLowerCase().includes('jsvnkit')) {
-              await navigator.clipboard.writeText(
-                `${SVNKITS_BASE_URL}${target.value}`,
-              );
+              await navigator.clipboard.writeText(`${SVNKITS_BASE_URL}${target.value}`);
             }
           };
         }

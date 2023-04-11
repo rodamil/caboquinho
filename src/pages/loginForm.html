@@ -27,8 +27,8 @@
     <!-- Compiled and minified JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
-    <script src="../scripts/checkTestEnv.js"></script>
-    <script src="../scripts/loginForm.js" defer></script>
+    <script src="../scripts/checkEnv.js"></script>
+    <script src="../scripts/forPages/loginForm.js" defer></script>
   </head>
 
   <body style="margin: 2rem">
@@ -42,7 +42,7 @@
       </h1>
     </header>
 
-    <div
+    <form
       style="
         border-radius: 1rem;
         padding: 2rem;
@@ -51,6 +51,7 @@
         margin: auto;
       "
       class="z-depth-5"
+      id="login-form"
     >
       <div class="input-field">
         <i class="material-icons prefix">person</i>
@@ -59,11 +60,10 @@
           type="text"
           class="validate"
           autocomplete="off"
+          required
           autofocus
         />
-        <label for="user-coreid" style="font-size: 0.9rem"
-          >Your Motorola coreid</label
-        >
+        <label for="user-coreid" style="font-size: 0.9rem">Your Motorola coreid</label>
       </div>
 
       <div class="input-field">
@@ -73,12 +73,13 @@
           type="password"
           class="validate"
           autocomplete="off"
+          required
         />
         <label for="user-password" style="font-size: 0.9rem">Password</label>
       </div>
 
       <div style="display: flex; justify-content: center">
-        <button id="btn-login" class="waves-effect waves-light btn">
+        <button id="btn-login" class="waves-effect waves-light btn" type="submit">
           Login
         </button>
       </div>
@@ -88,6 +89,6 @@
         class="red-text"
         style="margin-top: 30px; font-size: 1.1rem"
       ></div>
-    </div>
+    </form>
   </body>
 </html>
