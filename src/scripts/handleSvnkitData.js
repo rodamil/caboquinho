@@ -1,6 +1,7 @@
 const axios = require('axios');
 const https = require('https');
 const { updateSheet } = require('./handleSheet');
+const { formatString } = require('./utils');
 
 let BASE_IDART_URL = '';
 
@@ -84,14 +85,6 @@ function getRowsData({
   productManager,
 }) {
   const dataForTable = [];
-
-  const formatString = (str) => {
-    if (str) {
-      return str.split('(')[0].trim();
-    } else {
-      return '';
-    }
-  };
 
   for (const row of wbRows) {
     const currentContent = {};

@@ -1,3 +1,5 @@
+const { formatString } = require('./utils');
+
 function getPositionsInSubmission(submissionControlSheet, projectType) {
   const MAX_ROW_TO_CHECK = 4;
   const odmCarriersTitle = [
@@ -95,14 +97,6 @@ function getRowsWithData({ worksheet, titlePositions, submissionRange }) {
   const wbRows = worksheet.data.values;
   const rowsForTable = [];
   const rowsToHandle = [];
-
-  const formatString = (str) => {
-    if (str) {
-      return str.split('(')[0].trim();
-    } else {
-      return '';
-    }
-  };
 
   if (submissionRange) {
     const splitedRange = submissionRange.split(';');

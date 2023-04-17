@@ -18,6 +18,7 @@ const {
   compareToCheck,
   updateSvnkitFieldInWB,
 } = require('../scripts/handleSvnkitData');
+const { formatString, unformatString } = require('../utils');
 
 // Global data
 let SVNKITS_BASE_URL = 'https://idart.mot.com/browse/';
@@ -135,14 +136,6 @@ window.onload = async () => {
     }
   });
 };
-
-function formatString(string) {
-  return string.split('.').join('-').split(' ').join('-').trim();
-}
-
-function unformatString(string) {
-  return string.split('-').join(' ').replace(/[0-9]/g, '').trim();
-}
 
 function createDataList(options) {
   const datalist = document.createElement('datalist');
