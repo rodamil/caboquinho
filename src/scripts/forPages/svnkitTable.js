@@ -4,9 +4,12 @@ const {
   getChannelIds,
   getProjectNames,
   getJsvnkitCarriers,
-} = require('../scripts/getSvnkitLists');
+} = require('../scripts/getLists');
 const { getSheet } = require('../scripts/handleSheet');
-const { getPositionsInSubmission } = require('../scripts/handleDataInSubmission');
+const {
+  getPositionsInSubmission,
+  getRowsWithData,
+} = require('../scripts/handleDataInSubmission');
 const {
   getRowsData,
   setDescriptionAndSwVersion,
@@ -45,6 +48,7 @@ window.onload = async () => {
   wbLink = localStorage.getItem('wbLink');
   const productManager = localStorage.getItem('productManager');
   const company = localStorage.getItem('company');
+  const submissionRange = localStorage.getItem('submissionRange');
 
   const checkIsEmpty = [
     [wbLink, "Workbook link can't be empty"],
@@ -97,8 +101,10 @@ window.onload = async () => {
 
     titlePositions = getPositionsInSubmission(worksheet, 'svnkit');
 
+    const wbRows = getRowsWithData({ worksheet, titlePositions, submissionRange });
+
     const rowsData = getRowsData({
-      worksheet,
+      wbRows,
       titlePositions,
       tamNamesData,
       channelIdsData,
@@ -111,7 +117,6 @@ window.onload = async () => {
     const rowsChecked = setCheck(rowsFormated);
 
     awaitContainer.innerHTML = '';
-    document.querySelector('#page-title').innerText = 'Caboquinho';
     generateActionBtns();
     createSvnkitTable(rowsChecked);
   } catch (error) {

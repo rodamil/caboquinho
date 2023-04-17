@@ -39,6 +39,7 @@ function getPositionsInSubmission(submissionControlSheet, projectType) {
       'DEVICE ID': -1,
       'SOFTWARE TA': -1,
       'OTA SOURCE SW VERSION': -1,
+      'DPM CR': -1,
     };
   }
 
@@ -88,4 +89,70 @@ function getPositionsInSubmission(submissionControlSheet, projectType) {
   return submissionTitlePositions;
 }
 
-module.exports = { getPositionsInSubmission };
+function getRowsWithData({ worksheet, titlePositions, submissionRange }) {
+  const valuesToIgnore = ['', 'END'];
+  const columnsThatCanBeEmpty = ['SVNKIT', 'ODM ROCARRIER', 'DPM CR'];
+  const wbRows = worksheet.data.values;
+  const rowsForTable = [];
+  const rowsToHandle = [];
+
+  const formatString = (str) => {
+    if (str) {
+      return str.split('(')[0].trim();
+    } else {
+      return '';
+    }
+  };
+
+  if (submissionRange) {
+    const splitedRange = submissionRange.split(';');
+
+    for (const range of splitedRange) {
+      let [startRange, endRange] = range.split('-');
+
+      if (!endRange) {
+        endRange = startRange;
+      }
+
+      for (let index = startRange - 1; index <= endRange - 1; index++) {
+        rowsToHandle.push(wbRows[index]);
+      }
+    }
+  } else {
+    rowsToHandle.push(...wbRows);
+  }
+
+  for (const row of rowsToHandle) {
+    let countTitles = 0;
+
+    for (const title in titlePositions) {
+      const currentCell = formatString(row[titlePositions[title]]).toUpperCase();
+
+      if (
+        title !== currentCell &&
+        !currentCell.includes(title) &&
+        !valuesToIgnore.includes(currentCell)
+      ) {
+        countTitles += 1;
+      } else if (columnsThatCanBeEmpty.includes(title)) {
+        countTitles += 1;
+      }
+    }
+
+    if (countTitles === Object.keys(titlePositions).length) {
+      rowsForTable.push(row);
+    } else {
+      if (row.length > 0) {
+        console.log("The row below has something missing, check if it's a Data Row");
+        console.log(row);
+        console.log('###########################################');
+      }
+    }
+  }
+
+  console.log('########## End pull data from spreadsheet ##########');
+
+  return rowsForTable;
+}
+
+module.exports = { getPositionsInSubmission, getRowsWithData };

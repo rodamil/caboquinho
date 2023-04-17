@@ -18,7 +18,6 @@ window.onload = () => {
       });
 
       localStorage.setItem('token', data.token);
-      localStorage.setItem('userCoreid', userCoreid);
       window.location = 'issueForm.html';
     } catch (e) {
       const errorContainer = document.querySelector('#login-error-container');

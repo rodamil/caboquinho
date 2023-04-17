@@ -75,7 +75,7 @@ async function updateSvnkitFieldInWB({
 }
 
 function getRowsData({
-  worksheet,
+  wbRows,
   titlePositions,
   tamNamesData,
   languagesData,
@@ -83,9 +83,7 @@ function getRowsData({
   jsvnkitCarriersData,
   productManager,
 }) {
-  const rows = worksheet.data.values;
   const dataForTable = [];
-  const valuesToIgnore = ['', 'END'];
 
   const formatString = (str) => {
     if (str) {
@@ -95,12 +93,7 @@ function getRowsData({
     }
   };
 
-  for (const [index, row] of rows.entries()) {
-    console.log(
-      `
-      ############### Informations about row: ${index + 1} ###############
-      `,
-    );
+  for (const row of wbRows) {
     const currentContent = {};
 
     const carrier = formatString(row[titlePositions['CARRIER']]);
@@ -160,35 +153,19 @@ function getRowsData({
       currentContent['CARRIER COUNTRY'] = '';
     }
 
-    let countTitles = 0;
     for (const title in titlePositions) {
       const currentCell = formatString(row[titlePositions[title]]);
 
-      if (
-        title !== currentCell.toUpperCase() &&
-        !valuesToIgnore.includes(currentCell.toUpperCase())
-      ) {
-        if (title === 'RO.CARRIER') {
-          currentContent[title] = rocarrier;
-        } else if (title === 'SUBSIDY LOCK') {
-          currentContent[title] = subsidy;
-        } else {
-          currentContent[title] = currentCell;
-        }
-
-        countTitles += 1;
-      } else if (title === 'SVNKIT') {
-        countTitles += 1;
-      } else if (title !== currentCell.toUpperCase()) {
-        console.log(
-          `Please, check the column ${title}, if is a data row, maybe it is empty.`,
-        );
+      if (title === 'RO.CARRIER') {
+        currentContent[title] = rocarrier;
+      } else if (title === 'SUBSIDY LOCK') {
+        currentContent[title] = subsidy;
+      } else {
+        currentContent[title] = currentCell;
       }
     }
 
-    if (countTitles === Object.keys(titlePositions).length) {
-      dataForTable.push(currentContent);
-    }
+    dataForTable.push(currentContent);
   }
 
   return dataForTable;

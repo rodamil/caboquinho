@@ -27,6 +27,10 @@ createTableBtn.addEventListener('click', () => {
   const wbLink = document.querySelector('#workbook-link').value;
   const submissionRange = document.querySelector('#submission-range').value;
   const productManager = document.querySelector('#product-manager').value;
+  const thecnicalLead = document.querySelector('#thecnical-lead').value;
+  const multiConfigLink = document.querySelector('#multi-config-link').value;
+  const isOdm = document.querySelector('#enable-odm').checked;
+
   const radioTypes = document.querySelectorAll('input[name=description-type]');
   let company = '';
 
@@ -40,6 +44,9 @@ createTableBtn.addEventListener('click', () => {
   localStorage.setItem('submissionRange', submissionRange);
   localStorage.setItem('company', company);
   localStorage.setItem('productManager', productManager);
+  localStorage.setItem('thecnicalLead', thecnicalLead);
+  localStorage.setItem('multiConfigLink', multiConfigLink);
+  localStorage.setItem('isOdm', isOdm);
   localStorage.setItem('kitsCreated', JSON.stringify([]));
 });
 
