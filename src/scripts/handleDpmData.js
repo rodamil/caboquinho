@@ -165,7 +165,7 @@ function getRowsDataForDpm({
           carriersCountriesField,
           launchType: launchType1,
           packLocation: '',
-          sanity: '',
+          packSanity: '',
           forcedUpgrade,
           downdloadWifiOnly,
           showPreDownloadMsg,

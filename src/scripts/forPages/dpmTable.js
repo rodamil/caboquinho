@@ -19,6 +19,7 @@ const {
   formatString,
 } = require('../scripts/utils');
 
+const textAreaId = 'global-text-area';
 const defaultUncheckRowColor = '#BABFC4';
 const selectedCellColor = '#FF9800';
 let lastActiveBackground = '';
@@ -98,12 +99,12 @@ window.onload = async () => {
       dpmUpdateRules,
       multiConfigRules,
     });
-    // console.log(rowsData);
 
+    createTextArea();
     createDpmTable(rowsData);
   } catch (error) {
     console.log(error);
-    // window.alert(error)
+    // window.alert(error);
   }
 
   awaitContainer.innerHTML = '';
@@ -120,9 +121,45 @@ window.onload = async () => {
   });
 };
 
+function createTextArea() {
+  const textAreaContainer = document.querySelector('#text-area-container');
+  const textArea = document.createElement('textarea');
+  textArea.id = textAreaId;
+
+  textArea.addEventListener('keyup', ({ target }) => {
+    const inputSelectedId = textArea.name;
+
+    if (inputSelectedId) {
+      const inputSelected = document.querySelector(`#${inputSelectedId}`);
+      inputSelected.value = target.value;
+    }
+  });
+
+  textArea.addEventListener('focusin', () => {
+    const inputSelectedId = textArea.name;
+
+    if (inputSelectedId) {
+      const inputSelected = document.querySelector(`#${inputSelectedId}`);
+      lastActiveBackground = inputSelected.style.backgroundColor;
+      inputSelected.style.backgroundColor = selectedCellColor;
+    }
+  });
+
+  textArea.addEventListener('focusout', () => {
+    const inputSelectedId = textArea.name;
+
+    if (inputSelectedId) {
+      const inputSelected = document.querySelector(`#${inputSelectedId}`);
+      inputSelected.style.backgroundColor = lastActiveBackground;
+    }
+  });
+
+  textAreaContainer.appendChild(textArea);
+}
+
 function createDpmTable(rowsWithData) {
   const firstColumns = ['check', 'rocarrierField', 'source', 'target'];
-  const columnsToHide = ['bgGroupColor'];
+  const columnsToHide = ['bgGroupColor', 'pm', 'tl', 'crn', 'isMultiConfig', 'isOdm'];
 
   let tableTitles = Object.keys(rowsWithData[0]);
   tableTitles = tableTitles.filter((title) => !firstColumns.includes(title));
@@ -231,7 +268,16 @@ function createDpmTable(rowsWithData) {
           input.value = 'false';
         }
 
+        input.addEventListener('keyup', (e) => {
+          const textArea = document.querySelector(`#${textAreaId}`);
+          textArea.value = e.target.value;
+        });
+
         input.onfocus = ({ target }) => {
+          const textArea = document.querySelector(`#${textAreaId}`);
+          textArea.value = target.value;
+          textArea.name = target.id;
+
           lastActiveBackground = target.style.backgroundColor;
           target.style.backgroundColor = selectedCellColor;
         };
