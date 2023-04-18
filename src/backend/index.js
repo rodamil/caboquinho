@@ -3,6 +3,7 @@ const express = require('express');
 const rescue = require('express-rescue');
 const { svnkitRouter, userRouter } = require('./routers');
 const errorMiddleware = require('./middlewares/errorMiddleware');
+const idartRouter = require('./routers/idartRouter');
 const app = express();
 app.use(express.json());
 
@@ -11,6 +12,8 @@ const port = process.env.PORT || 3001;
 app.use('/', userRouter);
 
 app.use('/', rescue(svnkitRouter));
+
+app.use('/', rescue(idartRouter));
 
 app.use(errorMiddleware);
 
