@@ -101,11 +101,7 @@ async function create(svnkitData, authorization, url) {
       },
     };
 
-    const kitResponse = await svnkitModel.create(
-      authorization,
-      requestBody,
-      url,
-    );
+    const kitResponse = await svnkitModel.create(authorization, requestBody, url);
 
     return kitResponse;
   } catch (err) {
@@ -117,10 +113,4 @@ async function create(svnkitData, authorization, url) {
   }
 }
 
-async function getNpiProjectNames(authorization) {
-  const response = await svnkitModel.getNpiProjectNames(authorization);
-
-  return response.map((project) => project.NPIProjectName[0]);
-}
-
-module.exports = { create, getNpiProjectNames };
+module.exports = { create };

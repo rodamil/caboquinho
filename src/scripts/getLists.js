@@ -120,6 +120,21 @@ async function getProjectNames() {
   }
 }
 
+async function getRegionNames() {
+  try {
+    const token = localStorage.getItem('token');
+
+    const { data } = await axios.get(`${serverUrl}${serverPort}/region-names`, {
+      headers: { Authorization: token },
+    });
+
+    return data;
+  } catch (err) {
+    console.log(err);
+    return [];
+  }
+}
+
 async function getJsvnkitCarriers() {
   const jsvnkitCarriersSheet = await getSheet(JSVNKIT_CARRIERS_URL);
   const rowsData = jsvnkitCarriersSheet.data.values;
@@ -214,6 +229,7 @@ module.exports = {
   getLanguages,
   getChannelIds,
   getProjectNames,
+  getRegionNames,
   getJsvnkitCarriers,
   getDpmDayRules,
   getDpmUpdateRules,

@@ -1,3 +1,5 @@
+const { generateRandomHexColor } = require('./utils');
+
 function getRowsDataForDpm({
   wbRows,
   titlePositions,
@@ -36,10 +38,11 @@ function getRowsDataForDpm({
         let showDownloadOptions = '';
         let summary = '';
         let rocarrierField = '';
+        let bgGroupColor = generateRandomHexColor();
         const deivceIdField = [deviceId1];
         const launchCountriesField = [country1];
         const carriersCountriesField = [`${carrier1} - ${country1}`];
-        const rocarrierPlannedFIeld = [rocarrier1];
+        const rocarrierPlannedField = [rocarrier1];
         const countriesThatUpdateInSameDay = [country1];
         let daysToUpdateInSmr = '';
         const launchTypeText = launchType1.toUpperCase().includes('SMR') ? 'SMR' : 'MR';
@@ -70,16 +73,18 @@ function getRowsDataForDpm({
           }
         }
 
-        let filtredGroupCarriers = ['', ['']];
+        const filtredGroupCarriers = { groupTitle: '', groupCarriers: [''] };
 
         if (isMultiConfig) {
           rocarrierField = 'N/A (Not Applicable)';
 
           for (const group in multiConfigRules) {
             const groupCarriers = multiConfigRules[group]['groupCarriers'].split(',');
+            bgGroupColor = multiConfigRules[group]['color'];
 
             if (groupCarriers.includes(rocarrier1)) {
-              filtredGroupCarriers = [group, groupCarriers];
+              filtredGroupCarriers['groupTitle'] = group;
+              filtredGroupCarriers['groupCarriers'] = groupCarriers;
               break;
             }
           }
@@ -87,7 +92,7 @@ function getRowsDataForDpm({
           rocarrierField = rocarrier1;
         }
 
-        const [groupTitle, groupCarriers] = filtredGroupCarriers;
+        const { groupTitle, groupCarriers } = filtredGroupCarriers;
 
         if (groupTitle) {
           summary = `${buildName1} - ${model1} - ${groupTitle} ${daysToUpdateInSmr}- ${ssDS1} - ${source1} - ${target1}`;
@@ -133,17 +138,19 @@ function getRowsDataForDpm({
                 launchCountriesField.push(country2);
               carriersCountriesField.indexOf(`${carrier2} - ${country2}`) === -1 &&
                 carriersCountriesField.push(`${carrier2} - ${country2}`);
-              rocarrierPlannedFIeld.indexOf(rocarrier2) === -1 &&
-                rocarrierPlannedFIeld.push(rocarrier2);
+              rocarrierPlannedField.indexOf(rocarrier2) === -1 &&
+                rocarrierPlannedField.push(rocarrier2);
             }
           }
         });
 
-        if (rocarrierPlannedFIeld.length === 1) {
+        if (rocarrierPlannedField.length === 1) {
           rocarrierField = rocarrier1;
         }
 
         rowsToHandleFiltred.push({
+          bgGroupColor,
+          check: rowData['CHECKED'],
           summary,
           rocarrierField,
           cds: '',
@@ -153,11 +160,12 @@ function getRowsDataForDpm({
           source: source1,
           target: target1,
           deivceIdField,
+          regionName: '',
           launchCountriesField,
           carriersCountriesField,
           launchType: launchType1,
           packLocation: '',
-          cmValidation: '',
+          sanity: '',
           forcedUpgrade,
           downdloadWifiOnly,
           showPreDownloadMsg,
@@ -167,13 +175,12 @@ function getRowsDataForDpm({
           md5: '',
           packageSize: '',
           listOfDevices: '',
-          pm: productManager,
           wbLink,
+          pm: productManager,
           tl: thecnicalLead,
-          rocarrierPlannedFIeld,
+          rocarrierPlannedField,
           isMultiConfig,
           isOdm,
-          check: rowData['CHECKED'],
         });
       }
     } catch (error) {

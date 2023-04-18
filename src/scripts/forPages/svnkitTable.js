@@ -18,7 +18,7 @@ const {
   compareToCheck,
   updateSvnkitFieldInWB,
 } = require('../scripts/handleSvnkitData');
-const { formatString, unformatString } = require('../utils');
+const { formatString, unformatString, createDataList } = require('../scripts/utils');
 
 // Global data
 let SVNKITS_BASE_URL = 'https://idart.mot.com/browse/';
@@ -117,13 +117,14 @@ window.onload = async () => {
     const rowsFormated = setDescriptionAndSwVersion(rowsData, company);
     const rowsChecked = setCheck(rowsFormated);
 
-    awaitContainer.innerHTML = '';
     generateActionBtns();
     createSvnkitTable(rowsChecked);
   } catch (error) {
     console.log(error);
     window.alert(error);
   }
+
+  awaitContainer.innerHTML = '';
 
   document.querySelector('header').classList.remove('hide');
 
@@ -136,18 +137,6 @@ window.onload = async () => {
     }
   });
 };
-
-function createDataList(options) {
-  const datalist = document.createElement('datalist');
-
-  for (const option of options) {
-    const htmlOption = document.createElement('option');
-    htmlOption.value = option;
-    datalist.appendChild(htmlOption);
-  }
-
-  return datalist;
-}
 
 function getTableRowsData(removeCheck = true) {
   const tRows = document.querySelector('tbody').querySelectorAll('tr');
