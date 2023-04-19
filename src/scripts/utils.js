@@ -1,6 +1,10 @@
-function formatString(string) {
+function formatString(string, isId = false) {
   if (string) {
-    return string.split('.').join('-').split(' ').join('-').trim();
+    if (isId) {
+      return string.trim().split('.').join('-').split(' ').join('-').trim();
+    } else {
+      return string.trim();
+    }
   } else {
     return '';
   }

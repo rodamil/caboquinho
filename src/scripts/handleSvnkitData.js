@@ -48,16 +48,16 @@ async function updateSvnkitFieldInWB({
   const svnkitKey = kitCreatedData.svnkit;
   const columnIndex = columnIndexToLetter(titlePositions['SVNKIT']);
   for (const [rowNumber, rowData] of rowsData.entries()) {
-    const target = rowData[titlePositions['SOFTWARE TA']];
-    const elabel = rowData[titlePositions['LABEL FILE']];
-    const rocarrier = rowData[titlePositions['RO.CARRIER']];
-    const model = rowData[titlePositions['MODEL']];
-    let subsidy = rowData[titlePositions['SUBSIDY LOCK']] || '';
+    const target = formatString(rowData[titlePositions['SOFTWARE TA']]);
+    const elabel = formatString(rowData[titlePositions['LABEL FILE']]);
+    const rocarrier = formatString(rowData[titlePositions['RO.CARRIER']]);
+    const model = formatString(rowData[titlePositions['MODEL']]);
+    let subsidy = formatString(rowData[titlePositions['SUBSIDY LOCK']]);
 
-    const checkTarget = kitCreatedData['SOFTWARE TA'] === target;
-    const checkElabel = kitCreatedData['LABEL FILE'] === elabel;
-    const checkRocarrier = kitCreatedData['RO.CARRIER'] === rocarrier;
-    const checkModel = kitCreatedData['MODEL'] === model;
+    const checkTarget = formatString(kitCreatedData['SOFTWARE TA']) === target;
+    const checkElabel = formatString(kitCreatedData['LABEL FILE']) === elabel;
+    const checkRocarrier = formatString(kitCreatedData['RO.CARRIER']) === rocarrier;
+    const checkModel = formatString(kitCreatedData['MODEL']) === model;
 
     if (subsidyOffTypes.includes(subsidy.toUpperCase())) {
       subsidy = 'Off';

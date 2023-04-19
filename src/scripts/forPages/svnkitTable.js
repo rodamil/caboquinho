@@ -101,7 +101,7 @@ window.onload = async () => {
     worksheet = await getSheet(wbLink);
 
     titlePositions = getPositionsInSubmission(worksheet, 'svnkit');
-
+    console.log(titlePositions);
     const wbRows = getRowsWithData({ worksheet, titlePositions, submissionRange });
 
     const rowsData = getRowsData({
@@ -365,7 +365,7 @@ function createSvnkitTable(rowsWithData) {
 
   for (const datalist of columnsWithDataList) {
     const htmlDatalist = createDataList(datalist.list);
-    htmlDatalist.id = formatString(datalist.column);
+    htmlDatalist.id = formatString(datalist.column, true);
 
     table.appendChild(htmlDatalist);
   }
@@ -418,7 +418,7 @@ function createSvnkitTable(rowsWithData) {
           ({ column }) => column === tableTitle,
         );
         if (findedSelect) {
-          input.setAttribute('list', formatString(findedSelect.column));
+          input.setAttribute('list', formatString(findedSelect.column, true));
 
           input.onchange = (e) => {
             const inputValue = e.target.value;
@@ -461,7 +461,7 @@ function createSvnkitTable(rowsWithData) {
         tBody.style.backgroundColor = defaultCheckedRowColor;
       }
 
-      input.id = `${formatString(tableTitle)}-${index}`;
+      input.id = `${formatString(tableTitle, true)}-${index}`;
       input.classList.add('browser-default', 'center-align');
       input.style.backgroundColor = 'inherit';
 
