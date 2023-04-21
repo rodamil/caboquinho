@@ -124,6 +124,7 @@ window.onload = async () => {
 function createTextArea() {
   const textAreaContainer = document.querySelector('#text-area-container');
   const textArea = document.createElement('textarea');
+  textArea.style = 'padding: 10px; border-radius: 15px';
   textArea.id = textAreaId;
 
   textArea.addEventListener('keyup', ({ target }) => {
@@ -159,7 +160,14 @@ function createTextArea() {
 
 function createDpmTable(rowsWithData) {
   const firstColumns = ['check', 'rocarrierField', 'source', 'target'];
-  const columnsToHide = ['bgGroupColor', 'pm', 'tl', 'crn', 'isMultiConfig', 'isOdm'];
+  const columnsToHide = [
+    'bgGroupColor',
+    'productManager',
+    'technicalLead',
+    'releaseNotesLink',
+    'isMultiConfig',
+    'isOdm',
+  ];
 
   let tableTitles = Object.keys(rowsWithData[0]);
   tableTitles = tableTitles.filter((title) => !firstColumns.includes(title));
@@ -199,7 +207,7 @@ function createDpmTable(rowsWithData) {
 
   for (const datalist of columnsWithDataList) {
     const htmlDatalist = createDataList(datalist.list);
-    htmlDatalist.id = formatString(datalist.column);
+    htmlDatalist.id = formatString(datalist.column, true);
 
     table.appendChild(htmlDatalist);
   }
@@ -244,7 +252,7 @@ function createDpmTable(rowsWithData) {
           ({ column }) => column === tableTitle,
         );
         if (findedSelect) {
-          input.setAttribute('list', formatString(findedSelect.column));
+          input.setAttribute('list', formatString(findedSelect.column, true));
 
           input.onchange = (e) => {
             const inputValue = e.target.value;
@@ -295,7 +303,7 @@ function createDpmTable(rowsWithData) {
         tBodyCell.appendChild(input);
       }
 
-      input.id = `${formatString(tableTitle)}-${index}`;
+      input.id = `${formatString(tableTitle, true)}-${index}`;
       input.classList.add('browser-default', 'center-align');
       input.style.backgroundColor = 'inherit';
 

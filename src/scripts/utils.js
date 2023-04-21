@@ -46,10 +46,15 @@ function createDataList(options) {
   return datalist;
 }
 
+function capitalizeFirstLetter(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
 module.exports = {
   formatString,
   unformatString,
   cammelCaseToTitleCase,
   generateRandomHexColor,
   createDataList,
+  capitalizeFirstLetter,
 };

@@ -118,6 +118,7 @@ function getRowsWithData({ worksheet, titlePositions, submissionRange }) {
 
   for (const row of rowsToHandle) {
     let countTitles = 0;
+    let coluumnsThatAreWithFailures = [];
 
     for (const title in titlePositions) {
       const currentCell = formatString(row[titlePositions[title]]).toUpperCase();
@@ -130,6 +131,8 @@ function getRowsWithData({ worksheet, titlePositions, submissionRange }) {
         countTitles += 1;
       } else if (columnsThatCanBeEmpty.includes(title)) {
         countTitles += 1;
+      } else {
+        coluumnsThatAreWithFailures.push(title);
       }
     }
 
@@ -137,9 +140,10 @@ function getRowsWithData({ worksheet, titlePositions, submissionRange }) {
       rowsForTable.push(row);
     } else {
       if (row.length > 0) {
-        console.log("The row below has something missing, check if it's a Data Row");
-        console.log(row);
         console.log('###########################################');
+        console.log("The row below has something missing, check if it's a Data Row");
+        console.log(`Columns with some error: ${coluumnsThatAreWithFailures.join(', ')}`);
+        console.log(row);
       }
     }
   }

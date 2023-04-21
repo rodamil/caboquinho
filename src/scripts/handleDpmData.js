@@ -80,9 +80,9 @@ function getRowsDataForDpm({
 
           for (const group in multiConfigRules) {
             const groupCarriers = multiConfigRules[group]['groupCarriers'].split(',');
-            bgGroupColor = multiConfigRules[group]['color'];
 
             if (groupCarriers.includes(rocarrier1)) {
+              bgGroupColor = multiConfigRules[group]['color'];
               filtredGroupCarriers['groupTitle'] = group;
               filtredGroupCarriers['groupCarriers'] = groupCarriers;
               break;
@@ -154,7 +154,7 @@ function getRowsDataForDpm({
           summary,
           rocarrierField,
           cds: '',
-          xml: '',
+          xmlUrl: '',
           productName: '',
           model: model1,
           source: source1,
@@ -170,14 +170,14 @@ function getRowsDataForDpm({
           downdloadWifiOnly,
           showPreDownloadMsg,
           showDownloadOptions,
-          linkToBotaText: '',
-          crn: 'https://N/A',
+          botaTextLink: '',
+          releaseNotesLink: 'https://N/A',
           md5: '',
           packageSize: '',
           listOfDevices: '',
           wbLink,
-          pm: productManager,
-          tl: thecnicalLead,
+          productManager: productManager,
+          technicalLead: thecnicalLead,
           rocarrierPlannedField,
           isMultiConfig,
           isOdm,

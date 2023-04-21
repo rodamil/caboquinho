@@ -1,5 +1,6 @@
 const axios = require('axios');
 const { getSheet } = require('./handleSheet');
+const { capitalizeFirstLetter } = require('./utils');
 
 const serverUrl = process.env.BASE_SERVER_URL || 'http://localhost:';
 const serverPort = process.env.PORT || 3001;
@@ -190,16 +191,16 @@ async function getDpmUpdateRules() {
       updateRulesFormated[currRocarrier] = {
         language: currLanguage,
         SMR: {
-          forcedUpgrade: row[6],
-          downdloadWifiOnly: row[7],
-          showPreDownloadMsg: row[8],
-          showDownloadOptions: row[9],
+          forcedUpgrade: capitalizeFirstLetter(row[6]),
+          downdloadWifiOnly: capitalizeFirstLetter(row[7]),
+          showPreDownloadMsg: capitalizeFirstLetter(row[8]),
+          showDownloadOptions: capitalizeFirstLetter(row[9]),
         },
         MR: {
-          forcedUpgrade: row[10],
-          downdloadWifiOnly: row[11],
-          showPreDownloadMsg: row[12],
-          showDownloadOptions: row[13],
+          forcedUpgrade: capitalizeFirstLetter(row[10]),
+          downdloadWifiOnly: capitalizeFirstLetter(row[11]),
+          showPreDownloadMsg: capitalizeFirstLetter(row[12]),
+          showDownloadOptions: capitalizeFirstLetter(row[13]),
         },
       };
     }
