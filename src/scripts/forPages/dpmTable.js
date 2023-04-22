@@ -12,16 +12,20 @@ const {
   getRegionNames,
 } = require('../scripts/getLists');
 
-const { getRowsDataForDpm } = require('../scripts/handleDpmData');
+const { getRowsDataForDpm, createDpm } = require('../scripts/handleDpmData');
 const {
   cammelCaseToTitleCase,
   createDataList,
   formatString,
+  getTableRowsData,
+  handleEnableStatusBtns,
 } = require('../scripts/utils');
 
 const textAreaId = 'global-text-area';
 const defaultUncheckRowColor = '#BABFC4';
 const selectedCellColor = '#FF9800';
+const dpmCreatedRowColor = '#00FF00';
+const dpmNotCreatedRowColor = '#EA7174';
 let lastActiveBackground = '';
 let worksheet;
 let titlePositions;
@@ -101,6 +105,7 @@ window.onload = async () => {
     });
 
     createTextArea();
+    generateActionBtns();
     createDpmTable(rowsData);
   } catch (error) {
     console.log(error);
@@ -158,9 +163,79 @@ function createTextArea() {
   textAreaContainer.appendChild(textArea);
 }
 
+function generateActionBtns() {
+  const btnsContainer = document.querySelector('#buttons-container');
+  btnsContainer.style = 'margin-block: 2rem';
+
+  const btnsData = [
+    {
+      label: 'create dpms',
+      actionFunc: async () => {
+        handleEnableStatusBtns(true);
+        const allChecks = document.querySelectorAll('input[type=checkbox]:checked');
+
+        const confirmCreation = window.confirm(
+          `You are about to create ${allChecks.length} DPMs, are you sure?`,
+        );
+
+        if (confirmCreation) {
+          const rowsData = getTableRowsData(false);
+          console.log(rowsData);
+          const tableHeaders = document.querySelectorAll('th');
+          const dpmHeader = [...tableHeaders].find((th) => th.innerText === 'Dpm');
+          dpmHeader.style.display = 'table-cell';
+
+          await Promise.all(
+            rowsData.map(async (rowData, i) => {
+              const dpmInput = document.querySelector(`#dpm-${i}`);
+              const dpmCell = dpmInput.closest('td');
+              const dpmRow = dpmCell.closest('tr');
+              dpmCell.style.display = 'table-cell';
+
+              if (rowData['check'] === true) {
+                const dpmCreated = await createDpm(
+                  rowData,
+                  localStorage.getItem('token'),
+                );
+
+                if (dpmCreated.key) {
+                  // await updateSvnkitFieldInWB({
+                  //   titlePositions,
+                  //   worksheet,
+                  //   kitCreatedData,
+                  //   wbLink,
+                  // });
+                  document.querySelector(`#check-${i}`).checked = false;
+                  dpmRow.style.backgroundColor = dpmCreatedRowColor;
+                  dpmInput.value = dpmCreated.key;
+                } else {
+                  dpmRow.style.backgroundColor = dpmNotCreatedRowColor;
+                  dpmInput.value = 'ERROR';
+                }
+              }
+            }),
+          );
+        }
+
+        handleEnableStatusBtns(false);
+      },
+    },
+  ];
+
+  for (const btn of btnsData) {
+    const htmlBtn = document.createElement('button');
+    htmlBtn.className = 'waves-effect waves-light btn-large';
+    htmlBtn.style = 'margin-right: 1rem; margin-block: 0.5rem';
+    htmlBtn.innerHTML = btn.label;
+    htmlBtn.onclick = btn.actionFunc;
+    btnsContainer.appendChild(htmlBtn);
+  }
+}
+
 function createDpmTable(rowsWithData) {
-  const firstColumns = ['check', 'rocarrierField', 'source', 'target'];
+  const firstColumns = ['dpm', 'check', 'rocarrierField', 'source', 'target'];
   const columnsToHide = [
+    'dpm',
     'bgGroupColor',
     'productManager',
     'technicalLead',

@@ -18,7 +18,12 @@ const {
   compareToCheck,
   updateSvnkitFieldInWB,
 } = require('../scripts/handleSvnkitData');
-const { formatString, unformatString, createDataList } = require('../scripts/utils');
+const {
+  formatString,
+  createDataList,
+  getTableRowsData,
+  handleEnableStatusBtns,
+} = require('../scripts/utils');
 
 // Global data
 let SVNKITS_BASE_URL = 'https://idart.mot.com/browse/';
@@ -137,52 +142,6 @@ window.onload = async () => {
     }
   });
 };
-
-function getTableRowsData(removeCheck = true) {
-  const tRows = document.querySelector('tbody').querySelectorAll('tr');
-  const rowsData = [];
-
-  for (const tRow of tRows) {
-    const tCells = tRow.querySelectorAll('td');
-    const currentRowData = {};
-
-    for (const tCell of tCells) {
-      const inputCell = tCell.querySelector('input');
-      let cellKey = unformatString(inputCell.id);
-
-      if (cellKey == 'RO CARRIER') {
-        cellKey = 'RO.CARRIER';
-      }
-
-      if (inputCell.type === 'checkbox') {
-        const cellValue = inputCell.checked;
-
-        currentRowData[cellKey] = cellValue;
-      } else {
-        const cellValue = inputCell.value;
-
-        currentRowData[cellKey] = cellValue;
-      }
-    }
-
-    if (removeCheck) {
-      delete currentRowData['CHECK'];
-    }
-
-    rowsData.push(currentRowData);
-  }
-
-  return rowsData;
-}
-
-function handleEnableStatusBtns(status) {
-  const btnsContainer = document.querySelector('#buttons-container');
-  const btns = btnsContainer.querySelectorAll('button');
-
-  for (const btn of btns) {
-    btn.disabled = status;
-  }
-}
 
 function checkKitAlreadyCreated(rowData) {
   const kitsAlreadyCreated = JSON.parse(localStorage.getItem('kitsCreated'));

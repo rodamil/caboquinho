@@ -1,4 +1,35 @@
 const { generateRandomHexColor } = require('./utils');
+const axios = require('axios');
+const https = require('https');
+
+let BASE_IDART_URL = '';
+
+if (process.env.NODE_ENV === 'development') {
+  https.globalAgent.options.rejectUnauthorized = false;
+  BASE_IDART_URL = 'https://idart-test.mot.com/browse';
+} else {
+  BASE_IDART_URL = 'https://idart.mot.com/browse';
+}
+
+const serverUrl = process.env.BASE_SERVER_URL || 'http://localhost:';
+const serverPort = process.env.PORT || 3001;
+
+async function createDpm(rowData, token) {
+  console.log(rowData);
+  try {
+    const { data } = await axios.post(
+      `${serverUrl}${serverPort}/create-dpm`,
+      { dpmData: rowData },
+      { headers: { Authorization: token } },
+    );
+
+    return data;
+  } catch (e) {
+    console.table(rowData);
+
+    return '';
+  }
+}
 
 function getRowsDataForDpm({
   wbRows,
@@ -191,4 +222,4 @@ function getRowsDataForDpm({
   return rowsToHandleFiltred;
 }
 
-module.exports = { getRowsDataForDpm };
+module.exports = { getRowsDataForDpm, createDpm };
