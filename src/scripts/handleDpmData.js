@@ -69,7 +69,7 @@ function getRowsDataForDpm({
         let showDownloadOptions = '';
         let summary = '';
         let rocarrierField = '';
-        let bgGroupColor = generateRandomHexColor();
+        const bgGroupColor = generateRandomHexColor();
         const deivceIdField = [deviceId1];
         const launchCountriesField = [country1];
         const carriersCountriesField = [`${carrier1} - ${country1}`];
@@ -113,7 +113,6 @@ function getRowsDataForDpm({
             const groupCarriers = multiConfigRules[group]['groupCarriers'].split(',');
 
             if (groupCarriers.includes(rocarrier1)) {
-              bgGroupColor = multiConfigRules[group]['color'];
               filtredGroupCarriers['groupTitle'] = group;
               filtredGroupCarriers['groupCarriers'] = groupCarriers;
               break;

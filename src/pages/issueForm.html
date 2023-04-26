@@ -28,7 +28,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
     <script src="../scripts/checkEnv.js"></script>
-    <script src="../scripts/forPages/issueForm.js" defer></script>
+    <script src="../scripts/pageIssueForm.js" defer></script>
   </head>
 
   <body style="margin: 2rem">
@@ -126,7 +126,8 @@
         </div>
 
         <div id="project-options-container" class="hide">
-          <span style="font-weight: bold; font-size: 1.5rem">Project Options</span>
+          <p style="font-weight: bold; font-size: 1.5rem">Project Options</p>
+
           <div id="svnkit-options-container" class="hide"></div>
 
           <div id="dpm-options-container" class="hide">
@@ -172,6 +173,17 @@
               <input id="enable-odm" type="checkbox" class="filled-in" />
               <span>ODM</span>
             </label>
+
+            <div>
+              <p style="font-weight: bold; font-size: 1.5rem">Map Config for Jira</p>
+
+              <a
+                href="../DPM_CONFIGURATION.txt"
+                download="DPM_CONFIGURATION.txt"
+                class="btn orange"
+                >Download Here</a
+              >
+            </div>
           </div>
         </div>
 

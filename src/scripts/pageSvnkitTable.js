@@ -175,6 +175,8 @@ function generateActionBtns() {
         );
 
         if (confirmCreation) {
+          const confirmFillWb = window.confirm('Fill the workbook with SVNKITs?');
+
           const rowsData = getTableRowsData(false);
           const tableHeaders = document.querySelectorAll('th');
           const svnkitHeader = [...tableHeaders].find(
@@ -214,12 +216,15 @@ function generateActionBtns() {
                       'kitsCreated',
                       JSON.stringify(currentKitsCreated),
                     );
-                    await updateSvnkitFieldInWB({
-                      titlePositions,
-                      worksheet,
-                      kitCreatedData,
-                      wbLink,
-                    });
+
+                    if (confirmFillWb) {
+                      await updateSvnkitFieldInWB({
+                        titlePositions,
+                        worksheet,
+                        kitCreatedData,
+                        wbLink,
+                      });
+                    }
                     document.querySelector(`#CHECK-${i}`).checked = false;
                     svnkitRow.style.backgroundColor = kitCreatedRowColor;
                     svnkitInput.value = kitCreated.key;

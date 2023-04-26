@@ -1,0 +1,139 @@
+{
+  "config.version" : "2.0",
+  "config.project.from.csv" : "false",
+  "config.encoding" : "UTF-8",
+  "config.email.suffix" : "@",
+  "config.field.mappings" : {
+    "BVS - Source" : {
+      "existing.custom.field" : "26137"
+    },
+    "OTA Pack Sanity URL" : {
+      "existing.custom.field" : "25963"
+    },
+    "Package Name (BVS)" : {
+      "existing.custom.field" : "26162"
+    },
+    "Android OS Source Version" : {
+      "existing.custom.field" : "26063"
+    },
+    "Technical Lead" : {
+      "existing.custom.field" : "12910"
+    },
+    "Show Pre-Download Message?" : {
+      "existing.custom.field" : "26028"
+    },
+    "Source" : {
+      "existing.custom.field" : "23011"
+    },
+    "URL" : {
+      "existing.custom.field" : "25966"
+    },
+    "Target" : {
+      "existing.custom.field" : "26230"
+    },
+    "SW Type" : {
+      "existing.custom.field" : "25919"
+    },
+    "Version" : {
+      "existing.custom.field" : "11164"
+    },
+    "Download via WiFi only?" : {
+      "existing.custom.field" : "26027"
+    },
+    "Build number - Source" : {
+      "existing.custom.field" : "26164"
+    },
+    "Pre-soak devices" : {
+      "existing.custom.field" : "26172"
+    },
+    "Model ID" : {
+      "existing.custom.field" : "14811"
+    },
+    "Package size (MB)" : {
+      "existing.custom.field" : "25973"
+    },
+    "Android OS Target Version" : {
+      "existing.custom.field" : "26062"
+    },
+    "MD5 Checksum" : {
+      "existing.custom.field" : "26171"
+    },
+    "Component/s" : {
+      "jira.field" : "components"
+    },
+    "Release Notes (CRN) URL" : {
+      "existing.custom.field" : "25943"
+    },
+    "ro.carrier" : {
+      "existing.custom.field" : "25224"
+    },
+    "Product Name" : {
+      "existing.custom.field" : "11142"
+    },
+    "OTA Pack Location URL" : {
+      "existing.custom.field" : "25962"
+    },
+    "Forced Upgrade?" : {
+      "existing.custom.field" : "26026"
+    },
+    "Show Download Options?" : {
+      "existing.custom.field" : "25994"
+    },
+    "Launch Type" : {
+      "existing.custom.field" : "16823"
+    },
+    "Carriers" : {
+      "existing.custom.field" : "16731"
+    },
+    "Multi Config" : {
+      "existing.custom.field" : "14817"
+    },
+    "Launch Countries" : {
+      "existing.custom.field" : "16730"
+    },
+    "Device Id(s)" : {
+      "existing.custom.field" : "26166"
+    },
+    "Product Integration PM" : {
+      "existing.custom.field" : "15713"
+    },
+    "Package at OTA Server URL" : {
+      "existing.custom.field" : "25961"
+    },
+    "Project Classification" : {
+      "existing.custom.field" : "25516"
+    },
+    "Summary" : {
+      "jira.field" : "summary"
+    },
+    "Test Lead" : {
+      "existing.custom.field" : "12137"
+    },
+    "ro.carrier (planned)" : {
+      "existing.custom.field" : "26257"
+    },
+    "Link to Messages URL" : {
+      "existing.custom.field" : "25942"
+    },
+    "Build Fingerprint" : {
+      "existing.custom.field" : "14827"
+    },
+    "Build number - Target" : {
+      "existing.custom.field" : "26165"
+    },
+    "Region Names" : {
+      "existing.custom.field" : "16822"
+    }
+  },
+  "config.value.mappings" : { },
+  "config.delimiter" : ";",
+  "config.project" : {
+    "project.type" : null,
+    "project.key" : "DPM",
+    "project.description" : null,
+    "project.url" : null,
+    "project.name" : "Deployment PMs (DPM)",
+    "project.lead" : "rcoliv"
+  },
+  "config.date.format" : "dd/MMM/yy h:mm a"
+}

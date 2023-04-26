@@ -169,7 +169,7 @@ function generateActionBtns() {
 
   const btnsData = [
     {
-      label: 'create dpms',
+      label: 'generate csv',
       actionFunc: async () => {
         handleEnableStatusBtns(true);
         const allChecks = document.querySelectorAll('input[type=checkbox]:checked');
@@ -199,12 +199,6 @@ function generateActionBtns() {
                 );
 
                 if (dpmCreated.key) {
-                  // await updateSvnkitFieldInWB({
-                  //   titlePositions,
-                  //   worksheet,
-                  //   kitCreatedData,
-                  //   wbLink,
-                  // });
                   document.querySelector(`#check-${i}`).checked = false;
                   dpmRow.style.backgroundColor = dpmCreatedRowColor;
                   dpmInput.value = dpmCreated.key;
