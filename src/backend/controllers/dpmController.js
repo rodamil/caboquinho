@@ -14,9 +14,9 @@ async function create(req, res) {
   const { dpmData } = req.body;
   const { authorization } = req.headers;
 
-  const kitCreated = await dpmService.create(dpmData, authorization, BASE_IDART_URL);
+  const dpmCreated = await dpmService.create(dpmData, authorization, BASE_IDART_URL);
 
-  return res.status(201).json(kitCreated);
+  return res.status(201).json(dpmCreated);
 }
 
 module.exports = { create };

@@ -1,5 +1,6 @@
 const { generateRandomHexColor } = require('./utils');
 const axios = require('axios');
+const { time } = require('console');
 const https = require('https');
 
 let BASE_IDART_URL = '';
@@ -14,8 +15,7 @@ if (process.env.NODE_ENV === 'development') {
 const serverUrl = process.env.BASE_SERVER_URL || 'http://localhost:';
 const serverPort = process.env.PORT || 3001;
 
-async function createDpm(rowData, token) {
-  console.log(rowData);
+async function getXmlDataForDpm(rowData, token) {
   try {
     const { data } = await axios.post(
       `${serverUrl}${serverPort}/create-dpm`,
@@ -31,6 +31,94 @@ async function createDpm(rowData, token) {
   }
 }
 
+function createDpmCsvFile(rowsForCsv) {
+  const formatedRows = rowsForCsv.map((row) => ({
+    Summary: row.summary,
+    'Component/s': row.componentName,
+    'Package Name (BVS)': row.bvsDeltaFormated,
+    'BVS - Source': row.bvsSourceFormated,
+    'BVS - Target': row.bvsTargetFormated,
+    'ro.carrier': row.rocarrierField,
+    'Package at OTA Server URL': row.cds,
+    'Product Name': row.productName,
+    'Model ID': row.model,
+    Source: row.sourceSha1,
+    Target: row.targetSha1,
+    'Build Fingerprint': row.fingerprint,
+    Version: row.version,
+    'Build number - Source': row.buildSource,
+    'Build number - Target': row.buildTarget,
+    'Device Id(s)': row.deivceIdField,
+    'Region Names': row.regionName,
+    'Launch Countries': row.launchCountriesField,
+    Carriers: row.carriersCountriesField,
+    'Launch Type': row.launchType,
+    'Android OS Source Version': row.androidOsSource,
+    'Android OS Target Version': row.androidOsTarget,
+    'OTA Pack Location URL': row.packLocation,
+    'OTA Pack Sanity URL': row.packSanity,
+    'Forced Upgrade?': row.forcedUpgrade,
+    'Download via WiFi only?': row.downdloadWifiOnly,
+    'Show Pre-Download Message?': row.showPreDownloadMsg,
+    'Show Download Options?': row.showDownloadOptions,
+    'Link to Messages URL': row.botaTextLink,
+    'Release Notes (CRN) URL': row.releaseNotesLink,
+    'MD5 Checksum': row.md,
+    'Package size (MB)': row.packageSize,
+    'Pre-soak devices': row.listOfDevices,
+    'Test Lead': row.testLead,
+    'Product Integration PM': row.productManager,
+    URL: row.wbLink,
+    'SW Type': row.swType,
+    'Technical Lead': row.technicalLead,
+    'Multi Config': row.formatedIsMultiConfigField,
+    'ro.carrier (planned)': row.rocarrierPlannedField,
+    'Project Classification': row.formatedProjectClassification,
+  }));
+
+  const titlesForCsv = Object.keys(formatedRows[0]);
+  const csvContent = [titlesForCsv];
+
+  formatedRows.forEach((row) => {
+    const currentRow = [];
+
+    for (const title of titlesForCsv) {
+      currentRow.push(row[title]);
+    }
+
+    csvContent.push(currentRow);
+  });
+
+  // Help of chatgpt to generate this CSV
+  const csvString = csvContent.map((row) => row.join(';')).join('\n');
+
+  // Get the current date and time as a timestamp string
+  const now = new Date();
+
+  // Extract the individual components of the timestamp
+  const hours = now.getHours().toString().padStart(2, '0');
+  const minutes = now.getMinutes().toString().padStart(2, '0');
+  const seconds = now.getSeconds().toString().padStart(2, '0');
+  const day = now.getDate().toString().padStart(2, '0');
+  const month = (now.getMonth() + 1).toString().padStart(2, '0');
+  const year = now.getFullYear().toString();
+
+  // Format the timestamp as a string
+  const timestamp = hours + minutes + seconds + '-' + day + month + year;
+
+  // Create a download link for the CSV file
+  const downloadLink = document.createElement('a');
+  downloadLink.setAttribute(
+    'href',
+    'data:text/csv;charset=utf-8,' + encodeURIComponent(csvString),
+  );
+
+  downloadLink.setAttribute('download', `DPM-${timestamp}.csv`);
+
+  // Trigger the download by simulating a click on the download link
+  downloadLink.click();
+}
+
 function getRowsDataForDpm({
   wbRows,
   titlePositions,
@@ -41,6 +129,7 @@ function getRowsDataForDpm({
   dpmDayRules,
   dpmUpdateRules,
   multiConfigRules,
+  testLead,
 }) {
   const isMultiConfig = multiConfigLink !== '';
   const rowsToHandleFiltred = [];
@@ -113,8 +202,8 @@ function getRowsDataForDpm({
             const groupCarriers = multiConfigRules[group]['groupCarriers'].split(',');
 
             if (groupCarriers.includes(rocarrier1)) {
-              filtredGroupCarriers['groupTitle'] = group;
-              filtredGroupCarriers['groupCarriers'] = groupCarriers;
+              filtredGroupCarriers.groupTitle = group;
+              filtredGroupCarriers.groupCarriers = groupCarriers;
               break;
             }
           }
@@ -208,6 +297,7 @@ function getRowsDataForDpm({
           wbLink,
           productManager: productManager,
           technicalLead: thecnicalLead,
+          testLead,
           rocarrierPlannedField,
           isMultiConfig,
           isOdm,
@@ -221,4 +311,4 @@ function getRowsDataForDpm({
   return rowsToHandleFiltred;
 }
 
-module.exports = { getRowsDataForDpm, createDpm };
+module.exports = { getRowsDataForDpm, getXmlDataForDpm, createDpmCsvFile };

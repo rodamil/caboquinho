@@ -97,6 +97,9 @@
     "Product Integration PM" : {
       "existing.custom.field" : "15713"
     },
+    "BVS - Target" : {
+      "existing.custom.field" : "26163"
+    },
     "Package at OTA Server URL" : {
       "existing.custom.field" : "25961"
     },

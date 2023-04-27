@@ -12,7 +12,11 @@ const {
   getRegionNames,
 } = require('../scripts/getLists');
 
-const { getRowsDataForDpm, createDpm } = require('../scripts/handleDpmData');
+const {
+  getRowsDataForDpm,
+  getXmlDataForDpm,
+  createDpmCsvFile,
+} = require('../scripts/handleDpmData');
 const {
   cammelCaseToTitleCase,
   createDataList,
@@ -39,6 +43,7 @@ window.onload = async () => {
   const submissionRange = localStorage.getItem('submissionRange');
   const isOdm = JSON.parse(localStorage.getItem('isOdm'));
   const multiConfigLink = localStorage.getItem('multiConfigLink');
+  const testLead = localStorage.getItem('testLead');
   wbLink = localStorage.getItem('wbLink');
 
   const checkIsEmpty = [
@@ -102,6 +107,7 @@ window.onload = async () => {
       dpmDayRules,
       dpmUpdateRules,
       multiConfigRules,
+      testLead,
     });
 
     createTextArea();
@@ -175,14 +181,14 @@ function generateActionBtns() {
         const allChecks = document.querySelectorAll('input[type=checkbox]:checked');
 
         const confirmCreation = window.confirm(
-          `You are about to create ${allChecks.length} DPMs, are you sure?`,
+          `You are about to insert ${allChecks.length} DPM in CSV file, are you sure?`,
         );
 
-        if (confirmCreation) {
+        if (confirmCreation && allChecks.length > 0) {
           const rowsData = getTableRowsData(false);
-          console.log(rowsData);
           const tableHeaders = document.querySelectorAll('th');
           const dpmHeader = [...tableHeaders].find((th) => th.innerText === 'Dpm');
+          const rowsToBuildCsv = [];
           dpmHeader.style.display = 'table-cell';
 
           await Promise.all(
@@ -193,7 +199,7 @@ function generateActionBtns() {
               dpmCell.style.display = 'table-cell';
 
               if (rowData['check'] === true) {
-                const dpmCreated = await createDpm(
+                const dpmCreated = await getXmlDataForDpm(
                   rowData,
                   localStorage.getItem('token'),
                 );
@@ -201,7 +207,8 @@ function generateActionBtns() {
                 if (dpmCreated.key) {
                   document.querySelector(`#check-${i}`).checked = false;
                   dpmRow.style.backgroundColor = dpmCreatedRowColor;
-                  dpmInput.value = dpmCreated.key;
+                  rowsToBuildCsv.push({ ...rowData, ...dpmCreated });
+                  dpmInput.value = 'Add in CSV';
                 } else {
                   dpmRow.style.backgroundColor = dpmNotCreatedRowColor;
                   dpmInput.value = 'ERROR';
@@ -209,6 +216,11 @@ function generateActionBtns() {
               }
             }),
           );
+          try {
+            createDpmCsvFile(rowsToBuildCsv);
+          } catch (error) {
+            console.log(error);
+          }
         }
 
         handleEnableStatusBtns(false);
@@ -224,6 +236,13 @@ function generateActionBtns() {
     htmlBtn.onclick = btn.actionFunc;
     btnsContainer.appendChild(htmlBtn);
   }
+
+  const dowloadDpmMapConfig = document.createElement('a');
+  dowloadDpmMapConfig.setAttribute('download', 'DPM_CONFIGURATION.txt');
+  dowloadDpmMapConfig.setAttribute('href', '../DPM_CONFIGURATION.txt');
+  dowloadDpmMapConfig.className = 'waves-effect waves-light btn-large orange';
+  dowloadDpmMapConfig.innerText = 'Donwload map config';
+  btnsContainer.appendChild(dowloadDpmMapConfig);
 }
 
 function createDpmTable(rowsWithData) {
@@ -233,6 +252,7 @@ function createDpmTable(rowsWithData) {
     'bgGroupColor',
     'productManager',
     'technicalLead',
+    'testLead',
     'releaseNotesLink',
     'isMultiConfig',
     'isOdm',
@@ -362,13 +382,13 @@ function createDpmTable(rowsWithData) {
         input.onblur = ({ target }) =>
           (target.style.backgroundColor = lastActiveBackground);
 
-        if (tableTitle === 'dpm') {
-          input.onclick = async ({ target }) => {
-            if (target.value.toLowerCase().includes('dpm')) {
-              await navigator.clipboard.writeText(`${SVNKITS_BASE_URL}${target.value}`);
-            }
-          };
-        }
+        // if (tableTitle === 'dpm') {
+        //   input.onclick = async ({ target }) => {
+        //     if (target.value.toLowerCase().includes('dpm')) {
+        //       await navigator.clipboard.writeText(`${SVNKITS_BASE_URL}${target.value}`);
+        //     }
+        //   };
+        // }
         tBodyCell.appendChild(input);
       }
 

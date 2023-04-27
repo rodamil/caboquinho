@@ -215,9 +215,10 @@ async function getMultiConfigRules(url) {
 
   dpmMultConfigRules.data.values.forEach((row, index) => {
     if (index > 0) {
-      multiConfigRulesFormated[row[0]] = {
-        color: row[1],
-        groupCarriers: row[3],
+      const groupTitle = row[0];
+
+      multiConfigRulesFormated[groupTitle] = {
+        groupCarriers: row[1],
       };
     }
   });
