@@ -2,7 +2,7 @@ require('dotenv').config();
 require('./backend/index');
 
 require('update-electron-app')();
-const { app, BrowserWindow, dialog } = require('electron');
+const { app, BrowserWindow } = require('electron');
 const path = require('path');
 
 app.commandLine.appendSwitch('ignore-certificate-errors');

@@ -246,7 +246,14 @@ function generateActionBtns() {
 }
 
 function createDpmTable(rowsWithData) {
-  const firstColumns = ['dpm', 'check', 'rocarrierField', 'source', 'target'];
+  const firstColumns = [
+    'dpm',
+    'check',
+    'rocarrierField',
+    'rocarrierPlannedField',
+    'source',
+    'target',
+  ];
   const columnsToHide = [
     'dpm',
     'bgGroupColor',

@@ -1,6 +1,5 @@
 const { generateRandomHexColor } = require('./utils');
 const axios = require('axios');
-const { time } = require('console');
 const https = require('https');
 
 let BASE_IDART_URL = '';
@@ -196,8 +195,6 @@ function getRowsDataForDpm({
         const filtredGroupCarriers = { groupTitle: '', groupCarriers: [''] };
 
         if (isMultiConfig) {
-          rocarrierField = 'N/A (Not Applicable)';
-
           for (const group in multiConfigRules) {
             const groupCarriers = multiConfigRules[group]['groupCarriers'].split(',');
 
@@ -207,8 +204,6 @@ function getRowsDataForDpm({
               break;
             }
           }
-        } else {
-          rocarrierField = rocarrier1;
         }
 
         const { groupTitle, groupCarriers } = filtredGroupCarriers;
@@ -240,17 +235,7 @@ function getRowsDataForDpm({
             launchType1 === launchType2 &&
             !compareRow['CHECKED']
           ) {
-            const checkGroupDaysSMR =
-              launchTypeText.toUpperCase() === 'SMR' &&
-              countriesThatUpdateInSameDay.includes(country2);
-
-            const checkMultiConfig =
-              !checkGroupDaysSMR && isMultiConfig && groupCarriers.includes(rocarrier2);
-
-            const agroupTheSameRocarrier =
-              !checkGroupDaysSMR && !checkMultiConfig && rocarrier1 === rocarrier2;
-
-            if (checkGroupDaysSMR || checkMultiConfig || agroupTheSameRocarrier) {
+            const handleCheck = () => {
               compareRow['CHECKED'] = '0';
               deivceIdField.indexOf(deviceId2) === -1 && deivceIdField.push(deviceId2);
               launchCountriesField.indexOf(country2) === -1 &&
@@ -259,12 +244,44 @@ function getRowsDataForDpm({
                 carriersCountriesField.push(`${carrier2} - ${country2}`);
               rocarrierPlannedField.indexOf(rocarrier2) === -1 &&
                 rocarrierPlannedField.push(rocarrier2);
+            };
+
+            if (launchTypeText.toUpperCase() === 'SMR') {
+              const checkGroupDaysSMR =
+                countriesThatUpdateInSameDay.includes(country2) &&
+                rocarrier1 === rocarrier2;
+
+              const checkMultiConfig =
+                isMultiConfig &&
+                countriesThatUpdateInSameDay.includes(country2) &&
+                groupCarriers.includes(rocarrier2);
+
+              const checkSameRocarrier = rocarrier1 === rocarrier2;
+
+              const smrChecks = [checkGroupDaysSMR, checkMultiConfig, checkSameRocarrier];
+
+              if (smrChecks.some((validation) => validation === true)) {
+                handleCheck();
+              }
+            } else {
+              const checkMultiConfig =
+                isMultiConfig && groupCarriers.includes(rocarrier2);
+
+              const checkSameRocarrier = rocarrier1 === rocarrier2;
+
+              const mrChecks = [checkMultiConfig, checkSameRocarrier];
+
+              if (mrChecks.some((validation) => validation === true)) {
+                handleCheck();
+              }
             }
           }
         });
 
-        if (rocarrierPlannedField.length === 1) {
+        if (rocarrierPlannedField.length <= 1) {
           rocarrierField = rocarrier1;
+        } else {
+          rocarrierField = 'N/A (Not Applicable)';
         }
 
         rowsToHandleFiltred.push({
