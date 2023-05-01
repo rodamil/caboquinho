@@ -132,6 +132,12 @@ function getRowsDataForDpm({
 }) {
   const isMultiConfig = multiConfigLink !== '';
   const rowsToHandleFiltred = [];
+  const countriesWithDayUpdateRules = [];
+
+  for (const dayRule in dpmDayRules) {
+    const countriesInThisDay = dpmDayRules[dayRule].map((e) => e.toUpperCase());
+    countriesWithDayUpdateRules.push(...countriesInThisDay);
+  }
 
   wbRows.forEach((rowData) => {
     try {
@@ -256,7 +262,9 @@ function getRowsDataForDpm({
                 countriesThatUpdateInSameDay.includes(country2) &&
                 groupCarriers.includes(rocarrier2);
 
-              const checkSameRocarrier = rocarrier1 === rocarrier2;
+              const checkSameRocarrier =
+                rocarrier1 === rocarrier2 &&
+                !countriesWithDayUpdateRules.includes(country2.toUpperCase());
 
               const smrChecks = [checkGroupDaysSMR, checkMultiConfig, checkSameRocarrier];
 
