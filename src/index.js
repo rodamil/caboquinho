@@ -33,7 +33,7 @@ const createWindow = () => {
   });
 
   // and load the index.html of the app.
-  mainWindow.loadFile(path.join(__dirname, './pages/dpmTable.html'));
+  mainWindow.loadFile(path.join(__dirname, './pages/loginForm.html'));
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
