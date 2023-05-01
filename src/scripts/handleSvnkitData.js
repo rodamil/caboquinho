@@ -1,12 +1,13 @@
 const axios = require('axios');
 const https = require('https');
 const { updateSheet } = require('./handleSheet');
+const { formatString } = require('./utils');
 
 let BASE_IDART_URL = '';
 
 if (process.env.NODE_ENV === 'development') {
   https.globalAgent.options.rejectUnauthorized = false;
-  BASE_IDART_URL = 'https://idart-dev.mot.com/browse';
+  BASE_IDART_URL = 'https://idart-test.mot.com/browse';
 } else {
   BASE_IDART_URL = 'https://idart.mot.com/browse';
 }
@@ -47,29 +48,23 @@ async function updateSvnkitFieldInWB({
   const svnkitKey = kitCreatedData.svnkit;
   const columnIndex = columnIndexToLetter(titlePositions['SVNKIT']);
   for (const [rowNumber, rowData] of rowsData.entries()) {
-    const target = rowData[titlePositions['SOFTWARE TA']];
-    const elabel = rowData[titlePositions['LABEL FILE']];
-    const rocarrier = rowData[titlePositions['RO.CARRIER']];
-    const model = rowData[titlePositions['MODEL']];
-    let subsidy = rowData[titlePositions['SUBSIDY LOCK']] || '';
+    const target = formatString(rowData[titlePositions['SOFTWARE TA']]);
+    const elabel = formatString(rowData[titlePositions['LABEL FILE']]);
+    const rocarrier = formatString(rowData[titlePositions['RO.CARRIER']]);
+    const model = formatString(rowData[titlePositions['MODEL']]);
+    let subsidy = formatString(rowData[titlePositions['SUBSIDY LOCK']]);
 
-    const checkTarget = kitCreatedData['SOFTWARE TA'] === target;
-    const checkElabel = kitCreatedData['LABEL FILE'] === elabel;
-    const checkRocarrier = kitCreatedData['RO.CARRIER'] === rocarrier;
-    const checkModel = kitCreatedData['MODEL'] === model;
+    const checkTarget = formatString(kitCreatedData['SOFTWARE TA']) === target;
+    const checkElabel = formatString(kitCreatedData['LABEL FILE']) === elabel;
+    const checkRocarrier = formatString(kitCreatedData['RO.CARRIER']) === rocarrier;
+    const checkModel = formatString(kitCreatedData['MODEL']) === model;
 
     if (subsidyOffTypes.includes(subsidy.toUpperCase())) {
       subsidy = 'Off';
     }
 
     const checkSubsidy = kitCreatedData['SUBSIDY LOCK'] === subsidy;
-    if (
-      checkTarget &&
-      checkElabel &&
-      checkRocarrier &&
-      checkModel &&
-      checkSubsidy
-    ) {
+    if (checkTarget && checkElabel && checkRocarrier && checkModel && checkSubsidy) {
       updateSheet({
         url: wbLink,
         svnkitKey,
@@ -81,7 +76,7 @@ async function updateSvnkitFieldInWB({
 }
 
 function getRowsData({
-  worksheet,
+  wbRows,
   titlePositions,
   tamNamesData,
   languagesData,
@@ -89,19 +84,9 @@ function getRowsData({
   jsvnkitCarriersData,
   productManager,
 }) {
-  const rows = worksheet.data.values;
   const dataForTable = [];
-  const valuesToIgnore = ['', 'END'];
 
-  const formatString = (str) => {
-    if (str) {
-      return str.split('(')[0].trim();
-    } else {
-      return '';
-    }
-  };
-
-  for (const row of rows) {
+  for (const row of wbRows) {
     const currentContent = {};
 
     const carrier = formatString(row[titlePositions['CARRIER']]);
@@ -161,44 +146,25 @@ function getRowsData({
       currentContent['CARRIER COUNTRY'] = '';
     }
 
-    let countTitles = 0;
     for (const title in titlePositions) {
       const currentCell = formatString(row[titlePositions[title]]);
 
-      if (
-        title !== currentCell.toUpperCase() &&
-        !valuesToIgnore.includes(currentCell.toUpperCase())
-      ) {
-        if (title === 'RO.CARRIER') {
-          currentContent[title] = rocarrier;
-        } else if (title === 'SUBSIDY LOCK') {
-          currentContent[title] = subsidy;
-        } else {
-          currentContent[title] = currentCell;
-        }
-
-        countTitles += 1;
-      } else if (title === 'SVNKIT') {
-        countTitles += 1;
+      if (title === 'RO.CARRIER') {
+        currentContent[title] = rocarrier;
+      } else if (title === 'SUBSIDY LOCK') {
+        currentContent[title] = subsidy;
+      } else {
+        currentContent[title] = currentCell;
       }
     }
 
-    if (countTitles === Object.keys(titlePositions).length) {
-      dataForTable.push(currentContent);
-    }
+    dataForTable.push(currentContent);
   }
 
   return dataForTable;
 }
 
-const compareToCheck = ({
-  compareData,
-  rocarrier,
-  target,
-  elabel,
-  subsidy,
-  model,
-}) =>
+const compareToCheck = ({ compareData, rocarrier, target, elabel, subsidy, model }) =>
   rocarrier == compareData['RO.CARRIER'] &&
   target == compareData['SOFTWARE TA'] &&
   elabel == compareData['LABEL FILE'] &&
@@ -279,7 +245,7 @@ function setDescriptionAndSwVersion(rowsWithData, company) {
             model,
           })
         ) {
-          const targetProduct = compareData['TARGET PRODUCT'];
+          const targetProduct = compareData['BUILD NAME'];
           const memoryConfig = compareData['MEMORY'];
 
           description += `| ${rocarrier} | ${targetProduct} | ${memoryConfig} |\\`;

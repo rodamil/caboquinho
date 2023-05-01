@@ -16,6 +16,10 @@ const errors = {
     code: 400,
     message: 'Please review the current svnkit data',
   },
+  invalidDpmEntry: {
+    code: 400,
+    message: 'Please review the current dpm data',
+  },
 };
 
 module.exports = (err, _req, res, _next) => {

@@ -18,12 +18,14 @@ window.onload = () => {
       });
 
       localStorage.setItem('token', data.token);
-      window.location = 'svnkitForm.html';
+      localStorage.setItem('testLead', userCoreid);
+      window.location = 'issueForm.html';
     } catch (e) {
       const errorContainer = document.querySelector('#login-error-container');
       errorContainer.innerHTML = e.response.data.message;
       console.log(e);
     }
+
     e.target.disabled = false;
   });
 };

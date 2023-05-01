@@ -1,5 +1,6 @@
 const axios = require('axios');
 const { getSheet } = require('./handleSheet');
+const { capitalizeFirstLetter } = require('./utils');
 
 const serverUrl = process.env.BASE_SERVER_URL || 'http://localhost:';
 const serverPort = process.env.PORT || 3001;
@@ -15,6 +16,15 @@ const JSVNKIT_CARRIERS_URL =
 const EUROPE_ROCARRIERS_URL =
   'https://docs.google.com/spreadsheets/d/1scVsPtpoFtVrk8kbOTFzXb1qiFqAr-RG-F5W_YT1R7Q/edit#gid=1986360011';
 
+const DPM_DAY_RULES_URL =
+  'https://docs.google.com/spreadsheets/d/1scVsPtpoFtVrk8kbOTFzXb1qiFqAr-RG-F5W_YT1R7Q/edit#gid=300192935';
+
+const DPM_UPDATE_RULES_URL =
+  'https://docs.google.com/spreadsheets/d/1scVsPtpoFtVrk8kbOTFzXb1qiFqAr-RG-F5W_YT1R7Q/edit#gid=1553398430';
+
+const DPM_MULTCONFIG_RULES_URL =
+  'https://docs.google.com/spreadsheets/d/1scVsPtpoFtVrk8kbOTFzXb1qiFqAr-RG-F5W_YT1R7Q/edit#gid=1664036455';
+
 async function getTamNames() {
   const COUNTRY_POSITION = 1;
   const CARRIER_POSITION = 2;
@@ -25,9 +35,7 @@ async function getTamNames() {
 
   for (const row of rowsData) {
     tamsByCarrierCountry.push({
-      carrierCountry: `${row[CARRIER_POSITION].trim()} ${row[
-        COUNTRY_POSITION
-      ].trim()}`,
+      carrierCountry: `${row[CARRIER_POSITION].trim()} ${row[COUNTRY_POSITION].trim()}`,
       coreId: row[TAM_COREID_POSITION].trim(),
     });
   }
@@ -102,10 +110,24 @@ async function getProjectNames() {
   try {
     const token = localStorage.getItem('token');
 
-    const { data } = await axios.get(
-      `${serverUrl}${serverPort}/npi-project-names`,
-      { headers: { Authorization: token } },
-    );
+    const { data } = await axios.get(`${serverUrl}${serverPort}/npi-project-names`, {
+      headers: { Authorization: token },
+    });
+
+    return data;
+  } catch (err) {
+    console.log(err);
+    return [];
+  }
+}
+
+async function getRegionNames() {
+  try {
+    const token = localStorage.getItem('token');
+
+    const { data } = await axios.get(`${serverUrl}${serverPort}/region-names`, {
+      headers: { Authorization: token },
+    });
 
     return data;
   } catch (err) {
@@ -126,10 +148,92 @@ async function getJsvnkitCarriers() {
   return jsvnkitCarriers;
 }
 
+async function getDpmDayRules() {
+  const dpmDayRules = await getSheet(DPM_DAY_RULES_URL);
+
+  const dayRulesFormated = {};
+
+  dpmDayRules.data.values.forEach((row, index) => {
+    if (index > 0) {
+      const [day] = row[3].split(' ');
+      // https://bobbyhadz.com/blog/javascript-remove-all-line-breaks-from-string
+      const countries = row[0].replace(/[\r\n]/gm, ' ').split(' ');
+      const splitedCountries = [];
+
+      for (const country of countries) {
+        if (country.trim()) {
+          splitedCountries.push(country.trim());
+        }
+      }
+
+      const existentList = dayRulesFormated[day];
+
+      if (existentList) {
+        dayRulesFormated[day] = [...existentList, ...splitedCountries];
+      } else {
+        dayRulesFormated[day] = splitedCountries;
+      }
+    }
+  });
+
+  return dayRulesFormated;
+}
+
+async function getDpmUpdateRules() {
+  const dpmUpdateRules = await getSheet(DPM_UPDATE_RULES_URL);
+  const updateRulesFormated = {};
+
+  dpmUpdateRules.data.values.forEach((row, index) => {
+    if (index > 0) {
+      const currRocarrier = row[3];
+      const currLanguage = row[4];
+
+      updateRulesFormated[currRocarrier] = {
+        language: currLanguage,
+        SMR: {
+          forcedUpgrade: capitalizeFirstLetter(row[6]),
+          downdloadWifiOnly: capitalizeFirstLetter(row[7]),
+          showPreDownloadMsg: capitalizeFirstLetter(row[8]),
+          showDownloadOptions: capitalizeFirstLetter(row[9]),
+        },
+        MR: {
+          forcedUpgrade: capitalizeFirstLetter(row[10]),
+          downdloadWifiOnly: capitalizeFirstLetter(row[11]),
+          showPreDownloadMsg: capitalizeFirstLetter(row[12]),
+          showDownloadOptions: capitalizeFirstLetter(row[13]),
+        },
+      };
+    }
+  });
+
+  return updateRulesFormated;
+}
+
+async function getMultiConfigRules(url) {
+  const dpmMultConfigRules = await getSheet(url || DPM_MULTCONFIG_RULES_URL);
+  const multiConfigRulesFormated = {};
+
+  dpmMultConfigRules.data.values.forEach((row, index) => {
+    if (index > 0) {
+      const groupTitle = row[0];
+
+      multiConfigRulesFormated[groupTitle] = {
+        groupCarriers: row[1],
+      };
+    }
+  });
+
+  return multiConfigRulesFormated;
+}
+
 module.exports = {
   getTamNames,
   getLanguages,
   getChannelIds,
   getProjectNames,
+  getRegionNames,
   getJsvnkitCarriers,
+  getDpmDayRules,
+  getDpmUpdateRules,
+  getMultiConfigRules,
 };

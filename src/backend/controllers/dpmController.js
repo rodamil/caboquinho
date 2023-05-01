@@ -1,4 +1,4 @@
-const { svnkitService } = require('../services');
+const { dpmService } = require('../services');
 const https = require('https');
 
 let BASE_IDART_URL = '';
@@ -11,16 +11,12 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 async function create(req, res) {
-  const { svnkitData } = req.body;
+  const { dpmData } = req.body;
   const { authorization } = req.headers;
 
-  const kitCreated = await svnkitService.create(
-    svnkitData,
-    authorization,
-    BASE_IDART_URL,
-  );
+  const dpmCreated = await dpmService.create(dpmData, authorization, BASE_IDART_URL);
 
-  return res.status(201).json(kitCreated);
+  return res.status(201).json(dpmCreated);
 }
 
 module.exports = { create };

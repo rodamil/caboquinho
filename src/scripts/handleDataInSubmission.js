@@ -1,30 +1,51 @@
-function getPositionsForSvnkit(submissionControlSheet) {
+const { formatString } = require('./utils');
+
+function getPositionsInSubmission(submissionControlSheet, projectType) {
   const MAX_ROW_TO_CHECK = 4;
-  const submissionTitlePositions = {
-    CARRIER: -1,
-    COUNTRY: -1,
-    'RO.CARRIER': -1,
-    MODEL: -1,
-    MEMORY: -1,
-    'SS / DS': -1,
-    'SOFTWARE TA': -1,
-    SVNKIT: -1,
-    'TARGET PRODUCT': -1,
-    FINGERPRINT: -1,
-    BOOTLOADER: -1,
-    SIGNED: -1,
-    'SUBSIDY LOCK': -1,
-    'E-LABEL FILE': -1,
-  };
-
-  const titlesToCheck = Object.keys(submissionTitlePositions);
-
   const odmCarriersTitle = [
     'ro.carrier.ontim',
     'Tinno ro.carrier',
     'CarrierID from Tinno\n(Used in CarrerID tool)',
     'ODM ro.carrier',
+    'ro.carrier.longcheer',
   ];
+
+  let submissionTitlePositions = {};
+
+  if (projectType === 'svnkit') {
+    submissionTitlePositions = {
+      'BUILD NAME': -1,
+      CARRIER: -1,
+      COUNTRY: -1,
+      'RO.CARRIER': -1,
+      MODEL: -1,
+      MEMORY: -1,
+      'SS / DS': -1,
+      'SOFTWARE TA': -1,
+      SVNKIT: -1,
+      FINGERPRINT: -1,
+      BOOTLOADER: -1,
+      SIGNED: -1,
+      'SUBSIDY LOCK': -1,
+      'E-LABEL FILE': -1,
+    };
+  } else if (projectType === 'dpm') {
+    submissionTitlePositions = {
+      'BUILD NAME': -1,
+      CARRIER: -1,
+      COUNTRY: -1,
+      'RO.CARRIER': -1,
+      MODEL: -1,
+      'SS / DS': -1,
+      'LAUNCH TYPE': -1,
+      'DEVICE ID': -1,
+      'SOFTWARE TA': -1,
+      'OTA SOURCE SW VERSION': -1,
+      'DPM CR': -1,
+    };
+  }
+
+  const titlesToCheck = Object.keys(submissionTitlePositions);
 
   const rows = submissionControlSheet.data.values;
 
@@ -37,8 +58,10 @@ function getPositionsForSvnkit(submissionControlSheet) {
           submissionTitlePositions[title] = row.indexOf(cell);
         }
 
-        if (cell.toUpperCase().includes('MEMORY')) {
-          submissionTitlePositions['MEMORY'] = row.indexOf(cell);
+        if (projectType === 'svnkit') {
+          if (cell.toUpperCase().includes('MEMORY')) {
+            submissionTitlePositions['MEMORY'] = row.indexOf(cell);
+          }
         }
       }
 
@@ -65,12 +88,69 @@ function getPositionsForSvnkit(submissionControlSheet) {
     throw new Error(`These columns were not found: ${columnsNotFound}`);
   }
 
-  submissionTitlePositions['LABEL FILE'] =
-    submissionTitlePositions['E-LABEL FILE'];
-
-  delete submissionTitlePositions['E-LABEL FILE'];
-
   return submissionTitlePositions;
 }
 
-module.exports = { getPositionsForSvnkit };
+function getRowsWithData({ worksheet, titlePositions, submissionRange }) {
+  const valuesToIgnore = ['', 'END'];
+  const columnsThatCanBeEmpty = ['SVNKIT', 'ODM ROCARRIER', 'DPM CR'];
+  const wbRows = worksheet.data.values;
+  const rowsForTable = [];
+  const rowsToHandle = [];
+
+  if (submissionRange) {
+    const splitedRange = submissionRange.split(';');
+
+    for (const range of splitedRange) {
+      let [startRange, endRange] = range.split('-');
+
+      if (!endRange) {
+        endRange = startRange;
+      }
+
+      for (let index = startRange - 1; index <= endRange - 1; index++) {
+        rowsToHandle.push(wbRows[index]);
+      }
+    }
+  } else {
+    rowsToHandle.push(...wbRows);
+  }
+
+  for (const row of rowsToHandle) {
+    let countTitles = 0;
+    let coluumnsThatAreWithFailures = [];
+
+    for (const title in titlePositions) {
+      const currentCell = formatString(row[titlePositions[title]]).toUpperCase();
+
+      if (
+        title !== currentCell &&
+        !currentCell.includes(title) &&
+        !valuesToIgnore.includes(currentCell)
+      ) {
+        countTitles += 1;
+      } else if (columnsThatCanBeEmpty.includes(title)) {
+        countTitles += 1;
+      } else {
+        coluumnsThatAreWithFailures.push(title);
+      }
+    }
+
+    if (countTitles === Object.keys(titlePositions).length) {
+      rowsForTable.push(row);
+    } else {
+      if (row.length > 0) {
+        console.log('###########################################');
+        console.log("The row below has something missing, check if it's a Data Row");
+        console.log(`Columns with some error: ${coluumnsThatAreWithFailures.join(', ')}`);
+        console.log(row);
+      }
+    }
+  }
+
+  console.log('########## End pull data from spreadsheet ##########');
+
+  return rowsForTable;
+}
+
+module.exports = { getPositionsInSubmission, getRowsWithData };

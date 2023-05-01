@@ -4,9 +4,12 @@ const {
   getChannelIds,
   getProjectNames,
   getJsvnkitCarriers,
-} = require('../scripts/getSvnkitLists');
-const { getSheet, updateSheet } = require('../scripts/handleSheet');
-const { getPositionsForSvnkit } = require('../scripts/handleDataInSubmission');
+} = require('../scripts/getLists');
+const { getSheet } = require('../scripts/handleSheet');
+const {
+  getPositionsInSubmission,
+  getRowsWithData,
+} = require('../scripts/handleDataInSubmission');
 const {
   getRowsData,
   setDescriptionAndSwVersion,
@@ -15,19 +18,18 @@ const {
   compareToCheck,
   updateSvnkitFieldInWB,
 } = require('../scripts/handleSvnkitData');
-
-// const response = require('../mock/mock');
-// const tamNames = response.tam_list;
-// const languages = response.languages_list;
-// const channels = response.channels_list;
-// const projectNames = response.project_list;
-// const jsvnkitCarriersList = response.jsvnkit_carriers_list;
+const {
+  formatString,
+  createDataList,
+  getTableRowsData,
+  handleEnableStatusBtns,
+} = require('../scripts/utils');
 
 // Global data
 let SVNKITS_BASE_URL = 'https://idart.mot.com/browse/';
 
 if (process.env.NODE_ENV === 'development') {
-  SVNKITS_BASE_URL = 'https://idart-dev.mot.com/browse/';
+  SVNKITS_BASE_URL = 'https://idart-test.mot.com/browse/';
 }
 
 const selectedCellColor = '#FF9800';
@@ -52,6 +54,7 @@ window.onload = async () => {
   wbLink = localStorage.getItem('wbLink');
   const productManager = localStorage.getItem('productManager');
   const company = localStorage.getItem('company');
+  const submissionRange = localStorage.getItem('submissionRange');
 
   const checkIsEmpty = [
     [wbLink, "Workbook link can't be empty"],
@@ -102,10 +105,12 @@ window.onload = async () => {
 
     worksheet = await getSheet(wbLink);
 
-    titlePositions = getPositionsForSvnkit(worksheet);
+    titlePositions = getPositionsInSubmission(worksheet, 'svnkit');
+
+    const wbRows = getRowsWithData({ worksheet, titlePositions, submissionRange });
 
     const rowsData = getRowsData({
-      worksheet,
+      wbRows,
       titlePositions,
       tamNamesData,
       channelIdsData,
@@ -117,8 +122,6 @@ window.onload = async () => {
     const rowsFormated = setDescriptionAndSwVersion(rowsData, company);
     const rowsChecked = setCheck(rowsFormated);
 
-    awaitContainer.innerHTML = '';
-    document.querySelector('#page-title').innerText = 'Caboquinho';
     generateActionBtns();
     createSvnkitTable(rowsChecked);
   } catch (error) {
@@ -126,9 +129,11 @@ window.onload = async () => {
     window.alert(error);
   }
 
-  const goBackBtn = document.querySelector('#btn-go-back');
-  goBackBtn.classList.remove('hide');
-  goBackBtn.addEventListener('click', () => {
+  awaitContainer.innerHTML = '';
+
+  document.querySelector('header').classList.remove('hide');
+
+  document.querySelector('#btn-go-back').addEventListener('click', () => {
     const response = window.confirm(
       'You will lose your changes, do you really want to go back?',
     );
@@ -137,72 +142,6 @@ window.onload = async () => {
     }
   });
 };
-
-function formatString(string) {
-  return string.split('.').join('-').split(' ').join('-').trim();
-}
-
-function unformatString(string) {
-  return string.split('-').join(' ').replace(/[0-9]/g, '').trim();
-}
-
-function createDataList(options) {
-  const datalist = document.createElement('datalist');
-
-  for (const option of options) {
-    const htmlOption = document.createElement('option');
-    htmlOption.value = option;
-    datalist.appendChild(htmlOption);
-  }
-
-  return datalist;
-}
-
-function getTableRowsData(removeCheck = true) {
-  const tRows = document.querySelector('tbody').querySelectorAll('tr');
-  const rowsData = [];
-
-  for (const tRow of tRows) {
-    const tCells = tRow.querySelectorAll('td');
-    const currentRowData = {};
-
-    for (const tCell of tCells) {
-      const inputCell = tCell.querySelector('input');
-      let cellKey = unformatString(inputCell.id);
-
-      if (cellKey == 'RO CARRIER') {
-        cellKey = 'RO.CARRIER';
-      }
-
-      if (inputCell.type === 'checkbox') {
-        const cellValue = inputCell.checked;
-
-        currentRowData[cellKey] = cellValue;
-      } else {
-        const cellValue = inputCell.value;
-
-        currentRowData[cellKey] = cellValue;
-      }
-    }
-
-    if (removeCheck) {
-      delete currentRowData['CHECK'];
-    }
-
-    rowsData.push(currentRowData);
-  }
-
-  return rowsData;
-}
-
-function handleEnableStatusBtns(status) {
-  const btnsContainer = document.querySelector('#buttons-container');
-  const btns = btnsContainer.querySelectorAll('button');
-
-  for (const btn of btns) {
-    btn.disabled = status;
-  }
-}
 
 function checkKitAlreadyCreated(rowData) {
   const kitsAlreadyCreated = JSON.parse(localStorage.getItem('kitsCreated'));
@@ -229,68 +168,75 @@ function generateActionBtns() {
       label: 'create kits',
       actionFunc: async () => {
         handleEnableStatusBtns(true);
-        const rowsData = getTableRowsData(false);
-        const tableHeaders = document.querySelectorAll('th');
-        const svnkitHeader = [...tableHeaders].find(
-          (th) => th.innerText === 'JIRA SVNKIT',
-        );
-        svnkitHeader.style.display = 'table-cell';
-        const currentKitsCreated = JSON.parse(
-          localStorage.getItem('kitsCreated'),
+        const allChecks = document.querySelectorAll('input[type=checkbox]:checked');
+
+        const confirmCreation = window.confirm(
+          `You are about to create ${allChecks.length} Kits, are you sure?`,
         );
 
-        await Promise.all(
-          rowsData.map(async (rowData, i) => {
-            const svnkitInput = document.querySelector(`#JIRA-SVNKIT-${i}`);
-            const svnkitCell = svnkitInput.closest('td');
-            const svnkitRow = svnkitCell.closest('tr');
-            svnkitCell.style.display = 'table-cell';
+        if (confirmCreation) {
+          const confirmFillWb = window.confirm('Fill the workbook with SVNKITs?');
 
-            if (rowData['CHECK'] === true) {
-              const findedKit = checkKitAlreadyCreated(rowData);
+          const rowsData = getTableRowsData(false);
+          const tableHeaders = document.querySelectorAll('th');
+          const svnkitHeader = [...tableHeaders].find(
+            (th) => th.innerText === 'JIRA SVNKIT',
+          );
+          svnkitHeader.style.display = 'table-cell';
+          const currentKitsCreated = JSON.parse(localStorage.getItem('kitsCreated'));
 
-              if (!findedKit) {
-                const kitCreated = await createSvnkit(
-                  rowData,
-                  localStorage.getItem('token'),
-                );
+          await Promise.all(
+            rowsData.map(async (rowData, i) => {
+              const svnkitInput = document.querySelector(`#JIRA-SVNKIT-${i}`);
+              const svnkitCell = svnkitInput.closest('td');
+              const svnkitRow = svnkitCell.closest('tr');
+              svnkitCell.style.display = 'table-cell';
 
-                if (kitCreated.key) {
-                  const kitCreatedData = {
-                    'SOFTWARE TA': rowData['SOFTWARE TA'],
-                    'LABEL FILE': rowData['LABEL FILE'],
-                    'RO.CARRIER': rowData['RO.CARRIER'],
-                    'SUBSIDY LOCK': rowData['SUBSIDY LOCK'],
-                    MODEL: rowData['MODEL'],
-                    svnkit: kitCreated.key,
-                  };
+              if (rowData['CHECK'] === true) {
+                const findedKit = checkKitAlreadyCreated(rowData);
 
-                  currentKitsCreated.push(kitCreatedData);
-                  localStorage.setItem(
-                    'kitsCreated',
-                    JSON.stringify(currentKitsCreated),
+                if (!findedKit) {
+                  const kitCreated = await createSvnkit(
+                    rowData,
+                    localStorage.getItem('token'),
                   );
-                  await updateSvnkitFieldInWB({
-                    titlePositions,
-                    worksheet,
-                    kitCreatedData,
-                    wbLink,
-                  });
 
-                  document.querySelector(`#CHECK-${i}`).checked = false;
-                  svnkitRow.style.backgroundColor = kitCreatedRowColor;
-                  svnkitInput.value = kitCreated.key;
-                } else {
-                  svnkitRow.style.backgroundColor = kitNotCreatedRowColor;
-                  svnkitInput.value = 'ERROR';
+                  if (kitCreated.key) {
+                    const kitCreatedData = {
+                      'SOFTWARE TA': rowData['SOFTWARE TA'],
+                      'LABEL FILE': rowData['LABEL FILE'],
+                      'RO.CARRIER': rowData['RO.CARRIER'],
+                      'SUBSIDY LOCK': rowData['SUBSIDY LOCK'],
+                      MODEL: rowData['MODEL'],
+                      svnkit: kitCreated.key,
+                    };
+
+                    currentKitsCreated.push(kitCreatedData);
+                    localStorage.setItem(
+                      'kitsCreated',
+                      JSON.stringify(currentKitsCreated),
+                    );
+
+                    if (confirmFillWb) {
+                      await updateSvnkitFieldInWB({
+                        titlePositions,
+                        worksheet,
+                        kitCreatedData,
+                        wbLink,
+                      });
+                    }
+                    document.querySelector(`#CHECK-${i}`).checked = false;
+                    svnkitRow.style.backgroundColor = kitCreatedRowColor;
+                    svnkitInput.value = kitCreated.key;
+                  } else {
+                    svnkitRow.style.backgroundColor = kitNotCreatedRowColor;
+                    svnkitInput.value = 'ERROR';
+                  }
                 }
-              } else {
-                document.querySelector(`#CHECK-${i}`).checked = false;
-                svnkitRow.style.backgroundColor = kitCreatedRowColor;
               }
-            }
-          }),
-        );
+            }),
+          );
+        }
 
         handleEnableStatusBtns(false);
       },
@@ -337,25 +283,8 @@ function createSvnkitTable(rowsWithData) {
     'TAM',
     'PROJECT NAME',
     'MODEL',
-  ];
-  const columnsDisplayNone = [
-    'JIRA SVNKIT',
-    'SVNKIT',
-    'PRODUCT MANAGER',
-    'LANGUAGE',
-    'CHANNEL ID',
-    'SS / DS',
-    'SOFTWARE TA',
-    'SUBSIDY LOCK',
-    'LABEL FILE',
-    'SIGNED',
-    'MEMORY',
-    'FINGERPRINT',
-    'BOOTLOADER',
-    'TARGET PRODUCT',
-    'ODM ROCARRIER',
-    'SW VERSION',
-    'DESCRIPTION',
+    'ESIM',
+    'RO.CARRIER',
   ];
 
   let tableTitles = Object.keys(rowsWithData[0]);
@@ -378,7 +307,7 @@ function createSvnkitTable(rowsWithData) {
       'min-width: 15rem; border: 1px solid black; background-color: inherit';
     tHeadCell.classList.add('center-align');
 
-    if (columnsDisplayNone.includes(tableTitle)) {
+    if (!firstColumns.includes(tableTitle)) {
       tHeadCell.style.display = 'none';
     }
 
@@ -400,7 +329,7 @@ function createSvnkitTable(rowsWithData) {
 
   for (const datalist of columnsWithDataList) {
     const htmlDatalist = createDataList(datalist.list);
-    htmlDatalist.id = formatString(datalist.column);
+    htmlDatalist.id = formatString(datalist.column, true);
 
     table.appendChild(htmlDatalist);
   }
@@ -423,7 +352,7 @@ function createSvnkitTable(rowsWithData) {
       tBodyCell.style =
         'max-width: 15rem; font-size: 0.9rem; border: 1px solid black; padding: 0; text-align: center';
 
-      if (columnsDisplayNone.includes(tableTitle)) {
+      if (!firstColumns.includes(tableTitle)) {
         tBodyCell.style.display = 'none';
       }
 
@@ -453,7 +382,7 @@ function createSvnkitTable(rowsWithData) {
           ({ column }) => column === tableTitle,
         );
         if (findedSelect) {
-          input.setAttribute('list', formatString(findedSelect.column));
+          input.setAttribute('list', formatString(findedSelect.column, true));
 
           input.onchange = (e) => {
             const inputValue = e.target.value;
@@ -465,8 +394,7 @@ function createSvnkitTable(rowsWithData) {
         }
 
         input.type = 'text';
-        input.style =
-          'width: 100%; border: none; outline: none; padding: 15px 5px';
+        input.style = 'width: 100%; border: none; outline: none; padding: 15px 5px';
         input.value = rowData[tableTitle] || '';
 
         input.onfocus = ({ target }) => {
@@ -480,9 +408,7 @@ function createSvnkitTable(rowsWithData) {
         if (tableTitle === 'JIRA SVNKIT') {
           input.onclick = async ({ target }) => {
             if (target.value.toLowerCase().includes('jsvnkit')) {
-              await navigator.clipboard.writeText(
-                `${SVNKITS_BASE_URL}${target.value}`,
-              );
+              await navigator.clipboard.writeText(`${SVNKITS_BASE_URL}${target.value}`);
             }
           };
         }
@@ -499,7 +425,7 @@ function createSvnkitTable(rowsWithData) {
         tBody.style.backgroundColor = defaultCheckedRowColor;
       }
 
-      input.id = `${formatString(tableTitle)}-${index}`;
+      input.id = `${formatString(tableTitle, true)}-${index}`;
       input.classList.add('browser-default', 'center-align');
       input.style.backgroundColor = 'inherit';
 
