@@ -33,4 +33,12 @@ async function getLaunchType(authorization) {
   return data;
 }
 
-module.exports = { getRegionNames, getLaunchType, getNpiProjectNames };
+async function createIssue(authorization, requestBody, url) {
+  const { data } = await axios.post(`${url}/rest/api/2/issue`, requestBody, {
+    headers: { Authorization: `${authorization}` },
+  });
+
+  return data;
+}
+
+module.exports = { getRegionNames, getLaunchType, getNpiProjectNames, createIssue };

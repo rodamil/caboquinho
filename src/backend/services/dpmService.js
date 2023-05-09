@@ -1,8 +1,6 @@
 const { dpmModel } = require('../models');
 const { xml2js } = require('xml-js');
 
-const DPM_PROJECT_ID = '40680';
-const DPM_ISSUE_TYPE_ID = '13806';
 const COMPONENT_NAME = 'DPM OTA Sw Updates';
 const SW_TYPE = 'streamingOnAb';
 
@@ -112,7 +110,7 @@ async function create(dpmData, authorization) {
     };
 
     // Unnecessary yet because the Jira don't allow all users to Create a DPM by Jira API
-    // const dpmResponse = await dpmModel.create(authorization, requestBody, url);
+    // const dpmResponse = await idartModel.createIssue(authorization, requestBody, url);
 
     return dpmResponse;
   } catch (err) {

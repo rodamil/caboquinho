@@ -136,6 +136,21 @@ async function getRegionNames() {
   }
 }
 
+async function getLaunchTypes() {
+  try {
+    const token = localStorage.getItem('token');
+
+    const { data } = await axios.get(`${serverUrl}${serverPort}/launch-types`, {
+      headers: { Authorization: token },
+    });
+
+    return data;
+  } catch (err) {
+    console.log(err);
+    return [];
+  }
+}
+
 async function getJsvnkitCarriers() {
   const jsvnkitCarriersSheet = await getSheet(JSVNKIT_CARRIERS_URL);
   const rowsData = jsvnkitCarriersSheet.data.values;
@@ -236,4 +251,5 @@ module.exports = {
   getDpmDayRules,
   getDpmUpdateRules,
   getMultiConfigRules,
+  getLaunchTypes,
 };

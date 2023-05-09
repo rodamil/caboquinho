@@ -1,5 +1,4 @@
 require('dotenv').config();
-require('./backend/index');
 
 require('update-electron-app')();
 const { app, BrowserWindow } = require('electron');

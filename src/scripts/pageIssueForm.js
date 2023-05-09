@@ -1,6 +1,16 @@
 const DPM_MULTI_CONFIG_RULES_URL =
   'https://docs.google.com/spreadsheets/d/1scVsPtpoFtVrk8kbOTFzXb1qiFqAr-RG-F5W_YT1R7Q/edit#gid=1664036455';
 
+let submitUrl = '';
+
+window.onload = () => {
+  const issueForm = document.querySelector('#issue-form-container');
+  issueForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    window.location = submitUrl;
+  });
+};
+
 document.querySelector('#btn-go-back').addEventListener('click', () => {
   const response = window.confirm(
     'You will lose your changes, do you really want to go back?',
@@ -54,7 +64,7 @@ const projectTypeContainer = document.querySelector('#project-type-container');
 
 projectTypeContainer.innerHTML = `<span style="font-weight:bold; font-size: 1.5rem">Project Type</span>`;
 
-const projectTypes = ['svnkit', 'dpm'];
+const projectTypes = ['svnkit', 'dpm', 'control cr'];
 
 for (const projectType of projectTypes) {
   const p = document.createElement('p');
@@ -72,10 +82,13 @@ for (const projectType of projectTypes) {
     const dpmOptionsContainer = document.querySelector('#dpm-options-container');
 
     projectOptionsContainer.classList.remove('hide');
+    [svnkitOptionsContainer, dpmOptionsContainer].forEach((container) =>
+      container.classList.add('hide'),
+    );
 
     if (projectSelected === 'svnkit') {
-      createTableBtn.href = 'svnkitTable.html';
-      dpmOptionsContainer.classList.add('hide');
+      submitUrl = 'svnkitTable.html';
+      svnkitOptionsContainer.innerHTML = '';
       svnkitOptionsContainer.classList.remove('hide');
 
       const descriptionOptionsContainer = document.createElement('div');
@@ -103,9 +116,8 @@ for (const projectType of projectTypes) {
 
       svnkitOptionsContainer.appendChild(descriptionOptionsContainer);
     } else if (projectSelected === 'dpm') {
-      createTableBtn.href = 'dpmTable.html';
+      submitUrl = 'dpmTable.html';
       dpmOptionsContainer.classList.remove('hide');
-      svnkitOptionsContainer.classList.add('hide');
 
       document.querySelector('#enable-multi-config').addEventListener('click', (e) => {
         const inputMultiConfig = document.querySelector('#multi-config-link');
@@ -118,6 +130,8 @@ for (const projectType of projectTypes) {
           inputMultiConfig.value = '';
         }
       });
+    } else if (projectSelected === 'control cr') {
+      submitUrl = 'controlCrForm.html';
     }
 
     createTableBtn.classList.remove('hide');

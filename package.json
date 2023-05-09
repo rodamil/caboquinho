@@ -9,7 +9,7 @@
     "url": "https://github.com/rodamil/caboquinho"
   },
   "scripts": {
-    "start": "electron-forge start",
+    "start": "node ./src/backend/index.js | electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",

@@ -10,4 +10,6 @@ idartRouter.get('/launch-types', rescue(idartController.getLaunchType));
 
 idartRouter.get('/region-names', rescue(idartController.getRegionNames));
 
+idartRouter.post('/control-cr', rescue(idartController.createControlCr));
+
 module.exports = idartRouter;

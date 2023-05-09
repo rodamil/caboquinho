@@ -34,4 +34,22 @@ async function getLaunchType(req, res) {
   return res.status(200).json(launchTypes);
 }
 
-module.exports = { getNpiProjectNames, getRegionNames, getLaunchType };
+async function createControlCr(req, res) {
+  const { authorization } = req.headers;
+  const { controlCrData } = req.body;
+
+  const controlCrCreated = await idartService.createControlCr(
+    authorization,
+    controlCrData,
+    BASE_IDART_URL,
+  );
+
+  return res.status(201).json(controlCrCreated);
+}
+
+module.exports = {
+  getNpiProjectNames,
+  getRegionNames,
+  getLaunchType,
+  createControlCr,
+};

@@ -26,8 +26,10 @@ module.exports = (err, _req, res, _next) => {
   const error = errors[err] || errors[err.message];
 
   if (error) {
+    console.log(error);
     return res.status(error.code).json({ message: error.message });
   } else {
+    console.log(err);
     return res.status(500).json(err);
   }
 };

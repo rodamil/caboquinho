@@ -1,4 +1,4 @@
-const { svnkitModel } = require('../models');
+const { svnkitModel, idartModel } = require('../models');
 
 const SVNKIT_PROJECT_ID = '19280';
 const SVNKIT_ISSUE_TYPE_ID = '108';
@@ -101,7 +101,7 @@ async function create(svnkitData, authorization, url) {
       },
     };
 
-    const kitResponse = await svnkitModel.create(authorization, requestBody, url);
+    const kitResponse = await idartModel.createIssue(authorization, requestBody, url);
 
     return kitResponse;
   } catch (err) {

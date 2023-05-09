@@ -8,12 +8,4 @@ async function getXml(authorization, xmlUrl) {
   return data;
 }
 
-async function create(authorization, requestBody, url) {
-  const { data } = await axios.post(`${url}/rest/api/2/issue`, requestBody, {
-    headers: { Authorization: `${authorization}` },
-  });
-
-  return data;
-}
-
-module.exports = { create, getXml };
+module.exports = { getXml };
