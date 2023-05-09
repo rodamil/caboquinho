@@ -1,7 +1,7 @@
 {
   "name": "caboquinho",
   "productName": "caboquinho",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "My Electron application description",
   "main": "src/index.js",
   "repository": {
@@ -9,7 +9,7 @@
     "url": "https://github.com/rodamil/caboquinho"
   },
   "scripts": {
-    "start": "node ./src/backend/index.js | electron-forge start",
+    "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
