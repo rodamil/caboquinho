@@ -86,16 +86,16 @@ async function createControlCr(authorization, controlCrData, url) {
     validationLink,
     technicalLead,
     productManager,
-    productName,
+    projectName,
     region,
-    lauchType,
+    launchType,
     build,
     isOdm,
   } = controlCrData;
 
-  const summary = `[${productName}][NPI][${region}][${lauchType}] - Build ${build} `;
+  const summary = `[${projectName}][NPI][${region}][${launchType}] - Build ${build} `;
 
-  const description = `Let's run the ${productName} - ${lauchType}\n\nCampaign Drive: [Link|${evidenceFolder}]\n\nWorkbook: [Link|${wbLink}]\n\nSpreadsheet validation: [Link|${validationLink}]\n\nValidation date: ${duedate}\n\nTL: ${technicalLead}\n\nPM: ${productManager}`;
+  const description = `Let's run the ${projectName} - ${launchType}\n\nCampaign Drive: [Link|${evidenceFolder}]\n\nWorkbook: [Link|${wbLink}]\n\nSpreadsheet validation: [Link|${validationLink}]\n\nValidation date: ${duedate}\n\nTL: ${technicalLead}\n\nPM: ${productManager}`;
 
   try {
     const requestBody = {

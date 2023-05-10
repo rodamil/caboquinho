@@ -55,7 +55,6 @@ window.onload = async () => {
 };
 
 document.querySelector('#control-cr-form').addEventListener('submit', async (e) => {
-  const COMPLETED_ICON = 'verified';
   const createCotrolCrBtn = document.querySelector('#create-control-cr-btn');
   createCotrolCrBtn.disabled = true;
 
@@ -72,6 +71,7 @@ document.querySelector('#control-cr-form').addEventListener('submit', async (e) 
     region: document.querySelector('#regions-select').value,
     build: document.querySelector('#buid-target').value,
     launchType: document.querySelector('#launch-types-select').value,
+    projectName: document.querySelector('#project-name').value,
     isOdm: JSON.parse(localStorage.getItem('isOdm')),
   };
 
