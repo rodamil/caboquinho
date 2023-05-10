@@ -148,7 +148,9 @@ function getRowsWithData({ worksheet, titlePositions, submissionRange }) {
     }
   }
 
-  console.log('########## End pull data from spreadsheet ##########');
+  console.log(
+    `########## End pull data from ${rowsToHandle.length} lines of spreadsheet ##########`,
+  );
 
   return rowsForTable;
 }

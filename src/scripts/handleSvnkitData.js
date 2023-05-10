@@ -49,13 +49,13 @@ async function updateSvnkitFieldInWB({
   const columnIndex = columnIndexToLetter(titlePositions['SVNKIT']);
   for (const [rowNumber, rowData] of rowsData.entries()) {
     const target = formatString(rowData[titlePositions['SOFTWARE TA']]);
-    const elabel = formatString(rowData[titlePositions['LABEL FILE']]);
+    const elabel = formatString(rowData[titlePositions['E-LABEL FILE']]);
     const rocarrier = formatString(rowData[titlePositions['RO.CARRIER']]);
     const model = formatString(rowData[titlePositions['MODEL']]);
     let subsidy = formatString(rowData[titlePositions['SUBSIDY LOCK']]);
 
     const checkTarget = formatString(kitCreatedData['SOFTWARE TA']) === target;
-    const checkElabel = formatString(kitCreatedData['LABEL FILE']) === elabel;
+    const checkElabel = formatString(kitCreatedData['E-LABEL FILE']) === elabel;
     const checkRocarrier = formatString(kitCreatedData['RO.CARRIER']) === rocarrier;
     const checkModel = formatString(kitCreatedData['MODEL']) === model;
 
@@ -167,7 +167,7 @@ function getRowsData({
 const compareToCheck = ({ compareData, rocarrier, target, elabel, subsidy, model }) =>
   rocarrier == compareData['RO.CARRIER'] &&
   target == compareData['SOFTWARE TA'] &&
-  elabel == compareData['LABEL FILE'] &&
+  elabel == compareData['E-LABEL FILE'] &&
   subsidy == compareData['SUBSIDY LOCK'] &&
   model == compareData['MODEL'];
 
@@ -194,7 +194,7 @@ function setDescriptionAndSwVersion(rowsWithData, company) {
 
     // Description
     const target = rowData['SOFTWARE TA'];
-    const elabel = rowData['LABEL FILE'];
+    const elabel = rowData['E-LABEL FILE'];
     const rocarrier = rowData['RO.CARRIER'];
     const subsidy = rowData['SUBSIDY LOCK'];
     const ssDS = rowData['SS / DS'];
@@ -262,7 +262,7 @@ function setDescriptionAndSwVersion(rowsWithData, company) {
 function setCheck(rowsWithData) {
   for (const [index1, row1] of rowsWithData.entries()) {
     const target = row1['SOFTWARE TA'];
-    const elabel = row1['LABEL FILE'];
+    const elabel = row1['E-LABEL FILE'];
     const rocarrier = row1['RO.CARRIER'];
     const subsidy = row1['SUBSIDY LOCK'];
     const model = row1['MODEL'];
