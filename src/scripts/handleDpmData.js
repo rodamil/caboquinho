@@ -221,7 +221,6 @@ function getRowsDataForDpm({
         }
 
         wbRows.forEach((compareRow) => {
-          const model2 = (compareRow[titlePositions['MODEL']] || '').trim();
           const carrier2 = (compareRow[titlePositions['CARRIER']] || '').trim();
           const country2 = (compareRow[titlePositions['COUNTRY']] || '').trim();
           const ssDS2 = (compareRow[titlePositions['SS / DS']] || '').trim();
@@ -234,7 +233,6 @@ function getRowsDataForDpm({
           const deviceId2 = (compareRow[titlePositions['DEVICE ID']] || '').trim();
 
           if (
-            model1 === model2 &&
             ssDS1 === ssDS2 &&
             source1 === source2 &&
             target1 === target2 &&
@@ -257,16 +255,26 @@ function getRowsDataForDpm({
                 countriesThatUpdateInSameDay.includes(country2) &&
                 rocarrier1 === rocarrier2;
 
-              const checkMultiConfig =
+              const checkMultiConfigForCountriesWithUpdate =
                 isMultiConfig &&
                 countriesThatUpdateInSameDay.includes(country2) &&
                 groupCarriers.includes(rocarrier2);
 
+              const checkMultiConfigGeneric =
+                isMultiConfig &&
+                !countriesWithDayUpdateRules.includes(country2.toUpperCase()) &&
+                groupCarriers.includes(rocarrier2);
+              // 35
               const checkSameRocarrier =
                 rocarrier1 === rocarrier2 &&
                 !countriesWithDayUpdateRules.includes(country2.toUpperCase());
 
-              const smrChecks = [checkGroupDaysSMR, checkMultiConfig, checkSameRocarrier];
+              const smrChecks = [
+                checkGroupDaysSMR,
+                checkMultiConfigForCountriesWithUpdate,
+                checkMultiConfigGeneric,
+                checkSameRocarrier,
+              ];
 
               if (smrChecks.some((validation) => validation === true)) {
                 handleCheck();
