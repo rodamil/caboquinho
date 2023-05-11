@@ -185,7 +185,7 @@ function generateActionBtns() {
 
           await Promise.all(
             rowsData.map(async (rowData, i) => {
-              const svnkitInput = document.querySelector(`#JIRA-SVNKIT-${i}`);
+              const svnkitInput = document.querySelector(`#SVNKIT-${i}`);
               const svnkitCell = svnkitInput.closest('td');
               const svnkitRow = svnkitCell.closest('tr');
               svnkitCell.style.display = 'table-cell';
