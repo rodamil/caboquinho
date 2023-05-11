@@ -199,15 +199,15 @@ function generateActionBtns() {
               dpmCell.style.display = 'table-cell';
 
               if (rowData['check'] === true) {
-                const dpmCreated = await getXmlDataForDpm(
+                const xmlData = await getXmlDataForDpm(
                   rowData,
                   localStorage.getItem('token'),
                 );
 
-                if (dpmCreated.key) {
+                if (xmlData.key) {
                   document.querySelector(`#check-${i}`).checked = false;
                   dpmRow.style.backgroundColor = dpmCreatedRowColor;
-                  rowsToBuildCsv.push({ ...rowData, ...dpmCreated });
+                  rowsToBuildCsv.push({ ...rowData, ...xmlData });
                   dpmInput.value = 'Add in CSV';
                 } else {
                   dpmRow.style.backgroundColor = dpmNotCreatedRowColor;
@@ -217,6 +217,8 @@ function generateActionBtns() {
             }),
           );
           try {
+            console.log('Creating CSV with this data:');
+            console.log(rowsToBuildCsv);
             createDpmCsvFile(rowsToBuildCsv);
           } catch (error) {
             console.log(error);

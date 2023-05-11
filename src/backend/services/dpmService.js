@@ -44,6 +44,8 @@ const getAndroidVersion = (buildStringNumber) => {
 
 async function create(dpmData, authorization) {
   const { xmlUrl, isOdm, isMultiConfig } = dpmData;
+  const boolIsOdm = JSON.parse(isOdm);
+
   try {
     if (!xmlUrl) {
       throw new Error('xmlEmpty');
@@ -67,7 +69,7 @@ async function create(dpmData, authorization) {
     let bvsSourceFormated = bvsSource;
     let bvsTargetFormated = bvsTarget;
 
-    if (isOdm) {
+    if (boolIsOdm) {
       formatedProjectClassification = 'ODM1';
 
       try {
