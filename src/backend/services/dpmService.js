@@ -45,6 +45,7 @@ const getAndroidVersion = (buildStringNumber) => {
 async function create(dpmData, authorization) {
   const { xmlUrl, isOdm, isMultiConfig } = dpmData;
   const boolIsOdm = JSON.parse(isOdm);
+  const boolIsMultiConfig = JSON.parse(isMultiConfig);
 
   try {
     if (!xmlUrl) {
@@ -77,12 +78,13 @@ async function create(dpmData, authorization) {
         const xmlName = splitedXmlUrl[splitedXmlUrl.length - 1].split('.xml')[0];
         const bSource = buildSource.match('[0-9.-]+[0-9]')[0];
         const bTarget = bvsTarget.match('[0-9.-]+[0-9]')[0];
+        const otaVersionText = xmlName.split('.')[0];
 
         bvsDeltaFormated = xmlName;
-        bvsSourceFormated = `${xmlName.split('.')[0]}.${bSource}${
-          xmlName.split(bTarget)[1]
+        bvsSourceFormated = `${otaVersionText}.${bSource}${xmlName.split(bTarget)[1]}`;
+        bvsTargetFormated = `${otaVersionText}.${
+          xmlName.split(`${otaVersionText}.${bSource}-`)[1]
         }`;
-        bvsTargetFormated = `${xmlName.split('.')[0]}.${xmlName.split(bSource + '-')[1]}`;
       } catch (error) {
         bvsDeltaFormated = bvsDelta;
         bvsSourceFormated = bvsSource;
@@ -90,7 +92,7 @@ async function create(dpmData, authorization) {
       }
     }
 
-    const formatedIsMultiConfigField = isMultiConfig ? 'Yes' : 'No';
+    const formatedIsMultiConfigField = boolIsMultiConfig ? 'Yes' : 'No';
 
     const dpmResponse = {
       key: 'created',
@@ -120,5 +122,20 @@ async function create(dpmData, authorization) {
     throw new Error('internalError');
   }
 }
+
+async function main() {
+  const res = await create(
+    {
+      xmlUrl:
+        'https://artifacts.mot.com/artifactory/borago/12/SOWS32.121-40-2/borago_retail/user/release-keys/Ota_Version.32.121-40-32.121-40-2.borago_user.retail.en-US.xml',
+      isOdm: true,
+      isMultiConfig: true,
+    },
+    'Basic cm9kbGltYTpFbGRAMjMwMw==',
+  );
+
+  console.log(res);
+}
+main();
 
 module.exports = { create };
