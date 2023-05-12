@@ -253,11 +253,16 @@ function createDpmTable(rowsWithData) {
     'check',
     'rocarrierField',
     'rocarrierPlannedField',
+    'summary',
     'source',
     'target',
-    'summary',
+    'xmlUrl',
+    'packageSize',
     'launchCountriesField',
     'carriersCountriesField',
+    'regionName',
+    'cds',
+    'md5',
   ];
   const columnsToHide = [
     'dpm',
