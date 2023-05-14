@@ -123,19 +123,4 @@ async function create(dpmData, authorization) {
   }
 }
 
-async function main() {
-  const res = await create(
-    {
-      xmlUrl:
-        'https://artifacts.mot.com/artifactory/borago/12/SOWS32.121-40-2/borago_retail/user/release-keys/Ota_Version.32.121-40-32.121-40-2.borago_user.retail.en-US.xml',
-      isOdm: true,
-      isMultiConfig: true,
-    },
-    'Basic cm9kbGltYTpFbGRAMjMwMw==',
-  );
-
-  console.log(res);
-}
-main();
-
 module.exports = { create };

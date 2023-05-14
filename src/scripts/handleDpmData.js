@@ -252,18 +252,21 @@ function getRowsDataForDpm({
 
             if (launchTypeText.toUpperCase() === 'SMR') {
               const checkGroupDaysSMR =
+                rocarrier1 === rocarrier2 &&
                 countriesThatUpdateInSameDay.includes(country2) &&
-                rocarrier1 === rocarrier2;
+                countriesThatUpdateInSameDay.includes(country1);
 
               const checkMultiConfig =
                 isMultiConfig &&
                 (countriesThatUpdateInSameDay.includes(country2) ||
-                  !countriesWithDayUpdateRules.includes(country2.toUpperCase())) &&
+                  (!countriesWithDayUpdateRules.includes(country2.toUpperCase()) &&
+                    !countriesWithDayUpdateRules.includes(country1.toUpperCase()))) &&
                 groupCarriers.includes(rocarrier2);
 
               const checkSameRocarrier =
                 rocarrier1 === rocarrier2 &&
-                !countriesWithDayUpdateRules.includes(country2.toUpperCase());
+                !countriesWithDayUpdateRules.includes(country2.toUpperCase()) &&
+                !countriesWithDayUpdateRules.includes(country1.toUpperCase());
 
               const smrChecks = [checkGroupDaysSMR, checkMultiConfig, checkSameRocarrier];
 
