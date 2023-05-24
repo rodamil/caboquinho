@@ -61,7 +61,6 @@ async function createSubTasks(authorization, subtaskData, url) {
             parent: { key: parentKey },
           },
         };
-        console.log(requestBody);
         await idartModel.createIssue(authorization, requestBody, url);
       }
     };

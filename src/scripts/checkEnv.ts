@@ -1,4 +1,4 @@
-const pjson = require('../../package.json');
+import pjson from '../../package.json';
 
 if (process.env.NODE_ENV === 'development') {
   console.log('running app with test configs');

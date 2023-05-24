@@ -241,7 +241,7 @@ function generateActionBtns() {
 
   const dowloadDpmMapConfig = document.createElement('a');
   dowloadDpmMapConfig.setAttribute('download', 'DPM_CONFIGURATION.txt');
-  dowloadDpmMapConfig.setAttribute('href', '../DPM_CONFIGURATION.txt');
+  dowloadDpmMapConfig.setAttribute('href', '../assets/DPM_CONFIGURATION.txt');
   dowloadDpmMapConfig.className = 'waves-effect waves-light btn-large orange';
   dowloadDpmMapConfig.innerText = 'Donwload map config';
   btnsContainer.appendChild(dowloadDpmMapConfig);

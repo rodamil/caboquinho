@@ -1,5 +1,6 @@
 .vscode
 *src/auth/credentials.json
+dist
 
 # Logs
 logs
