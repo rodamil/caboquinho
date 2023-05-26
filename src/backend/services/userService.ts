@@ -1,13 +1,11 @@
-const { userModel } = require('../models');
+import { userModel } from '../models';
 
 async function makeLogin(username, password, url) {
   try {
     const res = await userModel.makeLogin(username, password, url);
 
     if (res.session.name) {
-      const token = `Basic ${Buffer.from(`${username}:${password}`).toString(
-        'base64',
-      )}`;
+      const token = `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
 
       return token;
     }
@@ -22,4 +20,4 @@ async function makeLogin(username, password, url) {
   }
 }
 
-module.exports = { makeLogin };
+export default { makeLogin };

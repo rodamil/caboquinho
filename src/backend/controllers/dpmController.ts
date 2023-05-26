@@ -1,22 +1,13 @@
-const { dpmService } = require('../services');
-const https = require('https');
+import { Request, Response } from 'express';
+import { dpmService } from '../services';
 
-let BASE_IDART_URL = '';
-
-if (process.env.NODE_ENV === 'development') {
-  https.globalAgent.options.rejectUnauthorized = false;
-  BASE_IDART_URL = 'https://idart-test.mot.com';
-} else {
-  BASE_IDART_URL = 'https://idart.mot.com';
-}
-
-async function create(req, res) {
+async function create(req: Request, res: Response): Promise<any> {
   const { dpmData } = req.body;
   const { authorization } = req.headers;
 
-  const dpmCreated = await dpmService.create(dpmData, authorization, BASE_IDART_URL);
+  const dpmCreated = await dpmService.create(dpmData, authorization);
 
   return res.status(201).json(dpmCreated);
 }
 
-module.exports = { create };
+export default { create };

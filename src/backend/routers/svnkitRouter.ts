@@ -1,9 +1,9 @@
-const express = require('express');
-const rescue = require('express-rescue');
-const { svnkitController } = require('../controllers');
+import express from 'express';
+import rescue from 'express-rescue';
+import { svnkitController } from '../controllers';
 
 const svnkitRouter = express.Router();
 
 svnkitRouter.post('/create-svnkit', rescue(svnkitController.create));
 
-module.exports = svnkitRouter;
+export default svnkitRouter;

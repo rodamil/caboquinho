@@ -1,6 +1,6 @@
-const svnkitModel = require('./svnkitModel');
-const userModel = require('./userModel');
-const idartModel = require('./idartModel');
-const dpmModel = require('./dpmModel');
+import dpmModel from './dpmModel';
+import idartModel from './idartModel';
+import svnkitModel from './svnkitModel';
+import userModel from './userModel';
 
-module.exports = { svnkitModel, userModel, idartModel, dpmModel };
+export { svnkitModel, userModel, idartModel, dpmModel };

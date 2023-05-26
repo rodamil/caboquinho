@@ -1,5 +1,6 @@
-const { svnkitService } = require('../services');
-const https = require('https');
+import { Request, Response } from 'express';
+import https from 'https';
+import { svnkitService } from '../services';
 
 let BASE_IDART_URL = '';
 
@@ -10,7 +11,7 @@ if (process.env.NODE_ENV === 'development') {
   BASE_IDART_URL = 'https://idart.mot.com';
 }
 
-async function create(req, res) {
+async function create(req: Request, res: Response): Promise<any> {
   const { svnkitData } = req.body;
   const { authorization } = req.headers;
 
@@ -23,4 +24,4 @@ async function create(req, res) {
   return res.status(201).json(kitCreated);
 }
 
-module.exports = { create };
+export default { create };

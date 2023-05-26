@@ -1,6 +1,6 @@
-const express = require('express');
-const rescue = require('express-rescue');
-const { idartController } = require('../controllers');
+import express from 'express';
+import rescue from 'express-rescue';
+import { idartController } from '../controllers';
 
 const idartRouter = express.Router();
 
@@ -12,4 +12,4 @@ idartRouter.get('/region-names', rescue(idartController.getRegionNames));
 
 idartRouter.post('/control-cr', rescue(idartController.createControlCr));
 
-module.exports = idartRouter;
+export default idartRouter;

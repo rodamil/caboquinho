@@ -1,4 +1,4 @@
-const axios = require('axios');
+import axios from 'axios';
 
 async function getXml(authorization, xmlUrl) {
   const { data } = await axios.get(xmlUrl, {
@@ -8,4 +8,4 @@ async function getXml(authorization, xmlUrl) {
   return data;
 }
 
-module.exports = { getXml };
+export default { getXml };

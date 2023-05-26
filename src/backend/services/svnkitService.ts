@@ -1,4 +1,4 @@
-const { svnkitModel, idartModel } = require('../models');
+import { idartModel, svnkitModel } from '../models';
 
 const SVNKIT_PROJECT_ID = '19280';
 const SVNKIT_ISSUE_TYPE_ID = '108';
@@ -113,4 +113,4 @@ async function create(svnkitData, authorization, url) {
   }
 }
 
-module.exports = { create };
+export default { create };

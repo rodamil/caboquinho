@@ -1,4 +1,4 @@
-const axios = require('axios');
+import axios from 'axios';
 
 const PROJECT_NAMES_URL =
   'https://idart.mot.com/rest/motojirarest/1.0/dbRestAPI/GetNPIprojectNames';
@@ -41,4 +41,4 @@ async function createIssue(authorization, requestBody, url) {
   return data;
 }
 
-module.exports = { getRegionNames, getLaunchType, getNpiProjectNames, createIssue };
+export default { getRegionNames, getLaunchType, getNpiProjectNames, createIssue };

@@ -1,6 +1,6 @@
-const { userService } = require('../services');
-
-const https = require('https');
+import { Request, Response } from 'express';
+import https from 'https';
+import { userService } from '../services';
 
 let BASE_IDART_URL = '';
 
@@ -11,7 +11,7 @@ if (process.env.NODE_ENV === 'development') {
   BASE_IDART_URL = 'https://idart.mot.com';
 }
 
-async function makeLogin(req, res) {
+async function makeLogin(req: Request, res: Response): Promise<any> {
   const { username, password } = req.body;
 
   const token = await userService.makeLogin(username, password, BASE_IDART_URL);
@@ -19,4 +19,4 @@ async function makeLogin(req, res) {
   return res.status(200).json({ token });
 }
 
-module.exports = { makeLogin };
+export default { makeLogin };

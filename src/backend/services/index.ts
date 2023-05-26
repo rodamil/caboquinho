@@ -1,6 +1,6 @@
-const svnkitService = require('./svnkitService');
-const userService = require('./userService');
-const idartService = require('./idartService');
-const dpmService = require('./dpmService');
+import dpmService from './dpmService';
+import idartService from './idartService';
+import svnkitService from './svnkitService';
+import userService from './userService';
 
-module.exports = { svnkitService, userService, idartService, dpmService };
+export { svnkitService, userService, idartService, dpmService };

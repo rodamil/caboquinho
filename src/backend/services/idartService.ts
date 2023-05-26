@@ -1,7 +1,7 @@
-const { idartModel } = require('../models');
-const CONTROL_CR_PROJECT_KEY = 'IKLATAMIF';
+import https from 'https';
+import { idartModel } from '../models';
 
-const https = require('https');
+const CONTROL_CR_PROJECT_KEY = 'IKLATAMIF';
 https.globalAgent.options.rejectUnauthorized = false;
 
 async function getNpiProjectNames(authorization) {
@@ -131,9 +131,4 @@ async function createControlCr(authorization, controlCrData, url) {
   }
 }
 
-module.exports = {
-  getNpiProjectNames,
-  getRegionNames,
-  getLaunchType,
-  createControlCr,
-};
+export default { getNpiProjectNames, getRegionNames, getLaunchType, createControlCr };

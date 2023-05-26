@@ -1,4 +1,7 @@
-const errors = {
+import { NextFunction, Request, Response } from 'express';
+import IErrorHandler from '../../interfaces/errorHandlerInterface';
+
+const errors: IErrorHandler = {
   invalidCredentials: {
     code: 401,
     message: 'Your coreid or password is invalid.',
@@ -22,8 +25,18 @@ const errors = {
   },
 };
 
-module.exports = (err, _req, res, _next) => {
-  const error = errors[err] || errors[err.message];
+export default (
+  err: string | Error,
+  _req: Request,
+  res: Response,
+  _next: NextFunction,
+) => {
+  if (err instanceof Error) {
+    console.log(err);
+    return res.status(500).json(err);
+  }
+
+  const error = errors[err];
 
   if (error) {
     console.log(error);

@@ -1,6 +1,6 @@
-const svnkitController = require('./svnkitController');
-const userController = require('./userController');
-const idartController = require('./idartController');
-const dpmController = require('./dpmController');
+import dpmController from './dpmController';
+import idartController from './idartController';
+import svnkitController from './svnkitController';
+import userController from './userController';
 
-module.exports = { svnkitController, userController, idartController, dpmController };
+export { svnkitController, userController, idartController, dpmController };

@@ -1,5 +1,5 @@
-const { dpmModel } = require('../models');
-const { xml2js } = require('xml-js');
+import { xml2js } from 'xml-js';
+import { dpmModel } from '../models/index';
 
 const COMPONENT_NAME = 'DPM OTA Sw Updates';
 const SW_TYPE = 'streamingOnAb';
@@ -113,9 +113,6 @@ async function create(dpmData, authorization) {
       componentName: COMPONENT_NAME,
     };
 
-    // Unnecessary yet because the Jira don't allow all users to Create a DPM by Jira API
-    // const dpmResponse = await idartModel.createIssue(authorization, requestBody, url);
-
     return dpmResponse;
   } catch (err) {
     console.log(err);
@@ -123,19 +120,4 @@ async function create(dpmData, authorization) {
   }
 }
 
-async function main() {
-  const res = await create(
-    {
-      xmlUrl:
-        'https://artifacts.mot.com/artifactory/devonf_US/13/T1TN33.14-63-3/devonf_g_sys/user/release-keys_cid50/OTA_FROM_T1TN33.14-55-3_TO_T1TN33.14-63-3_V1/ab_dp_delta-Ota_Version_devonf_g_sys_T1TN33.14-55-3-T1TN33.14-63-3_release-keys.xml',
-      isOdm: 'false',
-      isMultiConfig: true,
-    },
-    'Basic cm9kbGltYTpFbGRAMjMwMw==',
-  );
-
-  console.log(res);
-}
-
-main();
-module.exports = { create };
+export default { create };

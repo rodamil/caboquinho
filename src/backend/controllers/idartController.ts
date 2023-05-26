@@ -1,5 +1,6 @@
-const { idartService } = require('../services');
-const https = require('https');
+import { Request, Response } from 'express';
+import https from 'https';
+import { idartService } from '../services';
 
 let BASE_IDART_URL = '';
 
@@ -10,7 +11,7 @@ if (process.env.NODE_ENV === 'development') {
   BASE_IDART_URL = 'https://idart.mot.com';
 }
 
-async function getNpiProjectNames(req, res) {
+async function getNpiProjectNames(req: Request, res: Response): Promise<any> {
   const { authorization } = req.headers;
 
   const npiProjectNames = await idartService.getNpiProjectNames(authorization);
@@ -18,7 +19,7 @@ async function getNpiProjectNames(req, res) {
   return res.status(200).json(npiProjectNames);
 }
 
-async function getRegionNames(req, res) {
+async function getRegionNames(req: Request, res: Response): Promise<any> {
   const { authorization } = req.headers;
 
   const regionNames = await idartService.getRegionNames(authorization);
@@ -26,7 +27,7 @@ async function getRegionNames(req, res) {
   return res.status(200).json(regionNames);
 }
 
-async function getLaunchType(req, res) {
+async function getLaunchType(req: Request, res: Response): Promise<any> {
   const { authorization } = req.headers;
 
   const launchTypes = await idartService.getLaunchType(authorization);
@@ -34,7 +35,7 @@ async function getLaunchType(req, res) {
   return res.status(200).json(launchTypes);
 }
 
-async function createControlCr(req, res) {
+async function createControlCr(req: Request, res: Response): Promise<any> {
   const { authorization } = req.headers;
   const { controlCrData } = req.body;
 
@@ -47,9 +48,4 @@ async function createControlCr(req, res) {
   return res.status(201).json(controlCrCreated);
 }
 
-module.exports = {
-  getNpiProjectNames,
-  getRegionNames,
-  getLaunchType,
-  createControlCr,
-};
+export default { getNpiProjectNames, getRegionNames, getLaunchType, createControlCr };
