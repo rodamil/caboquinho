@@ -164,6 +164,7 @@ function getRowsDataForDpm({
         let summary = '';
         let rocarrierField = '';
         const bgGroupColor = generateRandomHexColor();
+        const modelSkuField = [model1];
         const deivceIdField = [deviceId1];
         const launchCountriesField = [country1];
         const carriersCountriesField = [`${carrier1} - ${country1}`];
@@ -214,13 +215,8 @@ function getRowsDataForDpm({
 
         const { groupTitle, groupCarriers } = filtredGroupCarriers;
 
-        if (groupTitle) {
-          summary = `${buildName1} - ${model1} - ${groupTitle} ${daysToUpdateInSmr}- ${ssDS1} - ${source1} - ${target1}`;
-        } else {
-          summary = `${buildName1} - ${model1} - ${carrier1} ${country1} ${daysToUpdateInSmr} - ${ssDS1} - ${source1} - ${target1}`;
-        }
-
         wbRows.forEach((compareRow) => {
+          const model2 = (compareRow[titlePositions['MODEL']] || '').trim();
           const carrier2 = (compareRow[titlePositions['CARRIER']] || '').trim();
           const country2 = (compareRow[titlePositions['COUNTRY']] || '').trim();
           const ssDS2 = (compareRow[titlePositions['SS / DS']] || '').trim();
@@ -248,6 +244,7 @@ function getRowsDataForDpm({
                 carriersCountriesField.push(`${carrier2} - ${country2}`);
               rocarrierPlannedField.indexOf(rocarrier2) === -1 &&
                 rocarrierPlannedField.push(rocarrier2);
+              modelSkuField.indexOf(model2) === -1 && modelSkuField.push(model2);
             };
 
             if (launchTypeText.toUpperCase() === 'SMR') {
@@ -294,6 +291,12 @@ function getRowsDataForDpm({
           rocarrierField = 'N/A (Not Applicable)';
         }
 
+        if (groupTitle) {
+          summary = `${buildName1} - ${modelSkuField} - ${groupTitle} ${daysToUpdateInSmr}- ${ssDS1} - ${source1} - ${target1}`;
+        } else {
+          summary = `${buildName1} - ${modelSkuField} - ${carrier1} ${country1} ${daysToUpdateInSmr} - ${ssDS1} - ${source1} - ${target1}`;
+        }
+
         rowsToHandleFiltred.push({
           bgGroupColor,
           check: rowData['CHECKED'],
@@ -302,7 +305,7 @@ function getRowsDataForDpm({
           cds: '',
           xmlUrl: '',
           productName: '',
-          model: model1,
+          model: modelSkuField,
           source: source1,
           target: target1,
           deivceIdField,
