@@ -85,6 +85,12 @@ async function create(dpmData, authorization) {
         bvsTargetFormated = `${otaVersionText}.${
           xmlName.split(`${otaVersionText}.${bSource}-`)[1]
         }`;
+
+        const formatedData = [bvsDeltaFormated, bvsSourceFormated, bvsTargetFormated];
+
+        if (formatedData.some((data) => data.includes('undefined'))) {
+          throw new Error('Cannot formate some data');
+        }
       } catch (error) {
         bvsDeltaFormated = bvsDelta;
         bvsSourceFormated = bvsSource;
