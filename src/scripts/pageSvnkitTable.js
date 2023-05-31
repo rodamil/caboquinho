@@ -175,8 +175,6 @@ function generateActionBtns() {
         );
 
         if (confirmCreation) {
-          const confirmFillWb = window.confirm('Fill the workbook with SVNKITs?');
-
           const rowsData = getTableRowsData(false);
           const tableHeaders = document.querySelectorAll('th');
           const svnkitHeader = [...tableHeaders].find((th) => th.innerText === 'SVNKIT');
@@ -215,14 +213,6 @@ function generateActionBtns() {
                       JSON.stringify(currentKitsCreated),
                     );
 
-                    if (confirmFillWb) {
-                      await updateSvnkitFieldInWB({
-                        titlePositions,
-                        worksheet,
-                        kitCreatedData,
-                        wbLink,
-                      });
-                    }
                     document.querySelector(`#CHECK-${i}`).checked = false;
                     svnkitRow.style.backgroundColor = kitCreatedRowColor;
                     svnkitInput.value = kitCreated.key;
@@ -234,6 +224,35 @@ function generateActionBtns() {
               }
             }),
           );
+        }
+
+        handleEnableStatusBtns(false);
+      },
+    },
+    {
+      label: 'Fill Workbook',
+      actionFunc: async () => {
+        handleEnableStatusBtns(true);
+
+        const kitsCreated = JSON.parse(localStorage.getItem('kitsCreated'));
+
+        if (kitsCreated.length > 0) {
+          const confirmFilling = window.confirm(
+            `You are about to fill the WB with ${kitsCreated.length} Kits, are you sure?`,
+          );
+
+          if (confirmFilling) {
+            await Promise.all(
+              kitsCreated.map(async (kitCreatedData) => {
+                await updateSvnkitFieldInWB({
+                  titlePositions,
+                  worksheet,
+                  kitCreatedData,
+                  wbLink,
+                });
+              }),
+            );
+          }
         }
 
         handleEnableStatusBtns(false);

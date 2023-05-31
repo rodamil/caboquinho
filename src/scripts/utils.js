@@ -75,6 +75,10 @@ function getTableRowsData(removeCheck = true) {
         cellKey = 'RO.CARRIER';
       }
 
+      if (cellKey == 'E LABEL FILE') {
+        cellKey = 'E-LABEL FILE';
+      }
+
       if (inputCell.type === 'checkbox') {
         const cellValue = inputCell.checked;
 
