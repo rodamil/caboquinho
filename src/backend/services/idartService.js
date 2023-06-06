@@ -59,6 +59,7 @@ async function createSubTasks(authorization, subtaskData, url) {
             issuetype: { name: 'Sub-task' },
             summary,
             parent: { key: parentKey },
+            labels: ['IA_NPI_eldorado', 'IA_NPI_MAO'],
           },
         };
         console.log(requestBody);
@@ -105,7 +106,7 @@ async function createControlCr(authorization, controlCrData, url) {
         summary,
         description,
         duedate,
-        labels: ['IA_NPI_eldorado'],
+        labels: ['IA_NPI_eldorado', 'IA_NPI_MAO'],
         assignee: { name: reporter },
       },
     };
