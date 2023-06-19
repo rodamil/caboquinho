@@ -372,12 +372,23 @@ function createDpmTable(rowsWithData) {
         tBodyRow.style.backgroundColor = rowData['bgGroupColor'];
         input.type = 'text';
         input.style = 'width: 100%; border: none; outline: none; padding: 15px 5px';
-        input.value = rowData[tableTitle] || '';
+        const currentContent = rowData[tableTitle];
+
+        if (Array.isArray(currentContent)) {
+          if (currentContent.length === 2) {
+            currentContent.push('');
+            input.value = currentContent;
+          } else {
+            input.value = currentContent;
+          }
+        } else {
+          input.value = currentContent || '';
+        }
 
         if (
-          (tableTitle === 'isOdm' && !rowData[tableTitle]) ||
-          (tableTitle === 'isMultiConfig' &&
-            (!rowData[tableTitle] || !rowData['rocarrierField'].includes('N/A')))
+          (tableTitle === 'isOdm' && !currentContent) ||
+          (tableTitle === 'i  sMultiConfig' &&
+            (!currentContent || !rowData['rocarrierField'].includes('N/A')))
         ) {
           input.value = 'false';
         }
