@@ -387,7 +387,7 @@ function createDpmTable(rowsWithData) {
 
         if (
           (tableTitle === 'isOdm' && !currentContent) ||
-          (tableTitle === 'i  sMultiConfig' &&
+          (tableTitle === 'isMultiConfig' &&
             (!currentContent || !rowData['rocarrierField'].includes('N/A')))
         ) {
           input.value = 'false';
