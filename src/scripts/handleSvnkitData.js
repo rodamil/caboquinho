@@ -213,7 +213,11 @@ function setDescriptionAndSwVersion(rowsWithData, company) {
     description += `SW Version: ${swVersion}\\`;
 
     if (company != 'huaqin') {
-      description += `||Carrier (Customer + Country)||ro.carrier.${company.toLowerCase()}||\\`;
+      if (company === 'longcheer') {
+        description += `||Carrier (Customer + Country)||ro.carrier||\\`;
+      } else {
+        description += `||Carrier (Customer + Country)||ro.carrier.${company.toLowerCase()}||\\`;
+      }
 
       for (const compareData of rowsWithData) {
         if (

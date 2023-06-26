@@ -94,7 +94,7 @@ for (const projectType of projectTypes) {
       const descriptionOptionsContainer = document.createElement('div');
       descriptionOptionsContainer.innerHTML = '<p>Description type</p>';
 
-      const descriptionOptions = ['ontim', 'tinno', 'huaqin'];
+      const descriptionOptions = ['ontim', 'tinno', 'huaqin', 'longcheer'];
 
       for (const [index, option] of descriptionOptions.entries()) {
         const p = document.createElement('p');

@@ -94,6 +94,7 @@ function getPositionsInSubmission(submissionControlSheet, projectType) {
 function getRowsWithData({ worksheet, titlePositions, submissionRange }) {
   const valuesToIgnore = ['', 'END'];
   const columnsThatCanBeEmpty = ['SVNKIT', 'ODM ROCARRIER', 'DPM CR'];
+  const columnsThatCanAppearInContent = ['SIGNED'];
   const wbRows = worksheet.data.values;
   const rowsForTable = [];
   const rowsToHandle = [];
@@ -130,6 +131,8 @@ function getRowsWithData({ worksheet, titlePositions, submissionRange }) {
       ) {
         countTitles += 1;
       } else if (columnsThatCanBeEmpty.includes(title)) {
+        countTitles += 1;
+      } else if (columnsThatCanAppearInContent.includes(title)) {
         countTitles += 1;
       } else {
         coluumnsThatAreWithFailures.push(title);
