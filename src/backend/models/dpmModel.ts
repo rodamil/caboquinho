@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-async function getXml(authorization, xmlUrl) {
-  const { data } = await axios.get(xmlUrl, {
+async function getXml(authorization: string, xmlUrl: string): Promise<string> {
+  const { data } = await axios.get<string>(xmlUrl, {
     headers: { Authorization: `${authorization}` },
   });
 

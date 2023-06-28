@@ -1,19 +1,60 @@
 import { xml2js } from 'xml-js';
+import IDpmBodyData from '../../interfaces/dpmBodyDataInterface';
+import IDpmCreated from '../../interfaces/dpmCreatedInterface';
 import { dpmModel } from '../models/index';
 
 const COMPONENT_NAME = 'DPM OTA Sw Updates';
 const SW_TYPE = 'streamingOnAb';
 
-const handleXmlData = (xmlString) => {
+type XmlContent = {
+  blurversion: {
+    softwareversion: {
+      _text: string;
+    };
+    target: {
+      _text: string;
+    };
+    sourceDisplayVersion: { _text: string };
+    displayVersion: { _text: string };
+  };
+  otaversion: {
+    otaSourceSha1: {
+      _text: string;
+    };
+    otaTargetSha1: {
+      _text: string;
+    };
+  };
+  fingerprint: {
+    _text: string;
+  };
+  targetFingerPrint: {
+    _text: string;
+  };
+};
+
+type HandleXmlDataReturn = {
+  bvsSource: string;
+  bvsTarget: string;
+  bvsDelta: string;
+  sourceSha1: string;
+  targetSha1: string;
+  fingerprint: string;
+  version: string;
+  buildSource: string;
+  buildTarget: string;
+};
+
+const handleXmlData = (xmlString: string): HandleXmlDataReturn => {
   const xmlDoc = xml2js(xmlString, { compact: true });
-  const buildData = xmlDoc['build_data'];
+  const buildData: XmlContent = xmlDoc['build_data'];
 
   const bvsSource = buildData.blurversion.softwareversion['_text'];
   const bvsTarget = buildData.blurversion.target['_text'];
 
   const bvsDelta =
     bvsSource.match(/[A-z0-9.-]+[0-9]/)[0] +
-    bvsTarget.match(/[0-9.]+[0-9]/)[0].replace('.', '-', 1) +
+    bvsTarget.match(/[0-9.]+[0-9]/)[0].replace('.', '-') +
     bvsSource.split(/[0-9]/).pop();
 
   const sourceSha1 = buildData.otaversion.otaSourceSha1['_text'];
@@ -36,16 +77,19 @@ const handleXmlData = (xmlString) => {
   };
 };
 
-const getAndroidVersion = (buildStringNumber) => {
+const getAndroidVersion = (buildStringNumber: string): string => {
   const majorVersion = buildStringNumber[0];
   const minorVersion = (majorVersion.charCodeAt(0) - 71).toString();
   return `${majorVersion} ${minorVersion}.0`;
 };
 
-async function create(dpmData, authorization) {
+async function create(
+  dpmData: IDpmBodyData,
+  authorization: string,
+): Promise<IDpmCreated> {
   const { xmlUrl, isOdm, isMultiConfig } = dpmData;
-  const boolIsOdm = JSON.parse(isOdm);
-  const boolIsMultiConfig = JSON.parse(isMultiConfig);
+  const boolIsOdm: boolean = JSON.parse(isOdm);
+  const boolIsMultiConfig: boolean = JSON.parse(isMultiConfig);
 
   try {
     if (!xmlUrl) {

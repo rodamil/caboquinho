@@ -12,7 +12,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 async function makeLogin(req: Request, res: Response): Promise<any> {
-  const { username, password } = req.body;
+  const { username, password }: { username: string; password: string } = req.body;
 
   const token = await userService.makeLogin(username, password, BASE_IDART_URL);
 

@@ -1,7 +1,23 @@
 import axios from 'axios';
 
-async function makeLogin(username, password, url) {
-  const { data } = await axios.post(`${url}/rest/auth/1/session`, {
+type LoginReturn = {
+  session: {
+    name: string;
+    value: string;
+  };
+  loginInfo: {
+    failedLoginCount: string;
+    loginCount: string;
+    lastFailedLoginTime: string;
+    previousLoginTime: string;
+  };
+};
+async function makeLogin(
+  username: string,
+  password: string,
+  url: string,
+): Promise<LoginReturn> {
+  const { data } = await axios.post<LoginReturn>(`${url}/rest/auth/1/session`, {
     username,
     password,
   });

@@ -1,9 +1,26 @@
+import ISvnkitData from '../../interfaces/svnkitDataInterface';
 import { idartModel, svnkitModel } from '../models';
 
 const SVNKIT_PROJECT_ID = '19280';
 const SVNKIT_ISSUE_TYPE_ID = '108';
 
-const handleDesignResponsibility = ({ list, projectName, model, ssDS }) => {
+type DesignResponsibilityOpts = {
+  [key: string]: string[];
+};
+
+type HandleDesignResponsibility = {
+  list: DesignResponsibilityOpts;
+  projectName: string;
+  model: string;
+  ssDS: string;
+};
+
+const handleDesignResponsibility = ({
+  list,
+  projectName,
+  model,
+  ssDS,
+}: HandleDesignResponsibility) => {
   const findDesignResponsibility = list[projectName].find((option) => {
     const upOption = option.toUpperCase();
 
@@ -21,13 +38,13 @@ const handleDesignResponsibility = ({ list, projectName, model, ssDS }) => {
   }
 };
 
-async function create(svnkitData, authorization, url) {
+async function create(svnkitData: ISvnkitData, authorization: string, url: string) {
   try {
     const ssDS = svnkitData['SS / DS'];
     const isDualSim = ssDS === 'DS';
     const hasESIM = svnkitData['ESIM'] === 'TRUE';
 
-    const desginResponsibilityOptions = {};
+    const desginResponsibilityOptions: DesignResponsibilityOpts = {};
     let dualSimField = '47545'; // false
     let simCardSlotsField = 'psim';
     let updateInfo = {

@@ -1,28 +1,48 @@
 import https from 'https';
+
+import IControlCrBody from '../../interfaces/controlCrBodyInterface';
 import { idartModel } from '../models';
 
 const CONTROL_CR_PROJECT_KEY = 'IKLATAMIF';
 https.globalAgent.options.rejectUnauthorized = false;
 
-async function getNpiProjectNames(authorization) {
+type SubtaskRequestBody = {
+  fields: {
+    project: { key: string };
+    issuetype: { name: string };
+    summary: string;
+    parent: { key: string };
+  };
+};
+
+type SubtaskBodyData = {
+  isOdm: boolean;
+  parentKey: string;
+};
+
+async function getNpiProjectNames(authorization: string): Promise<string[]> {
   const response = await idartModel.getNpiProjectNames(authorization);
 
   return response.map((project) => project.NPIProjectName[0]);
 }
 
-async function getRegionNames(authorization) {
+async function getRegionNames(authorization: string): Promise<string[]> {
   const response = await idartModel.getRegionNames(authorization);
 
   return response.map((project) => project['NPI_Region'][0]);
 }
 
-async function getLaunchType(authorization) {
+async function getLaunchType(authorization: string): Promise<string[]> {
   const response = await idartModel.getLaunchType(authorization);
 
   return response.map((project) => project['NPI_Launch_Type'][0]);
 }
 
-async function createSubTasks(authorization, subtaskData, url) {
+async function createSubTasks(
+  authorization: string,
+  subtaskData: SubtaskBodyData,
+  url: string,
+): Promise<void> {
   const { isOdm, parentKey } = subtaskData;
 
   try {
@@ -51,9 +71,9 @@ async function createSubTasks(authorization, subtaskData, url) {
       'Pre-soak evaluation',
     ];
 
-    const handleApi = async (list) => {
+    const handleSubtaskCreation = async (list: string[]) => {
       for (const summary of list) {
-        const requestBody = {
+        const requestBody: SubtaskRequestBody = {
           fields: {
             project: { key: CONTROL_CR_PROJECT_KEY },
             issuetype: { name: 'Sub-task' },
@@ -66,9 +86,9 @@ async function createSubTasks(authorization, subtaskData, url) {
     };
 
     if (isOdm) {
-      handleApi(subtasksOdm);
+      handleSubtaskCreation(subtasksOdm);
     } else {
-      handleApi(subtasksMotorla);
+      handleSubtaskCreation(subtasksMotorla);
     }
   } catch (err) {
     console.log(err);
@@ -76,7 +96,11 @@ async function createSubTasks(authorization, subtaskData, url) {
   }
 }
 
-async function createControlCr(authorization, controlCrData, url) {
+async function createControlCr(
+  authorization: string,
+  controlCrData: IControlCrBody,
+  url: string,
+) {
   const {
     duedate,
     reporter,

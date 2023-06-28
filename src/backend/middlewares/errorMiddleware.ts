@@ -1,7 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
-import IErrorHandler from '../../interfaces/errorHandlerInterface';
 
-const errors: IErrorHandler = {
+type ErrorHandler = {
+  [key: string]: { code: number; message: string };
+};
+
+const errors: ErrorHandler = {
   invalidCredentials: {
     code: 401,
     message: 'Your coreid or password is invalid.',

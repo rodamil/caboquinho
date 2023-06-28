@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import https from 'https';
+import IControlCrBody from '../../interfaces/controlCrBodyInterface';
 import { idartService } from '../services';
 
 let BASE_IDART_URL = '';
@@ -37,7 +38,7 @@ async function getLaunchType(req: Request, res: Response): Promise<any> {
 
 async function createControlCr(req: Request, res: Response): Promise<any> {
   const { authorization } = req.headers;
-  const { controlCrData } = req.body;
+  const controlCrData: IControlCrBody = req.body.controlCrData;
 
   const controlCrCreated = await idartService.createControlCr(
     authorization,

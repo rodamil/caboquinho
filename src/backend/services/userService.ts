@@ -1,6 +1,6 @@
 import { userModel } from '../models';
 
-async function makeLogin(username, password, url) {
+async function makeLogin(username: string, password: string, url: string) {
   try {
     const res = await userModel.makeLogin(username, password, url);
 

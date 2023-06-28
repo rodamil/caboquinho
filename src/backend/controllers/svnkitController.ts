@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import https from 'https';
+import ISvnkitData from '../../interfaces/svnkitDataInterface';
 import { svnkitService } from '../services';
 
 let BASE_IDART_URL = '';
@@ -12,7 +13,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 async function create(req: Request, res: Response): Promise<any> {
-  const { svnkitData } = req.body;
+  const svnkitData: ISvnkitData = req.body.svnkitData;
   const { authorization } = req.headers;
 
   const kitCreated = await svnkitService.create(
