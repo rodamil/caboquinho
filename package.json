@@ -3,7 +3,7 @@
   "productName": "caboquinho",
   "version": "2.1.6",
   "description": "My Electron application description",
-  "main": "dist/app.js",
+  "main": "dist/src/app.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/rodamil/caboquinho"
@@ -14,8 +14,8 @@
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "lint": "echo \"No linting configured\"",
-    "server": "node ./src/backend/index.js",
-    "server:dev": "nodemon ./src/backend/index.js",
+    "server": "node ./dist/src/backend/index.js",
+    "server:dev": "nodemon ./dist/src/backend/index.js",
     "clean": "rimraf dist/",
     "copy-files": "copyfiles -u 1 src/**/*.html src/**/*.json src/**/*.ico src/**/*.txt dist/",
     "build": "npm run clean && tsc && npm run copy-files"

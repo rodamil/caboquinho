@@ -1,11 +1,10 @@
 import dotenv from 'dotenv';
 import express from 'express';
 import rescue from 'express-rescue';
+import errorMiddleware from './middlewares/errorMiddleware';
+import { dpmRouter, idartRouter, svnkitRouter, userRouter } from './routers';
 
-const { svnkitRouter, userRouter, idartRouter, dpmRouter } = require('./routers');
-const errorMiddleware = require('./middlewares/errorMiddleware');
 dotenv.config();
-
 const app = express();
 app.use(express.json());
 
