@@ -209,7 +209,7 @@ function setDescriptionAndSwVersion(rowsWithData, company) {
     }
 
     description += `SIM Lock: ${subsidy}\\`;
-    description += `DDS/SS: ${ssDS}\\`;
+    description += `DS/SS: ${ssDS}\\`;
     description += `SW Version: ${swVersion}\\`;
 
     if (company != 'huaqin') {
