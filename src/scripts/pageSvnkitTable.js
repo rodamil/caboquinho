@@ -301,6 +301,7 @@ function createSvnkitTable(rowsWithData) {
     'PROJECT NAME',
     'MODEL',
     'ESIM',
+    'LANGUAGE',
     'RO.CARRIER',
     'ODM ROCARRIER',
     'E-LABEL FILE',
