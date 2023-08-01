@@ -180,7 +180,7 @@ function setDescriptionAndSwVersion(rowsWithData, company) {
     let product = fingerprintP1.split('/')[1];
 
     if (product.includes('_retail')) {
-      product = `${product.split('retail')[0].trim()} retail`;
+      product = `${product.split('retail')[0].trim()}retail`;
     } else {
       product = product.split('_')[0];
     }
