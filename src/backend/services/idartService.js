@@ -59,7 +59,7 @@ async function createSubTasks(authorization, subtaskData, url) {
             issuetype: { name: 'Sub-task' },
             summary,
             parent: { key: parentKey },
-            labels: ['IA_NPI_eldorado', 'IA_NPI_MAO'],
+            labels: ['IA_NPI_eldorado', 'IA_NPI_MAO', 'ia_validation'],
           },
         };
         console.log(requestBody);
