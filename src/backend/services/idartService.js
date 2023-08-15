@@ -32,6 +32,7 @@ async function createSubTasks(authorization, subtaskData, url) {
       'Request OTA Packages',
       'Asset Non Secure',
       'CM Validation',
+      'Create CPV Intput',
       'CPV Validation',
       'Subsidy Lock',
       'DFS',
