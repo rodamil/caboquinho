@@ -1,6 +1,6 @@
 const { formatString } = require('./utils');
 
-function getPositionsInSubmission(submissionControlSheet, projectType) {
+function getPositionsInSubmission(submissionControlSheet, projectType, company = '') {
   const MAX_ROW_TO_CHECK = 4;
   const odmCarriersTitle = [
     'ro.carrier.ontim',
@@ -65,9 +65,13 @@ function getPositionsInSubmission(submissionControlSheet, projectType) {
         }
       }
 
-      for (const odmTitle of odmCarriersTitle) {
-        if (cell.toUpperCase().includes(odmTitle.toUpperCase())) {
-          submissionTitlePositions['ODM ROCARRIER'] = row.indexOf(cell);
+      if (company === 'longcheer') {
+        submissionTitlePositions['ODM ROCARRIER'] = submissionTitlePositions['RO.CARRIER']
+      } else {
+        for (const odmTitle of odmCarriersTitle) {
+          if (cell.toUpperCase().includes(odmTitle.toUpperCase())) {
+            submissionTitlePositions['ODM ROCARRIER'] = row.indexOf(cell);
+          }
         }
       }
     }

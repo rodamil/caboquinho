@@ -105,7 +105,7 @@ window.onload = async () => {
 
     worksheet = await getSheet(wbLink);
 
-    titlePositions = getPositionsInSubmission(worksheet, 'svnkit');
+    titlePositions = getPositionsInSubmission(worksheet, 'svnkit', company);
 
     const wbRows = getRowsWithData({ worksheet, titlePositions, submissionRange });
 
