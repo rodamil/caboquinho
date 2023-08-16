@@ -80,9 +80,11 @@ for (const projectType of projectTypes) {
     const projectOptionsContainer = document.querySelector('#project-options-container');
     const svnkitOptionsContainer = document.querySelector('#svnkit-options-container');
     const dpmOptionsContainer = document.querySelector('#dpm-options-container');
+    const rangeSelectionContainer = document.querySelector('#project-range-selection-container')
 
     projectOptionsContainer.classList.remove('hide');
-    [svnkitOptionsContainer, dpmOptionsContainer].forEach((container) =>
+
+    [svnkitOptionsContainer, dpmOptionsContainer, rangeSelectionContainer].forEach((container) =>
       container.classList.add('hide'),
     );
 
@@ -90,6 +92,7 @@ for (const projectType of projectTypes) {
       submitUrl = 'svnkitTable.html';
       svnkitOptionsContainer.innerHTML = '';
       svnkitOptionsContainer.classList.remove('hide');
+      rangeSelectionContainer.classList.remove('hide')
 
       const descriptionOptionsContainer = document.createElement('div');
       descriptionOptionsContainer.innerHTML = '<p>Description type</p>';
@@ -118,6 +121,7 @@ for (const projectType of projectTypes) {
     } else if (projectSelected === 'dpm') {
       submitUrl = 'dpmTable.html';
       dpmOptionsContainer.classList.remove('hide');
+      rangeSelectionContainer.classList.remove('hide')
 
       document.querySelector('#enable-multi-config').addEventListener('click', (e) => {
         const inputMultiConfig = document.querySelector('#multi-config-link');

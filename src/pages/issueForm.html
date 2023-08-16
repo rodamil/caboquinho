@@ -80,34 +80,6 @@
           >
         </div>
 
-        <div style="display: flex; justify-content: space-between; align-items: center">
-          <div class="input-field">
-            <i class="material-icons prefix">window</i>
-            <input
-              id="submission-range"
-              type="text"
-              class="validate"
-              autocomplete="off"
-              disabled
-            />
-            <label for="submission-range" style="font-size: 0.9rem"
-              >Range (Ex: 1-5;10;15-16)</label
-            >
-          </div>
-
-          <p>
-            <label>
-              <input
-                id="enable-submission-range"
-                type="checkbox"
-                class="filled-in"
-                checked="checked"
-              />
-              <span>(N/A)</span>
-            </label>
-          </p>
-        </div>
-
         <div class="input-field">
           <i class="material-icons prefix">supervisor_account</i>
           <input
@@ -150,7 +122,39 @@
         <div id="project-options-container" class="hide">
           <p style="font-weight: bold; font-size: 1.5rem">Project Options</p>
 
-          <div id="svnkit-options-container" class="hide"></div>
+          <div id="project-range-selection-container" class="hide">
+            <div style="display: flex; justify-content: space-between; align-items: center">
+              <div class="input-field">
+                <i class="material-icons prefix">window</i>
+                <input
+                  id="submission-range"
+                  type="text"
+                  class="validate"
+                  autocomplete="off"
+                  disabled
+                />
+                <label for="submission-range" style="font-size: 0.9rem"
+                  >Range (Ex: 1-5;10;15-16)</label
+                >
+              </div>
+    
+              <p>
+                <label>
+                  <input
+                    id="enable-submission-range"
+                    type="checkbox"
+                    class="filled-in"
+                    checked="checked"
+                  />
+                  <span>(N/A)</span>
+                </label>
+              </p>
+            </div>
+          </div>
+
+          <div id="svnkit-options-container" class="hide">
+            
+          </div>
 
           <div id="dpm-options-container" class="hide">
             <div
