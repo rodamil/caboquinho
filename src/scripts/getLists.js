@@ -3,7 +3,7 @@ const { getSheet } = require('./handleSheet');
 const { capitalizeFirstLetter } = require('./utils');
 
 const serverUrl = process.env.BASE_SERVER_URL || 'http://localhost:';
-const serverPort = process.env.PORT || 3001;
+const serverPort = process.env.PORT || 0;
 
 const TAM_NAMES_URL =
   'https://docs.google.com/spreadsheets/d/1scVsPtpoFtVrk8kbOTFzXb1qiFqAr-RG-F5W_YT1R7Q/edit#gid=1580787348';
@@ -35,7 +35,9 @@ async function getTamNames() {
 
   for (const row of rowsData) {
     tamsByCarrierCountry.push({
-      carrierCountry: `${row[CARRIER_POSITION].trim()} ${row[COUNTRY_POSITION].trim()}`,
+      carrierCountry: `${row[CARRIER_POSITION].trim()} ${row[
+        COUNTRY_POSITION
+      ].trim()}`,
       coreId: row[TAM_COREID_POSITION].trim(),
     });
   }
@@ -88,7 +90,7 @@ async function getChannelIds() {
     let formatedChannelId = '';
 
     const areAnException = rocarrierExceptions.find(
-      (carrier) => carrier === currentRocarrier,
+      (carrier) => carrier === currentRocarrier
     );
 
     if (areAnException) {
@@ -110,9 +112,12 @@ async function getProjectNames() {
   try {
     const token = localStorage.getItem('token');
 
-    const { data } = await axios.get(`${serverUrl}${serverPort}/npi-project-names`, {
-      headers: { Authorization: token },
-    });
+    const { data } = await axios.get(
+      `${serverUrl}${serverPort}/npi-project-names`,
+      {
+        headers: { Authorization: token },
+      }
+    );
 
     return data;
   } catch (err) {

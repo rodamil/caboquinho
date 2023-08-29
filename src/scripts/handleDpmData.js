@@ -12,14 +12,14 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 const serverUrl = process.env.BASE_SERVER_URL || 'http://localhost:';
-const serverPort = process.env.PORT || 3001;
+const serverPort = process.env.PORT || 0;
 
 async function getXmlDataForDpm(rowData, token) {
   try {
     const { data } = await axios.post(
       `${serverUrl}${serverPort}/create-dpm`,
       { dpmData: rowData },
-      { headers: { Authorization: token } },
+      { headers: { Authorization: token } }
     );
 
     return data;
@@ -109,7 +109,7 @@ function createDpmCsvFile(rowsForCsv) {
   const downloadLink = document.createElement('a');
   downloadLink.setAttribute(
     'href',
-    'data:text/csv;charset=utf-8,' + encodeURIComponent(csvString),
+    'data:text/csv;charset=utf-8,' + encodeURIComponent(csvString)
   );
 
   downloadLink.setAttribute('download', `DPM-${timestamp}.csv`);
@@ -151,10 +151,14 @@ function getRowsDataForDpm({
         const carrier1 = (rowData[titlePositions['CARRIER']] || '').trim();
         const country1 = (rowData[titlePositions['COUNTRY']] || '').trim();
         const ssDS1 = (rowData[titlePositions['SS / DS']] || '').trim();
-        const source1 = (rowData[titlePositions['OTA SOURCE SW VERSION']] || '').trim();
+        const source1 = (
+          rowData[titlePositions['OTA SOURCE SW VERSION']] || ''
+        ).trim();
         const target1 = (rowData[titlePositions['SOFTWARE TA']] || '').trim();
         const rocarrier1 = (rowData[titlePositions['RO.CARRIER']] || '').trim();
-        const launchType1 = (rowData[titlePositions['LAUNCH TYPE']] || '').trim();
+        const launchType1 = (
+          rowData[titlePositions['LAUNCH TYPE']] || ''
+        ).trim();
         const deviceId1 = (rowData[titlePositions['DEVICE ID']] || '').trim();
 
         let forcedUpgrade = '';
@@ -171,7 +175,9 @@ function getRowsDataForDpm({
         const rocarrierPlannedField = [rocarrier1];
         const countriesThatUpdateInSameDay = [country1];
         let daysToUpdateInSmr = '';
-        const launchTypeText = launchType1.toUpperCase().includes('SMR') ? 'SMR' : 'MR';
+        const launchTypeText = launchType1.toUpperCase().includes('SMR')
+          ? 'SMR'
+          : 'MR';
         let updateRules;
 
         if (dpmUpdateRules[rocarrier1]) {
@@ -187,12 +193,14 @@ function getRowsDataForDpm({
 
         if (launchTypeText === 'SMR') {
           for (const dayRule in dpmDayRules) {
-            const countriesInThisDay = dpmDayRules[dayRule].map((e) => e.toUpperCase());
+            const countriesInThisDay = dpmDayRules[dayRule].map((e) =>
+              e.toUpperCase()
+            );
 
             if (countriesInThisDay.includes(country1.toUpperCase())) {
               daysToUpdateInSmr = `${dayRule} days`;
               countriesThatUpdateInSameDay.push(
-                ...dpmDayRules[dayRule].filter((e) => e !== country1),
+                ...dpmDayRules[dayRule].filter((e) => e !== country1)
               );
               break;
             }
@@ -203,7 +211,8 @@ function getRowsDataForDpm({
 
         if (isMultiConfig) {
           for (const group in multiConfigRules) {
-            const groupCarriers = multiConfigRules[group]['groupCarriers'].split(',');
+            const groupCarriers =
+              multiConfigRules[group]['groupCarriers'].split(',');
 
             if (groupCarriers.includes(rocarrier1)) {
               filtredGroupCarriers.groupTitle = group;
@@ -223,10 +232,18 @@ function getRowsDataForDpm({
           const source2 = (
             compareRow[titlePositions['OTA SOURCE SW VERSION']] || ''
           ).trim();
-          const target2 = (compareRow[titlePositions['SOFTWARE TA']] || '').trim();
-          const rocarrier2 = (compareRow[titlePositions['RO.CARRIER']] || '').trim();
-          const launchType2 = (compareRow[titlePositions['LAUNCH TYPE']] || '').trim();
-          const deviceId2 = (compareRow[titlePositions['DEVICE ID']] || '').trim();
+          const target2 = (
+            compareRow[titlePositions['SOFTWARE TA']] || ''
+          ).trim();
+          const rocarrier2 = (
+            compareRow[titlePositions['RO.CARRIER']] || ''
+          ).trim();
+          const launchType2 = (
+            compareRow[titlePositions['LAUNCH TYPE']] || ''
+          ).trim();
+          const deviceId2 = (
+            compareRow[titlePositions['DEVICE ID']] || ''
+          ).trim();
 
           if (
             ssDS1 === ssDS2 &&
@@ -237,14 +254,16 @@ function getRowsDataForDpm({
           ) {
             const handleCheck = () => {
               compareRow['CHECKED'] = '0';
-              deivceIdField.indexOf(deviceId2) === -1 && deivceIdField.push(deviceId2);
+              deivceIdField.indexOf(deviceId2) === -1 &&
+                deivceIdField.push(deviceId2);
               launchCountriesField.indexOf(country2) === -1 &&
                 launchCountriesField.push(country2);
-              carriersCountriesField.indexOf(`${carrier2} - ${country2}`) === -1 &&
-                carriersCountriesField.push(`${carrier2} - ${country2}`);
+              carriersCountriesField.indexOf(`${carrier2} - ${country2}`) ===
+                -1 && carriersCountriesField.push(`${carrier2} - ${country2}`);
               rocarrierPlannedField.indexOf(rocarrier2) === -1 &&
                 rocarrierPlannedField.push(rocarrier2);
-              modelSkuField.indexOf(model2) === -1 && modelSkuField.push(model2);
+              modelSkuField.indexOf(model2) === -1 &&
+                modelSkuField.push(model2);
             };
 
             if (launchTypeText.toUpperCase() === 'SMR') {
@@ -256,8 +275,12 @@ function getRowsDataForDpm({
               const checkMultiConfig =
                 isMultiConfig &&
                 (countriesThatUpdateInSameDay.includes(country2) ||
-                  (!countriesWithDayUpdateRules.includes(country2.toUpperCase()) &&
-                    !countriesWithDayUpdateRules.includes(country1.toUpperCase()))) &&
+                  (!countriesWithDayUpdateRules.includes(
+                    country2.toUpperCase()
+                  ) &&
+                    !countriesWithDayUpdateRules.includes(
+                      country1.toUpperCase()
+                    ))) &&
                 groupCarriers.includes(rocarrier2);
 
               const checkSameRocarrier =
@@ -265,7 +288,11 @@ function getRowsDataForDpm({
                 !countriesWithDayUpdateRules.includes(country2.toUpperCase()) &&
                 !countriesWithDayUpdateRules.includes(country1.toUpperCase());
 
-              const smrChecks = [checkGroupDaysSMR, checkMultiConfig, checkSameRocarrier];
+              const smrChecks = [
+                checkGroupDaysSMR,
+                checkMultiConfig,
+                checkSameRocarrier,
+              ];
 
               if (smrChecks.some((validation) => validation === true)) {
                 handleCheck();

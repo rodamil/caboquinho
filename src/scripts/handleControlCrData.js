@@ -11,7 +11,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 const serverUrl = process.env.BASE_SERVER_URL || 'http://localhost:';
-const serverPort = process.env.PORT || 3001;
+const serverPort = process.env.PORT || 0;
 
 async function createControlCr(controlCrData, token) {
   console.log(controlCrData);
@@ -19,7 +19,7 @@ async function createControlCr(controlCrData, token) {
     const { data } = await axios.post(
       `${serverUrl}${serverPort}/control-cr`,
       { controlCrData },
-      { headers: { Authorization: token } },
+      { headers: { Authorization: token } }
     );
 
     return data;

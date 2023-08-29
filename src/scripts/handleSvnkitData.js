@@ -13,7 +13,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 const serverUrl = process.env.BASE_SERVER_URL || 'http://localhost:';
-const serverPort = process.env.PORT || 3001;
+const serverPort = process.env.PORT || 0;
 const subsidyOffTypes = ['NO', '', 'Off'];
 
 async function createSvnkit(rowData, token) {
@@ -21,7 +21,7 @@ async function createSvnkit(rowData, token) {
     const { data } = await axios.post(
       `${serverUrl}${serverPort}/create-svnkit`,
       { svnkitData: rowData },
-      { headers: { Authorization: token } },
+      { headers: { Authorization: token } }
     );
 
     return data;
@@ -56,7 +56,8 @@ async function updateSvnkitFieldInWB({
 
     const checkTarget = formatString(kitCreatedData['SOFTWARE TA']) === target;
     const checkElabel = formatString(kitCreatedData['E-LABEL FILE']) === elabel;
-    const checkRocarrier = formatString(kitCreatedData['RO.CARRIER']) === rocarrier;
+    const checkRocarrier =
+      formatString(kitCreatedData['RO.CARRIER']) === rocarrier;
     const checkModel = formatString(kitCreatedData['MODEL']) === model;
 
     if (subsidyOffTypes.includes(subsidy.toUpperCase())) {
@@ -64,7 +65,13 @@ async function updateSvnkitFieldInWB({
     }
 
     const checkSubsidy = kitCreatedData['SUBSIDY LOCK'] === subsidy;
-    if (checkTarget && checkElabel && checkRocarrier && checkModel && checkSubsidy) {
+    if (
+      checkTarget &&
+      checkElabel &&
+      checkRocarrier &&
+      checkModel &&
+      checkSubsidy
+    ) {
       updateSheet({
         url: wbLink,
         svnkitKey,
@@ -137,7 +144,7 @@ function getRowsData({
     }
 
     const isCarrierCountryInList = jsvnkitCarriersData.find(
-      (current) => current === carrierCountry,
+      (current) => current === carrierCountry
     );
 
     if (isCarrierCountryInList) {
@@ -164,7 +171,14 @@ function getRowsData({
   return dataForTable;
 }
 
-const compareToCheck = ({ compareData, rocarrier, target, elabel, subsidy, model }) =>
+const compareToCheck = ({
+  compareData,
+  rocarrier,
+  target,
+  elabel,
+  subsidy,
+  model,
+}) =>
   rocarrier == compareData['RO.CARRIER'] &&
   target == compareData['SOFTWARE TA'] &&
   elabel == compareData['E-LABEL FILE'] &&

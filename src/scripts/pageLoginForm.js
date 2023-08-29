@@ -1,6 +1,6 @@
 const axios = require('axios');
 const serverUrl = process.env.BASE_SERVER_URL || 'http://localhost:';
-const serverPort = process.env.PORT || 3001;
+const serverPort = process.env.PORT || 0;
 
 window.onload = () => {
   localStorage.clear();
