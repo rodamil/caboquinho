@@ -23,55 +23,21 @@ async function getLaunchType(authorization) {
 }
 
 async function createSubTasks(authorization, subtaskData, url) {
-  const { isOdm, parentKey } = subtaskData;
+  const { subtasksList, parentKey } = subtaskData;
 
   try {
-    const subtasksMotorla = [
-      'Create CR Jaguar',
-      'Create CFC CR',
-      'Request OTA Packages',
-      'Asset Non Secure',
-      'CM Validation',
-      'Create CPV Intput',
-      'CPV Validation',
-      'Subsidy Lock',
-      'DFS',
-      'SVNKit Creation',
-      'SVNKit Validation',
-      'DPM Creation',
-      'Presoak Non Secure',
-      'Presoak Secure',
-      'Asset Secure',
-    ];
+    for (const summary of subtasksList) {
+      const requestBody = {
+        fields: {
+          project: { key: CONTROL_CR_PROJECT_KEY },
+          issuetype: { name: 'Sub-task' },
+          summary,
+          parent: { key: parentKey },
+          labels: ['IA_NPI_eldorado', 'IA_NPI_MAO', 'ia_validation'],
+        },
+      };
 
-    const subtasksOdm = [
-      'Create CR Jaguar',
-      'SVNKit Creation',
-      'SVNKit Validation',
-      'DPM Creation',
-      'Pre-soak evaluation',
-    ];
-
-    const handleApi = async (list) => {
-      for (const summary of list) {
-        const requestBody = {
-          fields: {
-            project: { key: CONTROL_CR_PROJECT_KEY },
-            issuetype: { name: 'Sub-task' },
-            summary,
-            parent: { key: parentKey },
-            labels: ['IA_NPI_eldorado', 'IA_NPI_MAO', 'ia_validation'],
-          },
-        };
-        console.log(requestBody);
-        await idartModel.createIssue(authorization, requestBody, url);
-      }
-    };
-
-    if (isOdm) {
-      handleApi(subtasksOdm);
-    } else {
-      handleApi(subtasksMotorla);
+      await idartModel.createIssue(authorization, requestBody, url);
     }
   } catch (err) {
     console.log(err);
@@ -92,7 +58,7 @@ async function createControlCr(authorization, controlCrData, url) {
     region,
     launchType,
     build,
-    isOdm,
+    subtasksList,
   } = controlCrData;
 
   const summary = `[${projectName}][NPI][${region}][${launchType}] - Build ${build} `;
@@ -115,16 +81,16 @@ async function createControlCr(authorization, controlCrData, url) {
     const controlCrCreated = await idartModel.createIssue(
       authorization,
       requestBody,
-      url,
+      url
     );
 
-    await createSubTasks(
+    createSubTasks(
       authorization,
       {
-        isOdm,
+        subtasksList,
         parentKey: controlCrCreated.key,
       },
-      url,
+      url
     );
 
     return controlCrCreated;
