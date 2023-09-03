@@ -1,94 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Caboquinho</title>
-    <link href="styles.css" type="style" />
-    <!--Import Google Icon Font-->
-    <link
-      href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet"
-    />
-    <!-- Compiled and minified CSS -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
-    />
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <style>
-      input:-webkit-autofill {
-        -webkit-background-clip: text;
-      }
-    </style>
+  <title>Caboquinho</title>
+  <link href="styles.css" type="style" />
+  <!--Import Google Icon Font-->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" />
 
-    <!-- Compiled and minified JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <style>
+    input:-webkit-autofill {
+      -webkit-background-clip: text;
+    }
+  </style>
 
-    <script src="../scripts/checkEnv.js"></script>
-    <script src="../scripts/pageLoginForm.js" defer></script>
-  </head>
+  <!-- Compiled and minified JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
-  <body style="margin: 2rem">
-    <header>
-      <h1
-        id="page-title"
-        class="orange-text center-align"
-        style="font-weight: bold; margin-top: 0"
-      >
-        Caboquinho
-      </h1>
-    </header>
+  <script src="../scripts/checkEnv.js"></script>
+  <script src="../scripts/pageLoginForm.js" defer></script>
+</head>
 
-    <form
-      style="
+<body style="margin: 2rem">
+  <header>
+    <h1 id="page-title" class="orange-text center-align" style="font-weight: bold; margin-top: 0">
+      Caboquinho
+    </h1>
+  </header>
+
+  <form style="
         border-radius: 1rem;
         padding: 2rem;
         height: fit-content;
         width: 30rem;
         margin: auto;
-      "
-      class="z-depth-5"
-      id="login-form"
-    >
-      <div class="input-field">
-        <i class="material-icons prefix">person</i>
-        <input
-          id="user-coreid"
-          type="text"
-          class="validate"
-          autocomplete="off"
-          required
-          autofocus
-        />
-        <label for="user-coreid" style="font-size: 0.9rem">Your Motorola coreid</label>
-      </div>
+      " class="z-depth-5" id="login-form">
+    <div class="input-field">
+      <i class="material-icons prefix">person</i>
+      <input id="user-coreid" type="text" class="validate" autocomplete="off" required autofocus />
+      <label for="user-coreid" style="font-size: 0.9rem">Your Motorola coreid</label>
+    </div>
 
-      <div class="input-field">
-        <i class="material-icons prefix">lock</i>
-        <input
-          id="user-password"
-          type="password"
-          class="validate"
-          autocomplete="off"
-          required
-        />
-        <label for="user-password" style="font-size: 0.9rem">Password</label>
-      </div>
+    <div class="input-field">
+      <i class="material-icons prefix">lock</i>
+      <input id="user-password" type="password" class="validate" autocomplete="off" required />
+      <label for="user-password" style="font-size: 0.9rem">Password</label>
+    </div>
 
-      <div style="display: flex; justify-content: center">
-        <button id="btn-login" class="waves-effect waves-light btn" type="submit">
-          Login
-        </button>
-      </div>
+    <div style="display: flex; justify-content: center">
+      <button id="btn-login" class="waves-effect waves-light btn" type="submit">
+        Login
+      </button>
+    </div>
 
-      <div
-        id="login-error-container"
-        class="red-text"
-        style="margin-top: 30px; font-size: 1.1rem"
-      ></div>
-    </form>
-  </body>
+    <div id="login-error-container" class="red-text" style="margin-top: 30px; font-size: 1.1rem"></div>
+  </form>
+
+  <div style="position: absolute; right: 20px; bottom: 20px;">
+    <button id="btn-release-notes" class="btn" style="display: flex; align-items: center; text-align: center;">
+      <i class="material-icons">speaker_notes</i>
+      <span>Release notes</span>
+    </button>
+  </div>
+</body>
+
 </html>
