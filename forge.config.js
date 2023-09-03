@@ -8,7 +8,7 @@ module.exports = {
           name: 'caboquinho',
         },
         prerelease: false,
-        draft: true,
+        draft: false,
       },
     },
   ],
